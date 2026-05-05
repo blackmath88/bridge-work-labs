@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html class="light" lang="de">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Schutz- & Eskalationsmodell</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script src="https://unpkg.com/docx@9.1.1/build/index.umd.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config={darkMode:"class",theme:{extend:{
+  colors:{"surface-bright":"#fbf9f4","surface":"#fbf9f4","surface-container":"#f0eee9","surface-container-low":"#f5f3ee","surface-container-high":"#eae8e3","surface-container-highest":"#e4e2dd","surface-container-lowest":"#ffffff","on-surface":"#1b1c19","on-surface-variant":"#414846","outline":"#717975","outline-variant":"#c1c8c4","primary":"#27443d","primary-container":"#3e5c54","primary-fixed":"#c8eadf","primary-fixed-dim":"#adcdc3","on-primary":"#ffffff","on-primary-container":"#b2d3c9","on-primary-fixed-variant":"#2f4c45","secondary":"#5e5e5e","secondary-container":"#e4e2e2","secondary-fixed":"#e4e2e2","on-secondary":"#ffffff","on-secondary-container":"#646464","error":"#ba1a1a","error-container":"#ffdad6","on-error":"#ffffff","on-error-container":"#93000a","tertiary":"#623200","tertiary-container":"#844600","tertiary-fixed":"#ffdcc3","on-tertiary":"#ffffff","on-tertiary-container":"#ffbe8b","inverse-surface":"#30312e","inverse-on-surface":"#f2f1ec","inverse-primary":"#adcdc3","amber":"#ebc351","amber-bg":"rgba(235,195,81,0.08)","signal-0":"#3e5c54","signal-1":"#5a7a40","signal-2":"#b8860b","signal-3":"#c05621","signal-4":"#9b2c2c","s0":"#e8f0ec","s1":"#eef4e6","s2":"#fdf6e3","s3":"#fef0e6","s4":"#fde8e8"},
+  fontFamily:{sans:["Manrope","system-ui","sans-serif"]},
+  fontSize:{"display":["48px",{lineHeight:"56px",letterSpacing:"-0.02em",fontWeight:"800"}],"headline":["32px",{lineHeight:"40px",letterSpacing:"-0.01em",fontWeight:"700"}],"title":["24px",{lineHeight:"32px",fontWeight:"600"}],"body-lg":["18px",{lineHeight:"28px",fontWeight:"400"}],"body":["16px",{lineHeight:"24px",fontWeight:"400"}],"label":["13px",{lineHeight:"18px",letterSpacing:"0.03em",fontWeight:"600"}]},
+  spacing:{xs:"4px",sm:"12px",md:"24px",lg:"48px",xl:"80px",gutter:"24px"},
+  boxShadow:{sage:"0 4px 20px rgba(62,92,84,0.06)",lift:"0 8px 32px rgba(62,92,84,0.1)"}
+}}}
+</script>
+<style>
+.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;vertical-align:middle}
+.mso-fill{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}
+body{font-family:'Manrope',system-ui,sans-serif}
+.dot-grid{background-image:radial-gradient(#d1cdc0 0.5px,transparent 0.5px);background-size:24px 24px}
+.sec{display:none}.sec.active{display:block}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#c1c8c4;border-radius:3px}
+@media print{.sidebar,.topbar,.toast,.no-print,.edu-panel{display:none!important}body{background:#fff}.main-wrap{margin:0!important;padding:16px!important}.sec:not(.active){display:none!important}}
+/* Edu panel */
+.edu-panel{transition:all 0.3s ease}
+.edu-card{animation:eduIn 0.3s ease}
+@keyframes eduIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body class="bg-surface-bright text-on-surface antialiased flex min-h-screen">
+
+<!-- SIDEBAR -->
+<aside class="sidebar fixed left-0 top-0 h-screen w-64 bg-[#F9F7F2] border-r border-stone-200 shadow-[4px_0_12px_rgba(62,92,84,0.05)] flex flex-col py-6 z-40">
+  <div class="px-6 mb-8"><h1 class="text-xl font-extrabold text-primary-container" id="sideTitle">Schutzmodell</h1><p class="text-xs font-medium text-stone-500 uppercase tracking-widest mt-0.5" id="sideSub">Team-Eskalationstool</p></div>
+  <nav class="flex-1 space-y-1 px-3" id="sideNav"></nav>
+  <!-- Demo toggle -->
+  <div class="px-4 pb-4 no-print" id="demoArea"></div>
+  <div class="mt-auto px-6 pt-6 border-t border-stone-200"><p class="text-[11px] text-stone-400 leading-relaxed" id="privacyNote">Alle Eingaben bleiben lokal in Ihrem Browser.</p><div class="mt-3 pt-3 border-t border-stone-100"><p class="text-[10px] font-semibold text-stone-400" id="brandLine">Bridge Work Labs</p><p class="text-[9px] text-stone-300 mt-0.5" id="brandSub">Lightweight tools for real organizational problems</p></div></div>
+</aside>
+
+<!-- TOPBAR -->
+<header class="topbar fixed top-0 left-64 right-0 h-16 bg-[#F9F7F2] border-b border-stone-200 shadow-sm flex items-center justify-between px-8 z-30">
+  <div class="flex items-center gap-3">
+    <span class="text-lg font-bold text-primary-container" id="topTitle">Schutz- & Eskalationsmodell</span>
+    <div class="flex items-center gap-1.5 px-3 py-1 bg-s0 rounded-full"><span class="w-1.5 h-1.5 rounded-full bg-signal-0 animate-pulse"></span><span class="text-[11px] font-semibold text-signal-0" id="saveStatus">Lokal gespeichert</span></div>
+  </div>
+  <div class="flex items-center gap-3">
+    <div class="flex rounded-full border border-outline-variant overflow-hidden text-xs font-bold">
+      <button id="langDe" class="px-3 py-1.5 bg-primary-container text-on-primary transition-all" onclick="setLang('de')">DE</button>
+      <button id="langEn" class="px-3 py-1.5 bg-white text-stone-500 transition-all" onclick="setLang('en')">EN</button>
+    </div>
+    <button class="bg-primary-container text-on-primary px-4 py-2 rounded-lg text-label font-bold flex items-center gap-1.5 hover:opacity-90 transition-all active:scale-95" onclick="goTo('output')">
+      <span class="material-symbols-outlined text-sm">download</span><span data-t="export">Export</span>
+    </button>
+  </div>
+</header>
+
+<!-- MAIN -->
+<div class="main-wrap ml-64 mt-16 flex-1 p-8 max-w-[1080px] mx-auto w-full">
+
+<!-- ══ VISION ══ -->
+<div class="sec active" id="sec-vision">
+  <section class="grid grid-cols-1 md:grid-cols-12 gap-gutter mb-lg">
+    <div class="md:col-span-7 space-y-4 py-4">
+      <h1 class="text-display text-primary" data-t="heroTitle">Eskalation ist ein Schutzweg</h1>
+      <p class="text-title text-secondary italic" data-t="heroSub">Nicht Versagen. Nicht Bestrafung. Ein vorher vereinbarter Weg.</p>
+      <div class="h-1 w-20 bg-primary-fixed rounded-full"></div>
+      <p class="text-body-lg text-on-surface-variant max-w-xl" data-t="heroLead">Dieses Tool hilft Ihnen, ein Eskalationsmodell zu erstellen – für Teams mit sensiblen Situationen, Hierarchien und Schutzbedarf.</p>
+      <div class="flex gap-3 pt-2 no-print" id="heroCta"></div>
+    </div>
+    <div class="md:col-span-5 bg-primary-container rounded-xl p-6 text-on-primary-container flex flex-col justify-between">
+      <div><span class="text-[10px] uppercase tracking-widest font-bold opacity-60" data-t="coreLabel">Kernbotschaft</span>
+      <blockquote class="mt-3 text-white italic text-body-lg leading-relaxed" data-t="coreQuote">In sensiblen Gremien ist Eskalation kein Zeichen von Versagen. Sie ist ein vorab vereinbarter Schutzweg, wenn Menschen, Rollen oder Entscheidungen unter Druck geraten.</blockquote></div>
+      <p class="text-xs opacity-50 mt-6" data-t="heroFoot">Basierend auf Forschung zu psychologischer Sicherheit und Speak-up-Kultur.</p>
+    </div>
+  </section>
+  <section class="mb-lg"><div class="flex items-center gap-2 mb-4"><span class="material-symbols-outlined text-primary">linear_scale</span><h2 class="text-title text-primary" data-t="pathTitle">Eskalationspfad</h2></div><div class="grid grid-cols-5 gap-2 relative" id="pathway"><div class="absolute top-6 left-[10%] right-[10%] h-0.5 bg-outline-variant -z-10"></div></div></section>
+  <section><div class="mb-4"><span class="inline-flex items-center gap-1 px-3 py-1 bg-primary-fixed text-on-primary-fixed-variant text-label rounded-full mb-2"><span class="material-symbols-outlined text-sm">psychology</span><span data-t="conTag">Grundlagen</span></span><h2 class="text-title text-primary" data-t="conTitle">Gemeinsame Sprache</h2><p class="text-on-surface-variant text-body max-w-xl" data-t="conDesc">Diese Konzepte helfen Teams, schwierige Situationen klarer zu besprechen.</p></div><div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="conceptGrid"></div></section>
+</div>
+
+<!-- ══ BUILD ══ -->
+<div class="sec" id="sec-build">
+  <section class="mb-10"><div class="mb-4"><span class="inline-flex items-center gap-1 px-3 py-1 bg-primary-fixed text-on-primary-fixed-variant text-label rounded-full mb-2"><span class="material-symbols-outlined text-sm">account_tree</span><span data-t="ctxTag">Kontext</span></span><h2 class="text-headline text-primary" data-t="ctxTitle">Kontext erfassen</h2><p class="text-on-surface-variant max-w-xl" data-t="ctxDesc">Beschreiben Sie die reale Situation. Das Modell soll zu Ihrem Team passen.</p></div><div class="grid grid-cols-12 gap-gutter" id="ctxForm"></div></section>
+  <section class="mb-10"><div class="flex justify-between items-end mb-4"><div><span class="inline-flex items-center gap-1 px-3 py-1 bg-primary-fixed text-on-primary-fixed-variant text-label rounded-full mb-2"><span class="material-symbols-outlined text-sm">signal_cellular_alt</span><span data-t="lvlTag">Stufen</span></span><h2 class="text-title text-primary" data-t="lvlTitle">Stufen definieren</h2></div><div class="flex gap-1 no-print"><button class="px-3 py-1 text-xs border border-outline rounded-full text-secondary hover:bg-surface-container transition-colors" onclick="toggleAllLvls(true)" data-t="expandAll">Alle öffnen</button><button class="px-3 py-1 text-xs border border-outline rounded-full text-secondary hover:bg-surface-container transition-colors" onclick="toggleAllLvls(false)" data-t="collapseAll">Alle schließen</button></div></div><div class="space-y-2" id="lvlList"></div></section>
+  <section><div class="mb-4"><span class="inline-flex items-center gap-1 px-3 py-1 bg-primary-fixed text-on-primary-fixed-variant text-label rounded-full mb-2"><span class="material-symbols-outlined text-sm">bolt</span><span data-t="trigTag">Auslöser</span></span><h2 class="text-title text-primary" data-t="trigTitle">Auslöser definieren</h2></div><div class="bg-surface-container-low border border-outline-variant rounded-xl p-5 mb-4"><h4 class="text-label text-on-surface mb-2" data-t="trigSel">Ausgewählte Auslöser</h4><div class="flex flex-wrap gap-2" id="selTrigs"></div></div><div class="flex flex-wrap gap-2 mb-4" id="trigPool"></div><div class="flex gap-2 items-center no-print"><input type="text" id="customTrigIn" class="flex-1 bg-surface-container-lowest border border-outline-variant rounded-lg px-4 py-2.5 text-body focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all" placeholder="Eigenen Auslöser eingeben..."><button class="px-5 py-2.5 rounded-lg border border-outline text-secondary font-bold text-sm hover:bg-surface-container transition-all" id="addTrigBtn" data-t="trigAdd">Hinzufügen</button></div></section>
+</div>
+
+<!-- ══ REFINE ══ -->
+<div class="sec dot-grid" id="sec-refine">
+  <section class="mb-6"><span class="text-secondary font-bold text-label uppercase tracking-widest block mb-1" data-t="aiStep">Reflexionshilfe (optional mit KI)</span><h1 class="text-display text-primary mb-2" data-t="aiTitle">Modell reflektieren & schärfen</h1><p class="text-body-lg text-on-surface-variant max-w-2xl" data-t="aiDesc">Strukturierte Prompts helfen, Sprache zu schärfen und blinde Flecken zu finden.</p></section>
+  <div class="bg-amber-bg border-l-4 border-amber p-md mb-10 rounded-r-xl flex items-center gap-md shadow-sm"><div class="bg-amber p-3 rounded-full flex items-center justify-center shrink-0"><span class="material-symbols-outlined mso-fill text-primary">lightbulb</span></div><div><p class="text-title text-primary leading-tight" data-t="aiWarn">Dies ist kein KI-Tool. Es ist eine Denkhilfe.</p><p class="text-body text-on-surface-variant mt-0.5" data-t="aiWarnSub">Nutzen Sie diese Prompts als Impulse im Team oder mit einem KI-Tool Ihrer Wahl.</p></div></div>
+  <div class="grid grid-cols-12 gap-gutter" id="promptGrid"></div>
+</div>
+
+<!-- ══ OUTPUT ══ -->
+<div class="sec" id="sec-output">
+  <section class="mb-6"><span class="inline-flex items-center gap-1 px-3 py-1 bg-primary-fixed text-on-primary-fixed-variant text-label rounded-full mb-2"><span class="material-symbols-outlined text-sm">description</span><span data-t="outTag">Ergebnis</span></span><h2 class="text-headline text-primary" data-t="outTitle">Entscheidungsgrundlage & Teamvereinbarung</h2><p class="text-on-surface-variant" data-t="outDesc">Ihr strukturierter Modellentwurf – bereit für Review, Diskussion und Verabschiedung im Team.</p></section>
+  <div class="bg-white p-10 rounded-none shadow-lift max-w-4xl mx-auto border border-surface-container-highest mb-6" id="outputDoc"></div>
+  <div class="flex flex-wrap gap-2 no-print max-w-4xl mx-auto">
+    <button class="px-5 py-2.5 rounded-lg bg-primary text-on-primary font-bold text-sm flex items-center gap-1.5 hover:opacity-90 transition-all" onclick="doCopy('plain')"><span class="material-symbols-outlined text-sm">content_copy</span><span data-t="cpOnep">Text kopieren</span></button>
+    <button class="px-5 py-2.5 rounded-lg border border-outline text-secondary font-bold text-sm flex items-center gap-1.5 hover:bg-surface-container transition-all" onclick="downloadFile(mdText(),'md')"><span class="material-symbols-outlined text-sm">markdown</span><span>Markdown .md</span></button>
+    <button class="px-5 py-2.5 rounded-lg border border-outline text-secondary font-bold text-sm flex items-center gap-1.5 hover:bg-surface-container transition-all" onclick="exportDocx()"><span class="material-symbols-outlined text-sm">description</span><span>Word .docx</span></button>
+    <button class="px-5 py-2.5 rounded-lg border border-outline text-secondary font-bold text-sm flex items-center gap-1.5 hover:bg-surface-container transition-all" onclick="exportHtml()"><span class="material-symbols-outlined text-sm">code</span><span>HTML</span></button>
+    <button class="px-5 py-2.5 rounded-lg border border-outline text-secondary font-bold text-sm flex items-center gap-1.5 hover:bg-surface-container transition-all" onclick="window.print()"><span class="material-symbols-outlined text-sm">print</span><span data-t="cpPrint">Drucken / PDF</span></button>
+    <button class="px-5 py-2.5 rounded-lg bg-error-container text-on-error-container font-bold text-sm hover:opacity-90 transition-all" onclick="resetAll()"><span data-t="cpReset">Zurücksetzen</span></button>
+  </div>
+</div>
+</div>
+
+<!-- EDUCATIONAL SIDE PANEL -->
+<div class="edu-panel fixed right-0 top-16 w-72 h-[calc(100vh-4rem)] bg-[#F9F7F2] border-l border-stone-200 shadow-[-4px_0_12px_rgba(62,92,84,0.05)] overflow-y-auto py-6 px-5 z-20 no-print" id="eduPanel">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="text-sm font-bold text-primary-container flex items-center gap-1.5"><span class="material-symbols-outlined text-lg">school</span><span id="eduTitle">Wissen</span></h3>
+    <button class="text-stone-400 hover:text-stone-600 transition-colors" onclick="toggleEdu()"><span class="material-symbols-outlined text-lg">close</span></button>
+  </div>
+  <div id="eduContent"></div>
+</div>
+
+<!-- Edu toggle button (visible when panel is closed) -->
+<button class="fixed right-4 bottom-20 w-12 h-12 rounded-full bg-primary-container text-on-primary shadow-lift flex items-center justify-center z-20 hover:opacity-90 transition-all no-print hidden" id="eduToggle" onclick="toggleEdu()">
+  <span class="material-symbols-outlined">school</span>
+</button>
+
+<div class="fixed bottom-6 right-6 bg-inverse-surface text-inverse-on-surface px-6 py-3 rounded-xl shadow-2xl flex items-center gap-3 z-50 transition-all duration-300 opacity-0 translate-y-2 pointer-events-none" id="toast"><span class="material-symbols-outlined text-primary-fixed">check_circle</span><span id="toastMsg"></span></div>
+
+<script>
+const KEY="tpe-v6";
+const SC=["#3e5c54","#5a7a40","#b8860b","#c05621","#9b2c2c"];
+const SB=["#e8f0ec","#eef4e6","#fdf6e3","#fef0e6","#fde8e8"];
+const NAV=[
+  {id:"vision",icon:"visibility",de:"Vision",en:"Vision"},
+  {id:"build",icon:"construction",de:"Aufbauen",en:"Build"},
+  {id:"refine",icon:"psychology",de:"Reflektieren",en:"Reflect"},
+  {id:"output",icon:"description",de:"Ergebnis",en:"Output"}
+];
+
+/* ─── DEMO CASE ─── */
+const DEMO={de:{
+  ctx:{teamName:"Forschungsgruppe Kognitive Systeme",rhythm:"Halbjährlich und nach kritischen Vorfällen",situations:"Autorschaftskonflikte, Datenzugang, Betreuungsprobleme, vertrauliche Beschwerden über Führungsverhalten, Druck auf Publikationsfristen",power:"Professor:in vs. Doktorierende, Postdocs vs. Studierende, Festangestellte vs. Befristete, PI kontrolliert Finanzierung und Karrierezugang",protection:"Doktorierende, Postdocs mit befristeten Verträgen, technisches Personal, Studierende in Abschlussarbeiten",channels:"Ombudsstelle der Universität, HR-Abteilung, Vertrauensperson der Fakultät, Gleichstellungsbeauftragte",redLines:"Vergeltung gegen Meldende, Unterdrückung von Bedenken, einseitige Entscheidungen bei Autorschaft, Missbrauch der Betreuungsmacht",openQs:"Wie gehen wir mit Konflikten um, wenn die betreuende Person selbst beteiligt ist?"},
+  triggers:["Person unter Druck","Hierarchie verhindert Diskussion","Angst vor Konsequenzen","Einflussreicher Stakeholder","Vergeltungsrisiko","Berichtsweg ist das Problem"],
+  levels:[
+    {n:0,name:"Normalmodus",purpose:"Klärung im direkten Gespräch innerhalb der Gruppe.",triggers:"Meinungsverschiedenheit bei Methoden, kleine Missverständnisse, Prozessfragen.",safeStep:"Ansprechen im Gruppen-Meeting oder bilateral.",roles:"Alle Gruppenmitglieder, Gruppenleitung.",safeguards:"Respektvoller Ton, keine unnötige Weitergabe.",documentation:"Informell, nur bei Bedarf.",deescalation:"Klärung erreicht, normale Zusammenarbeit."},
+    {n:1,name:"Frühsignal",purpose:"Ein Unbehagen oder eine Unsicherheit wird sichtbar.",triggers:"Wiederholte Frustration, Unbehagen bei Betreuung, unklare Autorschaftsregeln.",safeStep:"Vertrauensperson in der Gruppe ansprechen oder Peer-Feedback einholen.",roles:"Postdoc-Mentor:in, Vertrauensperson, Peer.",safeguards:"Bedenken werden anerkannt, kein Formalisierungsdruck.",documentation:"Notiz nur wenn Muster erkennbar.",deescalation:"Frühzeitig gelöst oder weiterverwiesen."},
+    {n:2,name:"Geschützte Beratung",purpose:"Neutrale Person einbeziehen, ohne formale Eskalation.",triggers:"Doktorierende trauen sich nicht, Professor:in direkt anzusprechen. Machtgefälle blockiert Dialog.",safeStep:"Ombudsstelle, HR oder Vertrauensperson der Fakultät konsultieren.",roles:"Ombuds, HR, externe Beratung.",safeguards:"Vertraulich, Vergeltungsschutz, Need-to-know-Prinzip.",documentation:"Genug dokumentieren für Optionssicherung.",deescalation:"Sicherer Weg gefunden, Rückkehr zu normalem Modus."},
+    {n:3,name:"Formale Klärung",purpose:"Formale universitäre Strukturen aktivieren.",triggers:"Ethikverstoss, Diskriminierung, wiederholte ignorierte Beschwerden, Autorenschaftsbetrug.",safeStep:"Schriftlich dokumentieren, formalen Weg über Dekanat/HR aktivieren.",roles:"Dekanat, HR, Compliance, Ethikkommission.",safeguards:"Formale Dokumentation, Rollentrennung, Vergeltungsschutz.",documentation:"Formaler Bericht mit eingeschränktem Zugang.",deescalation:"Entscheidung getroffen und kommuniziert."},
+    {n:4,name:"Schutzmodus",purpose:"Sofortige Schutzmassnahmen oder Krisenintervention.",triggers:"Unmittelbare Gefährdung, schweres Fehlverhalten, kompromittierte interne Kanäle.",safeStep:"Unabhängige Prüfstelle oder Rektorat sofort einschalten.",roles:"Rektorat, unabhängige Untersuchungsstelle, Rechtsabteilung.",safeguards:"Sofortige Sicherung, Anti-Vergeltungs-Monitoring, eingeschränkter Informationszugang.",documentation:"Sofort und sicher dokumentieren.",deescalation:"Akutes Risiko kontrolliert, Aufarbeitung eingeleitet."}
+  ]
+},en:{
+  ctx:{teamName:"Cognitive Systems Research Group",rhythm:"Biannually and after critical incidents",situations:"Authorship conflicts, data access, supervision problems, confidential complaints about leadership behavior, publication pressure",power:"Professor vs. PhD students, postdocs vs. students, permanent vs. temporary staff, PI controls funding and career access",protection:"PhD students, postdocs on fixed-term contracts, technical staff, students writing theses",channels:"University ombuds office, HR department, faculty trusted contact, equal opportunities officer",redLines:"Retaliation against reporters, suppression of concerns, unilateral authorship decisions, abuse of supervisory power",openQs:"How do we handle conflicts when the supervisor is directly involved?"},
+  triggers:["Person feels pressured","Hierarchy prevents discussion","Fear of consequences","Influential stakeholder","Retaliation risk","Reporting line is the problem"],
+  levels:[
+    {n:0,name:"Normal Mode",purpose:"Clarification in direct conversation within the group.",triggers:"Methodological disagreement, small misunderstandings, process questions.",safeStep:"Raise in group meeting or bilaterally.",roles:"All group members, group lead.",safeguards:"Respectful tone, no unnecessary sharing.",documentation:"Informal, only if needed.",deescalation:"Clarification reached, normal collaboration."},
+    {n:1,name:"Early Signal",purpose:"Discomfort or uncertainty becomes visible.",triggers:"Repeated frustration, supervision concerns, unclear authorship rules.",safeStep:"Talk to a trusted person in the group or seek peer feedback.",roles:"Postdoc mentor, trusted contact, peer.",safeguards:"Concerns acknowledged, no pressure to formalize.",documentation:"Note only if patterns emerge.",deescalation:"Resolved early or redirected."},
+    {n:2,name:"Protected Consultation",purpose:"Involve a neutral person without formal escalation.",triggers:"PhD student does not feel safe raising issue with professor. Power imbalance blocks dialogue.",safeStep:"Consult ombuds office, HR, or faculty trusted contact.",roles:"Ombuds, HR, external advisor.",safeguards:"Confidential, non-retaliation, need-to-know.",documentation:"Document enough to preserve options.",deescalation:"Safe route found, return to normal mode."},
+    {n:3,name:"Formal Clarification",purpose:"Activate formal university structures.",triggers:"Ethics violation, discrimination, repeated ignored complaints, authorship fraud.",safeStep:"Document in writing, activate formal route via dean's office/HR.",roles:"Dean's office, HR, compliance, ethics committee.",safeguards:"Formal documentation, role separation, retaliation protection.",documentation:"Formal report with restricted access.",deescalation:"Decision made and communicated."},
+    {n:4,name:"Protection Mode",purpose:"Immediate protective measures or crisis intervention.",triggers:"Immediate danger, severe misconduct, compromised internal channels.",safeStep:"Contact independent review body or rector's office immediately.",roles:"Rector's office, independent investigation body, legal department.",safeguards:"Immediate safety measures, anti-retaliation monitoring, restricted information access.",documentation:"Document immediately and securely.",deescalation:"Acute risk controlled, follow-up initiated."}
+  ]
+}};
+
+/* ─── EDU CONTENT ─── */
+const EDU={de:{
+  vision:[
+    {icon:"psychology",title:"Psychologische Sicherheit",text:"Amy Edmondson zeigt: Teams mit hoher psychologischer Sicherheit melden mehr Fehler – nicht weil sie mehr haben, sondern weil Menschen früher sprechen. Das führt nachweislich zu besserer Leistung, geringerem Burnout und höherer Resilienz in Krisen.",source:"Edmondson, 1999 · Harvard Business School"},
+    {icon:"trending_down",title:"Warum Menschen schweigen",text:"Zwei Hauptgründe: Angst vor negativen Konsequenzen (Karriereschaden, Ausschluss) und Futilität – die Überzeugung, dass Sprechen nichts ändert. Ein gutes Eskalationsmodell muss beide Barrieren adressieren.",source:"Morrison & Milliken, 2000"},
+    {icon:"warning",title:"NASA Columbia: Eine Warnung",text:"Bei der Columbia-Katastrophe 2003 zögerten Ingenieure, Sicherheitsbedenken gegenüber Vorgesetzten zu äussern. Die starre Hierarchie und fehlende psychologische Sicherheit trugen zur Tragödie bei – ein Fall von fataler Unter-Eskalation.",source:"Columbia Accident Investigation Board"},
+    {icon:"balance",title:"Unter- vs. Über-Eskalation",text:"Unter-Eskalation: Probleme bleiben verborgen, Schaden wächst. Über-Eskalation: Jedes Thema wird sofort formal, Beziehungen und Alltagsdialog brechen zusammen. Ein gutes Modell hilft, Probleme auf der niedrigsten wirksamen Stufe zu lösen.",source:"MIT Sloan Management Review"},
+    {icon:"handshake",title:"Co-Creation statt Top-Down",text:"Vom Team selbst erarbeitete Eskalationsregeln erzeugen mehr Vertrauen und Nutzungsbereitschaft als reine Top-Down-Policies. Der Prozess des gemeinsamen Erarbeitens ist Teil der Lösung.",source:""}
+  ],
+  build:[
+    {icon:"balance",title:"Machtasymmetrie erkennen",text:"Professor:in vs. Doktorierende, Führungskraft vs. befristete Mitarbeitende, Gremienleitung vs. Junior-Mitglieder. Das Modell muss es legitim machen, den direkten Weg zu umgehen, wenn die Hierarchie selbst das Problem ist.",source:""},
+    {icon:"lock",title:"Vertraulichkeit & Anonymität",text:"Vertraulichkeit bedeutet: Information nur mit denen teilen, die sie zur Bearbeitung brauchen. Anonyme Kanäle (Hotlines, Ombudsstellen) ermöglichen Meldungen, wenn persönliche Identifikation als Risiko empfunden wird. Aber: Anonymität kann die Untersuchungsmöglichkeiten einschränken.",source:"IOA Standards of Practice"},
+    {icon:"verified_user",title:"Vergeltungsschutz",text:"Eine explizite Nicht-Vergeltungs-Policy ist zentral. Menschen, die Bedenken in gutem Glauben äussern, dürfen keine Nachteile erleiden – keine Karriereschäden, kein Ausschluss, keine subtile Benachteiligung. Konsequente Durchsetzung baut Vertrauen auf.",source:"LSBU Speak Up Policy"},
+    {icon:"trending_up",title:"PACE & CUSS: Abgestufte Assertivität",text:"Aus der Luftfahrt und Medizin: PACE (Probe → Alert → Challenge → Escalate) und CUSS (Concerned → Uncomfortable → Safety issue → Stop). Diese Methoden geben auch Junior-Mitgliedern eine klare Sprache für schrittweise Eskalation.",source:"Crew Resource Management / RCOG"},
+    {icon:"shield",title:"Unabhängige Kanäle",text:"Ombudsstellen (nach IOA-Prinzipien: vertraulich, neutral, informell, unabhängig), externe Hotlines, oder Vertrauenspersonen ausserhalb der Hierarchie. Diese Kanäle sind entscheidend, wenn der direkte Weg unsicher oder befangen ist.",source:"IOA · Forward Pathway"},
+    {icon:"medical_services",title:"NHS Freedom to Speak Up",text:"Nach Gesundheitsskandalen führte der NHS 'Freedom to Speak Up Guardians' ein. Ein Trust steigerte die gemeldeten Bedenken von 30 auf 152 pro Jahr – durch lokale Champions, sichere Fallverwaltung und aktive Kommunikation von Erfolgsgeschichten.",source:"NHS England"}
+  ],
+  refine:[
+    {icon:"lightbulb",title:"Prompt als Reflexionstool",text:"Die generierten Prompts sind keine Lösung, sondern strukturierte Denkanstösse. Kopieren Sie sie in ein KI-Tool Ihrer Wahl und nutzen Sie die Antworten als Diskussionsgrundlage im Team.",source:""},
+    {icon:"gpp_maybe",title:"Risikoprüfung",text:"Der Risk-Review-Prompt identifiziert Schwachstellen: Wo könnten sich Menschen unsicher fühlen? Wo fehlen unabhängige Kanäle? Wo ist Vergeltungsschutz unzureichend? Wo droht Über- oder Unter-Eskalation?",source:""},
+    {icon:"fact_check",title:"Häufige Schwachstellen",text:"Typische Fehler: zu komplexe Prozesse, die abschrecken; rein bürokratische Compliance-Übungen ohne echte Teameinbindung; fehlende Rückmeldung an Meldende (verstärkt Futilitätsgefühl); und mangelndes Vorleben durch Führungskräfte.",source:""}
+  ],
+  output:[
+    {icon:"description",title:"Living Document",text:"Der Onepager ist ein Entwurf, kein fertiges Regelwerk. Regelmässige Überprüfung (z.B. jährlich oder nach Vorfällen) hält das Modell lebendig. Fragen Sie: Wird es genutzt? Fühlen sich Menschen sicher? Werden Probleme auf der richtigen Stufe gelöst?",source:""},
+    {icon:"replay",title:"De-Eskalation & Erholung",text:"Nach einer Eskalation muss das Team bewusst zurück in den Normalmodus finden. Debriefing, Anerkennung des Schwierigen, und Aktualisierung des Modells. Ziel: nicht nur das Problem lösen, sondern Vertrauen wiederherstellen.",source:""},
+    {icon:"shield",title:"Multi-Level-Architektur",text:"Bewährt: Informelle lokale Klärung → Formale interne Eskalation → Unabhängige/externe Kanäle. Jede Stufe hat klare Auslöser und Schutzmechanismen. Das Team weiss, welche Art von Bedenken auf welche Stufe gehört.",source:"CIPD · LSBU"},
+    {icon:"groups",title:"Führung als Schlüssel",text:"Ohne Führungskräfte, die Offenheit vorleben und Meldungen aktiv begrüssen, bleibt selbst das beste Modell ungenutzt. Führung muss auf Bedenken mit Wertschätzung und Handlung reagieren – nicht mit Defensivität.",source:""}
+  ]
+},en:{
+  vision:[
+    {icon:"psychology",title:"Psychological Safety",text:"Amy Edmondson's research shows: teams with high psychological safety report more errors — not because they have more, but because people speak up earlier. This leads to better performance, lower burnout, and greater resilience in crises.",source:"Edmondson, 1999 · Harvard Business School"},
+    {icon:"trending_down",title:"Why People Stay Silent",text:"Two main reasons: fear of negative consequences (career harm, exclusion) and futility — the belief that speaking up won't change anything. A good escalation model must address both barriers explicitly.",source:"Morrison & Milliken, 2000"},
+    {icon:"warning",title:"NASA Columbia: A Warning",text:"In the 2003 Columbia disaster, engineers hesitated to raise safety concerns with superiors. Rigid hierarchy and poor psychological safety contributed to the tragedy — a case of fatal under-escalation.",source:"Columbia Accident Investigation Board"},
+    {icon:"balance",title:"Under- vs. Over-Escalation",text:"Under-escalation: problems stay hidden, harm grows. Over-escalation: every issue becomes formal immediately, relationships and everyday dialogue break down. A good model helps resolve issues at the lowest effective level.",source:"MIT Sloan Management Review"},
+    {icon:"handshake",title:"Co-Creation, Not Top-Down",text:"Team-co-created escalation rules generate more trust and willingness to use the system than pure top-down policies. The process of co-creation is part of the solution.",source:""}
+  ],
+  build:[
+    {icon:"balance",title:"Recognizing Power Asymmetry",text:"Professor vs. PhD student, manager vs. temporary staff, committee chair vs. junior member. The model must legitimize bypassing the direct line when the hierarchy itself is the problem.",source:""},
+    {icon:"lock",title:"Confidentiality & Anonymity",text:"Confidentiality means sharing only with those who need to know to handle the concern. Anonymous channels (hotlines, ombuds offices) enable reporting when identification feels risky. But: anonymity can limit investigation options.",source:"IOA Standards of Practice"},
+    {icon:"verified_user",title:"Non-Retaliation",text:"An explicit non-retaliation policy is essential. People who raise concerns in good faith must not suffer disadvantages — no career harm, no exclusion, no subtle disadvantaging. Consistent enforcement builds trust.",source:"LSBU Speak Up Policy"},
+    {icon:"trending_up",title:"PACE & CUSS: Graded Assertiveness",text:"From aviation and healthcare: PACE (Probe → Alert → Challenge → Escalate) and CUSS (Concerned → Uncomfortable → Safety issue → Stop). These methods give even junior members clear language for step-by-step escalation.",source:"Crew Resource Management / RCOG"},
+    {icon:"shield",title:"Independent Channels",text:"Ombuds offices (following IOA principles: confidential, neutral, informal, independent), external hotlines, or trusted contacts outside the hierarchy. These channels are critical when the direct line is unsafe or conflicted.",source:"IOA · Forward Pathway"},
+    {icon:"medical_services",title:"NHS Freedom to Speak Up",text:"After healthcare scandals, the NHS introduced 'Freedom to Speak Up Guardians'. One trust increased reported concerns from 30 to 152 per year — through local champions, secure case management, and actively communicating success stories.",source:"NHS England"}
+  ],
+  refine:[
+    {icon:"lightbulb",title:"Prompts as Reflection Tools",text:"Generated prompts aren't solutions — they're structured thinking catalysts. Copy them into your AI tool of choice and use the responses as discussion starters with your team.",source:""},
+    {icon:"gpp_maybe",title:"Risk Review",text:"The risk-review prompt identifies weaknesses: where might people still feel unsafe? Where are independent channels missing? Where is retaliation protection insufficient? Where might over- or under-escalation occur?",source:""},
+    {icon:"fact_check",title:"Common Failure Modes",text:"Typical failures: overly complex processes that intimidate users; purely bureaucratic compliance exercises without real team involvement; missing feedback to reporters (reinforcing futility); and lack of leadership role-modeling.",source:""}
+  ],
+  output:[
+    {icon:"description",title:"Living Document",text:"The onepager is a draft, not a finished rulebook. Regular review (e.g., annually or after incidents) keeps the model alive. Ask: Is it being used? Do people feel safe? Are issues resolved at the right level?",source:""},
+    {icon:"replay",title:"De-escalation & Recovery",text:"After an escalation, the team must intentionally return to normal mode. Debrief, acknowledge the difficulty, and update the model. The goal: not just fix the issue, but restore trust and collaborative relationships.",source:""},
+    {icon:"shield",title:"Multi-Level Architecture",text:"Proven pattern: informal local resolution → formal internal escalation → independent/external channels. Each level has clear triggers and protections. The team knows which type of concern belongs at which level.",source:"CIPD · LSBU"},
+    {icon:"groups",title:"Leadership is Key",text:"Without leaders who model openness and actively welcome concerns, even the best model will go unused. Leaders must respond to concerns with appreciation and action — not defensiveness.",source:""}
+  ]
+}};
+
+const L={de:{
+  sideTitle:"Schutzmodell",sideSub:"Team-Eskalationstool",topTitle:"Schutz- & Eskalationsmodell",
+  privacy:"Alle Eingaben bleiben lokal in Ihrem Browser.",export:"Export",saved:"Gespeichert",saving:"Speichert...",
+  heroTitle:"Eskalation ist ein Schutzweg",heroSub:"Nicht Versagen. Nicht Bestrafung. Ein vorher vereinbarter Weg.",heroLead:"Ein strukturiertes Werkzeug für Teams, die mit sensiblen Situationen, Hierarchien und Schutzbedarf arbeiten – in Universitäten, Forschungseinrichtungen, dem öffentlichen Sektor und der Unternehmensführung.",coreLabel:"Kernbotschaft",coreQuote:"In sensiblen Teams und Gremien ist Eskalation kein Zeichen von Versagen. Sie ist ein vorab vereinbarter Schutzweg, wenn Menschen, Rollen oder Entscheidungen unter Druck geraten.",heroFoot:"Basierend auf Forschung zu psychologischer Sicherheit, Speak-up-Kultur und Hochzuverlässigkeitsorganisationen.",
+  pathTitle:"Eskalationspfad",pw:["Normal","Frühsignal","Geschützte Beratung","Formale Klärung","Schutzmodus"],pwSub:["Teamdialog","Unsicherheit","Neutrale Hilfe","Formaler Weg","Sofortschutz"],
+  conTag:"Grundlagen",conTitle:"Gemeinsame Sprache",conDesc:"Diese Konzepte helfen Teams, schwierige Situationen klarer zu besprechen.",
+  ctxTag:"Kontext",ctxTitle:"Kontext erfassen",ctxDesc:"Beschreiben Sie die reale Situation.",lvlTag:"Stufen",lvlTitle:"Stufen definieren",expandAll:"Alle öffnen",collapseAll:"Alle schließen",
+  trigTag:"Auslöser",trigTitle:"Auslöser definieren",trigSel:"Ausgewählte Auslöser",trigAdd:"Hinzufügen",trigNone:"Noch keine ausgewählt.",trigPh:"Eigenen Auslöser eingeben...",
+  aiStep:"Reflexionshilfe (optional mit KI)",aiTitle:"Modell reflektieren & schärfen",aiDesc:"Strukturierte Prompts helfen, Sprache zu schärfen und blinde Flecken zu finden – mit oder ohne KI-Tool.",aiWarn:"Dies ist kein KI-Tool. Es ist eine Denkhilfe.",aiWarnSub:"Nutzen Sie diese Prompts als Impulse im Team oder mit einem KI-Tool Ihrer Wahl.",
+  pS:"Modell schärfen",pR:"Risikoprüfung",pSD:"Sprache klären, Auslöser schärfen, Schutzmechanismen stärken.",pRD:"Schwachstellen finden, Machtasymmetrien und blinde Flecken prüfen.",cpPrompt:"Prompt kopieren",
+  outTag:"Ergebnis",outTitle:"Entscheidungsgrundlage & Teamvereinbarung",outDesc:"Ihr strukturierter Modellentwurf – bereit für Review, Diskussion und Verabschiedung im Team.",cpOnep:"Text kopieren",cpPrint:"Drucken / PDF",cpReset:"Zurücksetzen",opH:"Unser Schutz- & Eskalationsmodell",draft:"Entwurf",
+  fTeam:"Team-/Gremienname",fRhythm:"Überprüfungsrhythmus",fSit:"Sensible Situationen",fPower:"Machtasymmetrien",fProt:"Schutzbedürftige Rollen",fChan:"Bestehende Kanäle",fRed:"Was nicht passieren darf",fOQ:"Offene Fragen",
+  phTeam:"z.B. Ethikkommission, Führungsteam, Fachbereich",phRhythm:"z.B. Quartalsweise",phSit:"Welche Spannungen?",phPower:"Welche Hierarchieunterschiede?",phProt:"Wer braucht Schutzwege?",phChan:"Ombuds, HR, Vertrauensperson...",phRed:"Was ist inakzeptabel?",phOQ:"Was muss noch geklärt werden?",
+  whyTitle:"Warum das wichtig ist",whyText:"Klare Grenzen verhindern emotionale Überbelastung. Durch Definition des Kontexts können wir passgenaue Schutznetze gestalten.",
+  ln:"Stufenname",lp:"Zweck",lt:"Auslöser",ls:"Sicherer erster Schritt",lr:"Rollen/Kontakte",lsg:"Schutzmechanismen",ld:"Dokumentation",lde:"De-Eskalation",
+  s1:"Zweck",s2:"Kontext",s3:"Leitprinzipien",s4:"Stufen",s5:"Auslöser",s6:"Rollen",s7:"Schutz",s8:"Dokumentation",s9:"De-Eskalation",s10:"Rhythmus",s11:"Offene Fragen",
+  pr:["Eskalation ist ein Schutzweg.","Bedenken in gutem Glauben sind Beiträge.","Auf niedrigster wirksamer Stufe lösen.","Vertraulichkeit nach Need-to-know.","Vergeltung ist inakzeptabel.","Unabhängige Kanäle sind legitim.","Jede Eskalation hat einen Rückweg."],
+  demoLoad:"Demo laden",demoStart:"Eigenes Modell",demoTag:"Demo-Daten",demoDesc:"Fiktive Forschungsgruppe mit PhD-Studierenden",eduTitle:"Wissen",
+  ctaDemo:"Mit Demo starten",ctaOwn:"Eigenes Modell erstellen",ctaOr:"oder",brandLine:"Ein Werkzeug von Bridge Work Labs",brandSub:"Leichtgewichtige Tools für echte Organisationsprobleme"
+},en:{
+  sideTitle:"Protection Model",sideSub:"Team Escalation Tool",topTitle:"Protection & Escalation Model",
+  privacy:"All inputs stay in your browser.",export:"Export",saved:"Saved",saving:"Saving...",
+  heroTitle:"Escalation is a protection path",heroSub:"Not failure. Not punishment. A pre-agreed route.",heroLead:"A structured tool for teams handling sensitive situations, hierarchies, and protection needs — in universities, research institutions, public-sector organizations, and corporate governance.",coreLabel:"Core message",coreQuote:"In sensitive teams and committees, escalation is not a sign of failure. It is a pre-agreed protection path when people, roles, or decisions come under pressure.",heroFoot:"Based on research in psychological safety, speak-up culture, and high-reliability organizations.",
+  pathTitle:"Escalation pathway",pw:["Normal","Early Signal","Protected Consultation","Formal Clarification","Protection Mode"],pwSub:["Team dialogue","Uncertainty","Neutral help","Formal route","Immediate protection"],
+  conTag:"Foundations",conTitle:"Shared language",conDesc:"These concepts help teams discuss difficult situations more clearly.",
+  ctxTag:"Context",ctxTitle:"Capture context",ctxDesc:"Describe the real setting.",lvlTag:"Levels",lvlTitle:"Define levels",expandAll:"Expand all",collapseAll:"Collapse all",
+  trigTag:"Triggers",trigTitle:"Define triggers",trigSel:"Selected triggers",trigAdd:"Add",trigNone:"None selected yet.",trigPh:"Enter custom trigger...",
+  aiStep:"Reflection support (AI optional)",aiTitle:"Reflect & sharpen",aiDesc:"Structured prompts help sharpen language and find blind spots — with or without an AI tool.",aiWarn:"This is not an AI tool. It's a thinking aid.",aiWarnSub:"Use these prompts in your team or with an AI tool of your choice.",
+  pS:"Sharpen model",pR:"Risk-review",pSD:"Clarify language, sharpen triggers, strengthen protections.",pRD:"Find weaknesses, check power asymmetries and blind spots.",cpPrompt:"Copy prompt",
+  outTag:"Output",outTitle:"Decision basis & team agreement",outDesc:"Your structured model draft — ready for review, discussion, and team adoption.",cpOnep:"Copy text",cpPrint:"Print / PDF",cpReset:"Reset all",opH:"Our Protection & Escalation Model",draft:"Draft",
+  fTeam:"Team / committee name",fRhythm:"Review rhythm",fSit:"Sensitive situations",fPower:"Power asymmetries",fProt:"Roles needing protection",fChan:"Existing channels",fRed:"What must not happen",fOQ:"Open questions",
+  phTeam:"e.g. Ethics Committee, Leadership Team, Department",phRhythm:"e.g. Quarterly",phSit:"What tensions arise?",phPower:"Which hierarchy differences?",phProt:"Who needs protection routes?",phChan:"Ombuds, HR, trusted person...",phRed:"What is unacceptable?",phOQ:"What needs clarification?",
+  whyTitle:"Why this matters",whyText:"Clear boundaries prevent emotional overload. Defining the context lets us design targeted safety nets.",
+  ln:"Level name",lp:"Purpose",lt:"Triggers",ls:"Safe first step",lr:"Roles/contacts",lsg:"Safeguards",ld:"Documentation",lde:"De-escalation",
+  s1:"Purpose",s2:"Context",s3:"Guiding principles",s4:"Levels",s5:"Triggers",s6:"Roles",s7:"Protections",s8:"Documentation",s9:"De-escalation",s10:"Rhythm",s11:"Open questions",
+  pr:["Escalation is a protection path.","Concerns in good faith are contributions.","Handle at lowest effective level.","Confidentiality follows need-to-know.","Retaliation is unacceptable.","Independent channels are legitimate.","Every escalation has a path back."],
+  demoLoad:"Load demo",demoStart:"Start blank",demoTag:"Demo data",demoDesc:"Fictional research group with PhD students",eduTitle:"Learn",
+  ctaDemo:"Start with demo",ctaOwn:"Build your own",ctaOr:"or",brandLine:"A tool by Bridge Work Labs",brandSub:"Lightweight tools for real organizational problems"
+}};
+
+const CON={de:[{i:"psychology",t:"Psychologische Sicherheit",d:"Bedenken äussern – ohne Angst vor Vergeltung.",q:"Was würde Menschen sicher fühlen lassen?"},{i:"record_voice_over",t:"Speak-Up-Kultur",d:"Bedenken werden früh als Beitrag behandelt.",q:"Wo schweigen Menschen?"},{i:"balance",t:"Machtasymmetrie",d:"Hierarchie kann begrenzen, was Menschen sagen.",q:"Welche Machtunterschiede sind am wichtigsten?"},{i:"lock",t:"Vertraulichkeit",d:"Informationen nur mit denen teilen, die sie brauchen.",q:"Was muss vertraulich bleiben?"},{i:"verified_user",t:"Vergeltungsschutz",d:"Keine Nachteile für Bedenken in gutem Glauben.",q:"Wie sähe Vergeltung bei uns aus?"},{i:"shield",t:"Unabhängiger Kanal",d:"Ein Weg ausserhalb der Hierarchie.",q:"Wann ist der direkte Weg nicht sicher?"},{i:"trending_up",t:"Abgestufte Assertivität",d:"Sprache schrittweise eskalieren.",q:"Welche Formulierungen helfen?"},{i:"replay",t:"De-Eskalation",d:"Bewusst zu normaler Arbeit zurückkehren.",q:"Wie schliessen wir den Kreislauf?"}],
+en:[{i:"psychology",t:"Psychological Safety",d:"Raise concerns without fear of retaliation.",q:"What would make people feel safe?"},{i:"record_voice_over",t:"Speak-Up Culture",d:"Concerns surfaced early as contributions.",q:"Where do people stay silent?"},{i:"balance",t:"Power Asymmetry",d:"Hierarchy limits what people say.",q:"Which power differences matter most?"},{i:"lock",t:"Confidentiality",d:"Share only with those who need to know.",q:"What must stay confidential?"},{i:"verified_user",t:"Non-Retaliation",d:"No disadvantages for good-faith concerns.",q:"What would retaliation look like?"},{i:"shield",t:"Independent Channel",d:"A route outside the hierarchy.",q:"When is the direct line not safe?"},{i:"trending_up",t:"Graded Assertiveness",d:"Escalate language step by step.",q:"What phrases would help?"},{i:"replay",t:"De-escalation",d:"Intentionally return to normal work.",q:"How do we close the loop?"}]};
+
+const LVD={de:[{n:0,name:"Normalmodus",purpose:"Klärung im Teamdialog.",triggers:"Meinungsverschiedenheit, Prozessfrage.",safeStep:"Im Team besprechen.",roles:"Kolleg:innen, Vorsitz.",safeguards:"Respektvoller Dialog.",documentation:"Informell.",deescalation:"Klärung erreicht."},{n:1,name:"Frühsignal",purpose:"Bedenken wird sichtbar.",triggers:"Unbehagen, wiederholtes Bedenken.",safeStep:"Bei Vertrauensperson ansprechen.",roles:"Vertrauensperson, Vorsitz.",safeguards:"Anerkannt ohne Formalisierung.",documentation:"Leichte Aufzeichnung.",deescalation:"Früh gelöst."},{n:2,name:"Geschützte Beratung",purpose:"Neutrale Person einbeziehen.",triggers:"Direkter Weg unsicher, Machtasymmetrie.",safeStep:"Ombuds/HR/Ethik konsultieren.",roles:"Ombuds, HR, Berater:in.",safeguards:"Vertraulich, Vergeltungsschutz.",documentation:"Optionssicherung.",deescalation:"Sicherer Weg vereinbart."},{n:3,name:"Formale Klärung",purpose:"Formale Strukturen aktivieren.",triggers:"Ethische/rechtliche Bedenken.",safeStep:"Dokumentieren, formalen Weg aktivieren.",roles:"Führung, HR, Compliance.",safeguards:"Dokumentation, Vergeltungsschutz.",documentation:"Formaler Bericht.",deescalation:"Entscheidung kommuniziert."},{n:4,name:"Schutzmodus",purpose:"Sofortschutz oder Krisenmanagement.",triggers:"Unmittelbarer Schaden, kompromittierte Kanäle.",safeStep:"Schutzkanal sofort aktivieren.",roles:"Unabhängige Prüfstelle.",safeguards:"Sofortsicherung, Monitoring.",documentation:"Schnell dokumentieren.",deescalation:"Risiko kontrolliert."}],
+en:[{n:0,name:"Normal Mode",purpose:"Handle in team dialogue.",triggers:"Disagreement, process question.",safeStep:"Discuss in team.",roles:"Colleagues, chair.",safeguards:"Respectful dialogue.",documentation:"Informal.",deescalation:"Clarification reached."},{n:1,name:"Early Signal",purpose:"Concern becomes visible.",triggers:"Discomfort, repeated concern.",safeStep:"Raise with trusted colleague.",roles:"Trusted peer, chair.",safeguards:"Acknowledged without pressure.",documentation:"Light record.",deescalation:"Resolved or redirected."},{n:2,name:"Protected Consultation",purpose:"Neutral person involved.",triggers:"Direct line unsafe, power asymmetry.",safeStep:"Consult ombuds/HR/ethics.",roles:"Ombuds, HR, advisor.",safeguards:"Confidential, non-retaliation.",documentation:"Preserve options.",deescalation:"Safer route agreed."},{n:3,name:"Formal Clarification",purpose:"Activate formal structures.",triggers:"Ethical/legal concerns.",safeStep:"Document, activate formal route.",roles:"Leadership, HR, compliance.",safeguards:"Documentation, retaliation protection.",documentation:"Formal record.",deescalation:"Decision communicated."},{n:4,name:"Protection Mode",purpose:"Immediate protection or crisis.",triggers:"Immediate harm, compromised channels.",safeStep:"Activate protection channel.",roles:"Independent review, crisis leadership.",safeguards:"Immediate safety, monitoring.",documentation:"Document quickly.",deescalation:"Risk controlled."}]};
+
+const TRG={de:["Person unter Druck","Hierarchie verhindert Diskussion","Vertraulichkeit gefährdet","Berichtsweg ist das Problem","Entscheidung trotz Bedenken","Angst vor Konsequenzen","Ähnliche Muster mehrfach","Einflussreicher Stakeholder","Ethische/rechtliche Risiken","Informelle Klärung gescheitert","Betroffene bittet um Hilfe","Befugnisse unklar","Vergeltungsrisiko","Sofortschutz nötig","Externe Prüfung nötig"],
+en:["Person feels pressured","Hierarchy prevents discussion","Confidentiality at risk","Reporting line is the problem","Decision despite concerns","Fear of consequences","Similar patterns reported","Influential stakeholder","Ethical/legal risks","Informal clarification failed","Affected person asks for help","Decision rights unclear","Retaliation risk","Immediate protection needed","External review needed"]};
+
+const CTXF=[{k:"teamName",t:"fTeam",ph:"phTeam",type:"text",col:8},{k:"rhythm",t:"fRhythm",ph:"phRhythm",type:"text",col:4},{k:"situations",t:"fSit",ph:"phSit",type:"ta",col:12},{k:"power",t:"fPower",ph:"phPower",type:"ta",col:6},{k:"protection",t:"fProt",ph:"phProt",type:"ta",col:6},{k:"channels",t:"fChan",ph:"phChan",type:"ta",col:6},{k:"redLines",t:"fRed",ph:"phRed",type:"ta",col:6,red:1},{k:"openQs",t:"fOQ",ph:"phOQ",type:"ta",col:12}];
+const LF=["name","purpose","triggers","safeStep","roles","safeguards","documentation","deescalation"];
+const LFK=["ln","lp","lt","ls","lr","lsg","ld","lde"];
+
+const DEF={lang:"de",sec:"vision",openLvls:[0],eduOpen:true,isDemo:false,ctx:{teamName:"",rhythm:"",situations:"",power:"",protection:"",channels:"",redLines:"",openQs:""},triggers:[],customTriggers:[],levels:LVD.de.map(l=>({...l}))};
+let S=load(),saveTimer;
+
+function load(){try{const r=localStorage.getItem(KEY);if(!r)return structuredClone(DEF);const p=JSON.parse(r);return{...structuredClone(DEF),...p,ctx:{...structuredClone(DEF).ctx,...(p.ctx||{})},levels:Array.isArray(p.levels)&&p.levels.length===5?p.levels:LVD[p.lang||"de"].map(l=>({...l}))}}catch{return structuredClone(DEF)}}
+function save(){document.getElementById("saveStatus").textContent=t("saving");clearTimeout(saveTimer);saveTimer=setTimeout(()=>{localStorage.setItem(KEY,JSON.stringify(S));document.getElementById("saveStatus").textContent=t("saved")+" "+new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})},200)}
+function t(k){return L[S.lang]?.[k]||L.de[k]||k}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+
+function render(){rNav();rPW();rCon();rCtx();rLvl();rTrig();rPr();rOut();rDemo();rEdu();applyT();showSec(S.sec)}
+function applyT(){document.querySelectorAll("[data-t]").forEach(el=>{const v=L[S.lang]?.[el.dataset.t];if(v)el.textContent=v});document.getElementById("sideTitle").textContent=t("sideTitle");document.getElementById("sideSub").textContent=t("sideSub");document.getElementById("topTitle").textContent=t("topTitle");document.getElementById("privacyNote").textContent=t("privacy");document.getElementById("eduTitle").textContent=t("eduTitle");document.getElementById("brandLine").textContent=t("brandLine");document.getElementById("brandSub").textContent=t("brandSub");const ci=document.getElementById("customTrigIn");if(ci)ci.placeholder=t("trigPh");rHeroCta()}
+function showSec(id){document.querySelectorAll(".sec").forEach(s=>s.classList.remove("active"));document.getElementById("sec-"+id)?.classList.add("active");S.sec=id;save();rEdu()}
+function goTo(id){S.sec=id;render();window.scrollTo(0,0)}
+function setLang(lg){S.lang=lg;document.getElementById("langDe").className="px-3 py-1.5 transition-all "+(lg==="de"?"bg-primary-container text-on-primary":"bg-white text-stone-500");document.getElementById("langEn").className="px-3 py-1.5 transition-all "+(lg==="en"?"bg-primary-container text-on-primary":"bg-white text-stone-500");document.documentElement.lang=lg;render();save()}
+
+/* ─── DEMO ─── */
+function rDemo(){document.getElementById("demoArea").innerHTML=`<div class="space-y-2">${S.isDemo?`<div class="flex items-center gap-2 px-3 py-2 bg-amber-bg border border-amber/30 rounded-lg"><span class="material-symbols-outlined text-amber text-sm">science</span><span class="text-xs font-semibold text-amber-800">${t("demoTag")}</span></div>`:''}
+  <button class="w-full px-3 py-2.5 rounded-lg text-xs font-bold flex items-center gap-2 transition-all ${S.isDemo?'border border-outline text-secondary hover:bg-surface-container':'bg-primary-container text-on-primary hover:opacity-90'}" onclick="${S.isDemo?'startBlank()':'loadDemo()'}">${S.isDemo?`<span class="material-symbols-outlined text-sm">restart_alt</span>${t("demoStart")}`:`<span class="material-symbols-outlined text-sm">science</span>${t("demoLoad")}`}</button>
+  ${!S.isDemo&&!S.ctx.teamName?`<p class="text-[10px] text-stone-400 text-center">${t("demoDesc")}</p>`:''}</div>`}
+
+function loadDemo(){const d=DEMO[S.lang];S.ctx={...d.ctx};S.openQs=d.ctx.openQs||"";S.triggers=[...d.triggers];S.customTriggers=[];S.levels=d.levels.map(l=>({...l}));S.isDemo=true;S.openLvls=[0,1,2];save();render();goTo("build");toast(S.lang==="de"?"Demo geladen":"Demo loaded")}
+
+function rHeroCta(){const el=document.getElementById("heroCta");if(!el)return;if(S.ctx.teamName||S.isDemo){el.innerHTML=`<button class="px-5 py-2.5 rounded-lg bg-primary-container text-on-primary font-bold text-sm flex items-center gap-1.5 hover:opacity-90 transition-all" onclick="goTo('build')"><span class="material-symbols-outlined text-sm">construction</span>${S.lang==="de"?"Weiter bearbeiten":"Continue building"}</button>`;return}el.innerHTML=`<button class="px-5 py-2.5 rounded-lg bg-primary-container text-on-primary font-bold text-sm flex items-center gap-1.5 hover:opacity-90 transition-all active:scale-95" onclick="loadDemo()"><span class="material-symbols-outlined text-sm">science</span>${t("ctaDemo")}</button><span class="text-sm text-on-surface-variant self-center">${t("ctaOr")}</span><button class="px-5 py-2.5 rounded-lg border-2 border-primary-container text-primary-container font-bold text-sm flex items-center gap-1.5 hover:bg-s0 transition-all active:scale-95" onclick="goTo('build')"><span class="material-symbols-outlined text-sm">edit</span>${t("ctaOwn")}</button>`}
+
+function startBlank(){if(!confirm(S.lang==="de"?"Demo-Daten löschen und neu beginnen?":"Clear demo data and start fresh?"))return;S=structuredClone(DEF);S.lang=document.documentElement.lang||"de";localStorage.removeItem(KEY);render();toast("✓")}
+
+/* ─── EDU PANEL ─── */
+function toggleEdu(){S.eduOpen=!S.eduOpen;document.getElementById("eduPanel").style.display=S.eduOpen?"block":"none";document.getElementById("eduToggle").classList.toggle("hidden",S.eduOpen);document.querySelector(".main-wrap").style.marginRight=S.eduOpen?"288px":"0";save()}
+
+function rEdu(){
+  const panel=document.getElementById("eduPanel");
+  const toggle=document.getElementById("eduToggle");
+  panel.style.display=S.eduOpen?"block":"none";
+  toggle.classList.toggle("hidden",S.eduOpen);
+  document.querySelector(".main-wrap").style.marginRight=S.eduOpen?"288px":"0";
+  const cards=EDU[S.lang]?.[S.sec]||EDU[S.lang]?.vision||[];
+  document.getElementById("eduContent").innerHTML=cards.map(c=>`<div class="edu-card bg-surface-container-lowest rounded-xl p-4 mb-3 border border-surface-container-high shadow-sage"><div class="flex items-center gap-2 mb-2"><span class="material-symbols-outlined text-primary text-lg">${c.icon}</span><h4 class="text-label font-bold text-on-surface">${esc(c.title)}</h4></div><p class="text-xs text-on-surface-variant leading-relaxed">${esc(c.text)}</p>${c.source?`<p class="text-[10px] text-stone-400 mt-2 italic">${esc(c.source)}</p>`:''}</div>`).join("")}
+
+function rNav(){document.getElementById("sideNav").innerHTML=NAV.map(n=>{const a=S.sec===n.id;return`<button class="flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-colors w-full text-left ${a?'text-primary-container font-bold bg-stone-100 border-r-4 border-primary-container':'text-stone-500 hover:text-primary-container hover:bg-stone-50'}" onclick="goTo('${n.id}')"><span class="material-symbols-outlined text-lg"${a?' style="font-variation-settings:\'FILL\' 1"':''}>${n.icon}</span>${n[S.lang]}</button>`}).join("")}
+
+function rPW(){const pw=L[S.lang].pw,ps=L[S.lang].pwSub;document.getElementById("pathway").innerHTML='<div class="absolute top-6 left-[10%] right-[10%] h-0.5 bg-outline-variant -z-10"></div>'+pw.map((x,i)=>`<div class="flex flex-col items-center text-center z-10"><div class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm text-white border-3 border-surface-bright shadow-sage" style="background:${SC[i]}">${i}</div><span class="text-label font-bold text-primary mt-2">${esc(x)}</span><span class="text-[11px] text-on-surface-variant">${esc(ps[i])}</span></div>`).join("")}
+function rCon(){document.getElementById("conceptGrid").innerHTML=CON[S.lang].map(c=>`<div class="bg-surface-container-lowest p-5 rounded-xl shadow-sage border border-surface-container-high flex flex-col gap-3 hover:-translate-y-0.5 transition-transform cursor-default"><span class="material-symbols-outlined text-primary text-3xl">${c.i}</span><h4 class="text-label font-bold text-on-surface">${esc(c.t)}</h4><p class="text-xs text-on-surface-variant">${esc(c.d)}</p><p class="text-xs font-semibold text-primary-container pt-2 border-t border-dashed border-outline-variant">${esc(c.q)}</p></div>`).join("")}
+
+function rCtx(){document.getElementById("ctxForm").innerHTML=CTXF.slice(0,2).map(f=>{const v=S.ctx[f.k]||"";return`<div class="col-span-12 md:col-span-${f.col} bg-surface-container-lowest p-6 rounded-xl shadow-sage ${f.k==='teamName'?'border-l-4 border-primary':''}"><label class="block text-label text-on-surface mb-2">${t(f.t)}</label><input type="text" data-ctx="${f.k}" value="${esc(v)}" placeholder="${esc(t(f.ph))}" class="w-full bg-surface-container-low border-2 border-transparent focus:border-primary rounded-lg px-4 py-3 text-body transition-all outline-none"></div>`}).join("")+`<div class="col-span-12 md:col-span-4 bg-primary-container p-6 rounded-xl text-white flex flex-col justify-between"><span class="material-symbols-outlined mso-fill text-3xl mb-3 opacity-80">lightbulb</span><h4 class="text-title mb-2">${t("whyTitle")}</h4><p class="text-on-primary-container opacity-90 text-sm leading-relaxed">${t("whyText")}</p></div>`+CTXF.slice(2).map(f=>{const v=f.k==="openQs"?S.openQs:(S.ctx[f.k]||"");const red=f.red?'border border-error/20 bg-error-container/10':'';return`<div class="col-span-12 md:col-span-${f.col} bg-surface-container-lowest p-6 rounded-xl shadow-sage ${red}"><label class="block text-label ${f.red?'text-error':'text-on-surface'} mb-2 flex items-center gap-1">${f.red?'<span class="material-symbols-outlined text-sm">block</span>':''}${t(f.t)}</label><textarea data-ctx="${f.k}" placeholder="${esc(t(f.ph))}" rows="3" class="w-full bg-surface-container-low border-2 border-transparent ${f.red?'focus:border-error':'focus:border-primary'} rounded-lg px-4 py-3 text-body transition-all outline-none resize-none">${esc(v)}</textarea></div>`}).join("");document.querySelectorAll("[data-ctx]").forEach(el=>el.addEventListener("input",()=>{const k=el.dataset.ctx;if(k==="openQs")S.openQs=el.value;else S.ctx[k]=el.value;save()}))}
+
+function rLvl(){document.getElementById("lvlList").innerHTML=S.levels.map((l,i)=>{const open=S.openLvls.includes(i);return`<div class="bg-surface-container-lowest rounded-xl shadow-sage border-l-4 overflow-hidden ${open?'shadow-lift':''}" style="border-left-color:${SC[i]}"><div class="flex items-center gap-3 p-4 cursor-pointer hover:bg-surface-container-low transition-colors" onclick="togLvl(${i})"><div class="w-8 h-8 rounded flex items-center justify-center text-white font-bold text-sm shrink-0" style="background:${SC[i]}">${l.n}</div><div class="flex-1"><strong class="text-sm text-primary">${esc(l.name)}</strong><span class="block text-xs text-on-surface-variant">${esc(l.purpose).substring(0,60)}${l.purpose.length>60?'...':''}</span></div><span class="material-symbols-outlined text-outline transition-transform ${open?'rotate-180':''}" style="font-size:20px">expand_more</span></div>${open?`<div class="px-4 pb-4"><div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-3 border-t border-surface-container">${LF.map((fk,fi)=>`<div class="${fk!=='name'?'md:col-span-1':''}"><label class="block text-[10px] uppercase tracking-wider text-secondary font-bold mb-1">${t(LFK[fi])}</label>${fk==='name'?`<input type="text" data-li="${i}" data-lf="${fk}" value="${esc(l[fk])}" class="w-full text-sm bg-surface-container-low rounded-lg p-2 border-none focus:ring-1 focus:ring-primary outline-none">`:`<textarea data-li="${i}" data-lf="${fk}" rows="2" class="w-full text-sm bg-surface-container-low rounded-lg p-2 border-none focus:ring-1 focus:ring-primary outline-none resize-none">${esc(l[fk])}</textarea>`}</div>`).join("")}</div></div>`:''}</div>`}).join("");document.querySelectorAll("[data-li]").forEach(el=>el.addEventListener("input",()=>{S.levels[+el.dataset.li][el.dataset.lf]=el.value;save()}))}
+function togLvl(i){S.openLvls=S.openLvls.includes(i)?S.openLvls.filter(x=>x!==i):[...S.openLvls,i];rLvl()}
+function toggleAllLvls(open){S.openLvls=open?[0,1,2,3,4]:[];rLvl()}
+
+function rTrig(){const trs=TRG[S.lang],all=[...S.triggers,...S.customTriggers];document.getElementById("selTrigs").innerHTML=all.length?all.map(x=>`<span class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant text-sm font-medium">${esc(x)}<button class="opacity-50 hover:opacity-100 ml-0.5" onclick="rmTrig('${esc(x).replace(/'/g,"\\'")}')">×</button></span>`).join(""):`<span class="text-sm text-on-surface-variant italic">${t("trigNone")}</span>`;document.getElementById("trigPool").innerHTML=trs.map(x=>`<button class="px-4 py-2 rounded-full text-sm font-medium border transition-colors ${S.triggers.includes(x)?'bg-primary-fixed text-on-primary-fixed-variant border-primary-container/20':'bg-surface-container text-secondary border-outline-variant hover:bg-primary-fixed'}" onclick="togTrig('${esc(x).replace(/'/g,"\\'")}')">${esc(x)}</button>`).join("");document.getElementById("addTrigBtn").onclick=()=>{const v=(document.getElementById("customTrigIn").value||"").trim();if(!v)return;if(all.includes(v))return toast("⚠");S.customTriggers.push(v);document.getElementById("customTrigIn").value="";rTrig();save();toast("✓")}}
+function togTrig(x){S.triggers=S.triggers.includes(x)?S.triggers.filter(z=>z!==x):[...S.triggers,x];rTrig();save()}
+function rmTrig(x){S.triggers=S.triggers.filter(z=>z!==x);S.customTriggers=S.customTriggers.filter(z=>z!==x);rTrig();save()}
+
+function rPr(){document.getElementById("promptGrid").innerHTML=
+  [{k:"S",icon:"edit_note",color:"#3e5c54",bg:"#e8f0ec"},{k:"R",icon:"gpp_maybe",color:"#ba1a1a",bg:"#ffdad6"}].map(m=>`<div class="col-span-12 md:col-span-6 bg-surface-container-lowest rounded-xl p-6 border border-outline-variant shadow-sage flex flex-col"><div class="flex justify-between items-start mb-4"><div class="p-3 rounded-lg" style="background:${m.bg}"><span class="material-symbols-outlined" style="color:${m.color}">${m.icon}</span></div><span class="text-label px-3 py-1 rounded-full" style="background:${m.bg};color:${m.color}">${t("p"+m.k)}</span></div><h3 class="text-title text-primary mb-1">${t("p"+m.k)}</h3><p class="text-on-surface-variant text-sm mb-4">${t("p"+m.k+"D")}</p><div class="bg-[#F0EDE4] p-4 rounded-lg border border-stone-200 flex-grow font-mono text-sm leading-relaxed text-on-surface-variant mb-4 max-h-48 overflow-y-auto">${esc(buildPr(m.k)).substring(0,400)}...</div><button class="w-full py-3 border-2 border-secondary text-secondary font-bold rounded-lg hover:bg-secondary hover:text-white transition-all flex items-center justify-center gap-2" onclick="doCopyPr('${m.k}')"><span class="material-symbols-outlined text-sm">content_copy</span>${t("cpPrompt")}</button></div>`).join("")+
+  `<div class="col-span-12 bg-amber-bg border border-amber/30 rounded-xl p-5 flex items-start gap-3"><span class="material-symbols-outlined text-amber text-xl mt-0.5">info</span><div><p class="text-sm font-semibold text-amber-800">${S.lang==="de"?"Anleitung":"How to use"}</p><p class="text-sm text-on-surface-variant mt-1">${S.lang==="de"?"Kopieren Sie einen Prompt und fügen Sie ihn in ChatGPT, Claude oder ein anderes KI-Tool ein. Nutzen Sie die Antworten als Diskussionsgrundlage im Team – nicht als fertige Entscheidung.":"Copy a prompt and paste it into ChatGPT, Claude, or any AI tool. Use the responses as discussion starters for your team – not as final decisions."}</p></div></div>`}
+
+function buildPr(mode){const cb=[`Team: ${S.ctx.teamName||"[—]"}`,`Situations: ${S.ctx.situations||"[—]"}`,`Power: ${S.ctx.power||"[—]"}`,`Protection: ${S.ctx.protection||"[—]"}`,`Channels: ${S.ctx.channels||"[—]"}`,`Red lines: ${S.ctx.redLines||"[—]"}`,`Rhythm: ${S.ctx.rhythm||"[—]"}`,`Triggers: ${[...S.triggers,...S.customTriggers].join(", ")||"[—]"}`].join("\n");const lb=S.levels.map(l=>`Level ${l.n} – ${l.name}\nPurpose: ${l.purpose}\nTriggers: ${l.triggers}\nSafe step: ${l.safeStep}\nRoles: ${l.roles}\nSafeguards: ${l.safeguards}\nDoc: ${l.documentation}\nDe-esc: ${l.deescalation}`).join("\n\n");if(mode==="R")return`Act as a critical reviewer for a team-based escalation and protection framework in a hierarchical organizational context (university, public sector, healthcare, or similar).\n\nContext:\n${cb}\n\nModel:\n${lb}\n\nPlease identify:\n1. Where team members might still feel unsafe raising concerns\n2. Where power asymmetries are insufficiently addressed\n3. Where confidentiality rules are unclear or missing\n4. Where retaliation risk is not sufficiently controlled\n5. Where the model may lead to over-escalation (formalizing too early)\n6. Where the model may lead to under-escalation (hiding serious concerns)\n7. Missing independent or external channels\n8. Missing documentation, feedback-loop, or de-escalation mechanisms\n\nFor each weakness, suggest a concrete, practical improvement.`;return`Act as an expert in organizational psychology, governance, psychological safety, and structured escalation systems.\n\nWe are designing a team-owned protection and escalation model for a hierarchical organizational context.\n\nContext:\n${cb}\n\nCurrent escalation levels:\n${lb}\n\nPlease improve this model by:\n1. Clarifying the purpose and boundaries of each level\n2. Sharpening triggers so teams know when to move between levels\n3. Strengthening protection mechanisms (confidentiality, non-retaliation)\n4. Making power asymmetries and bypass routes more explicit\n5. Adding clear de-escalation criteria for returning to normal operations\n6. Suggesting language that frames escalation as a protection path, not as punishment or failure\n7. Identifying missing roles, channels, or safeguards\n\nUse practical, professional language. The model should work for university research groups, ethics committees, public-sector teams, or corporate governance bodies.`}
+
+function rOut(){const m=opD();document.getElementById("outputDoc").innerHTML=`<div class="border-b-2 border-primary pb-4 mb-8 flex justify-between items-start"><div><h1 class="text-headline text-primary uppercase tracking-tight">${t("opH")}</h1><p class="text-secondary text-label">${esc(m.sub)}</p></div><div class="text-right text-secondary text-[10px] uppercase">v1.0<br>${new Date().toLocaleDateString(S.lang==="de"?"de-CH":"en-GB")}</div></div><div class="grid grid-cols-3 gap-8"><div class="col-span-1 space-y-6 border-r border-surface-container pr-6"><div><h5 class="text-[10px] font-bold uppercase text-primary mb-1">${t("s3")}</h5><ul class="text-xs text-on-surface-variant space-y-1.5">${L[S.lang].pr.map(p=>`<li>• ${esc(p)}</li>`).join("")}</ul></div><div><h5 class="text-[10px] font-bold uppercase text-primary mb-1">${t("s6")}</h5><ul class="text-xs space-y-1">${m.roles.length?m.roles.map(r=>`<li>${esc(r)}</li>`).join(""):'<li class="italic text-on-surface-variant">—</li>'}</ul></div></div><div class="col-span-2 space-y-6"><div><h5 class="text-[10px] font-bold uppercase text-primary mb-1">${t("s1")}</h5><p class="text-xs text-on-surface-variant">${esc(m.purpose)}</p></div>${m.context?`<div><h5 class="text-[10px] font-bold uppercase text-primary mb-1">${t("s2")}</h5><p class="text-xs text-on-surface-variant">${esc(m.context)}</p></div>`:''}<div><h5 class="text-[10px] font-bold uppercase text-primary mb-2">${t("s4")}</h5><table class="w-full text-xs"><thead><tr class="border-b border-surface-container"><th class="text-left py-1.5 font-bold">${S.lang==="de"?"Stufe":"Level"}</th><th class="text-left py-1.5 font-bold">${t("lp")}</th><th class="text-left py-1.5 font-bold">${t("lr")}</th></tr></thead><tbody class="divide-y divide-surface-container">${S.levels.map(l=>`<tr><td class="py-1.5 pr-2 font-bold text-primary">${l.n}. ${esc(l.name)}</td><td class="py-1.5 px-2 text-on-surface-variant">${esc(l.purpose)}</td><td class="py-1.5 pl-2">${esc(l.roles)}</td></tr>`).join("")}</tbody></table></div>${m.triggers.length?`<div><h5 class="text-[10px] font-bold uppercase text-primary mb-1">${t("s5")}</h5><div class="flex flex-wrap gap-1">${m.triggers.map(x=>`<span class="text-[10px] px-2 py-0.5 bg-primary-fixed rounded-full">${esc(x)}</span>`).join("")}</div></div>`:''}${m.rhythm?`<div><h5 class="text-[10px] font-bold uppercase text-primary mb-1">${t("s10")}</h5><p class="text-xs text-on-surface-variant">${esc(m.rhythm)}</p></div>`:''}</div></div><div class="mt-8 pt-4 border-t border-surface-container flex justify-between items-center opacity-40"><p class="text-[10px]">${t("sideTitle")}</p><div class="flex gap-1">${SC.map(c=>`<div class="w-2 h-2 rounded-full" style="background:${c}"></div>`).join("")}</div></div>`}
+
+function opD(){const nm=S.ctx.teamName||(S.lang==="de"?"Dieses Team":"This team"),al=[...S.triggers,...S.customTriggers];return{sub:`${nm} — ${t("draft")}`,purpose:`${nm} ${S.lang==="de"?"erstellt ein Schutz- und Eskalationsmodell.":"is creating a protection and escalation model."}`,context:[S.ctx.situations,S.ctx.power,S.ctx.protection,S.ctx.channels,S.ctx.redLines].filter(Boolean).join(" "),triggers:al,roles:[...new Set(S.levels.map(l=>l.roles).filter(Boolean))],rhythm:S.ctx.rhythm,openQs:S.openQs||""}}
+
+function plainText(){const m=opD(),li=a=>a.length?a.map(i=>`- ${i}`).join("\n"):"- —";return[t("opH"),m.sub,"",`1. ${t("s1")}`,m.purpose,"",`2. ${t("s2")}`,m.context||"—","",`3. ${t("s3")}`,li(L[S.lang].pr),"",`4. ${t("s4")}`,S.levels.map(l=>`- ${l.n} – ${l.name}: ${l.purpose}`).join("\n"),"",`5. ${t("s5")}`,li(m.triggers),"",`6. ${t("s6")}`,li(m.roles),"",`7. ${t("s10")}`,m.rhythm||"—"].join("\n")}
+function mdText(){const m=opD(),li=a=>a.length?a.map(i=>`- ${i}`).join("\n"):"- —";return[`# ${t("opH")}`,`_${m.sub}_`,"",`## 1. ${t("s1")}`,m.purpose,"",`## 2. ${t("s2")}`,m.context||"—","",`## 3. ${t("s3")}`,li(L[S.lang].pr),"",`## 4. ${t("s4")}`,S.levels.map(l=>`- ${l.n} – ${l.name}: ${l.purpose}`).join("\n"),"",`## 5. ${t("s5")}`,li(m.triggers),"",`## 6. ${t("s6")}`,li(m.roles),"",`## 7. ${t("s10")}`,m.rhythm||"—"].join("\n")}
+
+async function doCopy(type){const txt=type==="md"?mdText():plainText();try{await navigator.clipboard.writeText(txt)}catch{const ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta)}toast(S.lang==="de"?"Kopiert":"Copied")}
+async function doCopyPr(mode){const txt=buildPr(mode);try{await navigator.clipboard.writeText(txt)}catch{const ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta)}toast(S.lang==="de"?"Prompt kopiert":"Prompt copied")}
+
+function downloadFile(content,ext){const blob=new Blob([content],{type:"text/plain;charset=utf-8"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=`escalation-model.${ext}`;a.click();URL.revokeObjectURL(url);toast("↓ ."+ext)}
+
+async function exportDocx(){
+  const{Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,HeadingLevel,AlignmentType,BorderStyle,WidthType,ShadingType,LevelFormat}=window.docx;
+  const m=opD();const border={style:BorderStyle.SINGLE,size:1,color:"CCCCCC"};const cm={top:80,bottom:80,left:120,right:120};
+  const doc=new Document({
+    styles:{default:{document:{run:{font:"Arial",size:22}}},paragraphStyles:[
+      {id:"Heading1",name:"Heading 1",basedOn:"Normal",next:"Normal",quickFormat:true,run:{size:32,bold:true,font:"Arial",color:"27443d"},paragraph:{spacing:{before:240,after:120}}},
+      {id:"Heading2",name:"Heading 2",basedOn:"Normal",next:"Normal",quickFormat:true,run:{size:26,bold:true,font:"Arial",color:"3e5c54"},paragraph:{spacing:{before:180,after:80}}}
+    ]},
+    numbering:{config:[{reference:"bullets",levels:[{level:0,format:LevelFormat.BULLET,text:"•",alignment:AlignmentType.LEFT,style:{paragraph:{indent:{left:720,hanging:360}}}}]}]},
+    sections:[{properties:{page:{margin:{top:1440,right:1440,bottom:1440,left:1440}}},children:[
+      new Paragraph({heading:HeadingLevel.HEADING_1,children:[new TextRun(t("opH"))]}),
+      new Paragraph({spacing:{after:200},children:[new TextRun({text:m.sub,italics:true,color:"666666"})]}),
+      new Paragraph({heading:HeadingLevel.HEADING_2,children:[new TextRun(`1. ${t("s1")}`)]}),
+      new Paragraph({children:[new TextRun(m.purpose)]}),
+      new Paragraph({heading:HeadingLevel.HEADING_2,children:[new TextRun(`2. ${t("s2")}`)]}),
+      new Paragraph({children:[new TextRun(m.context||"—")]}),
+      new Paragraph({heading:HeadingLevel.HEADING_2,children:[new TextRun(`3. ${t("s3")}`)]}),
+      ...L[S.lang].pr.map(p=>new Paragraph({numbering:{reference:"bullets",level:0},children:[new TextRun(p)]})),
+      new Paragraph({heading:HeadingLevel.HEADING_2,children:[new TextRun(`4. ${t("s4")}`)]}),
+      new Table({width:{size:9026,type:WidthType.DXA},columnWidths:[1800,3613,3613],rows:[
+        new TableRow({children:[["Stufe","Zweck","Rollen"].map((h,i)=>new TableCell({borders:{top:border,bottom:border,left:border,right:border},width:{size:[1800,3613,3613][i],type:WidthType.DXA},margins:cm,shading:{fill:"e8f0ec",type:ShadingType.CLEAR},children:[new Paragraph({children:[new TextRun({text:h,bold:true,size:20})]})]}))].flat()}),
+        ...S.levels.map(l=>new TableRow({children:[
+          new TableCell({borders:{top:border,bottom:border,left:border,right:border},width:{size:1800,type:WidthType.DXA},margins:cm,children:[new Paragraph({children:[new TextRun({text:`${l.n}. ${l.name}`,bold:true,size:20})]})]}),
+          new TableCell({borders:{top:border,bottom:border,left:border,right:border},width:{size:3613,type:WidthType.DXA},margins:cm,children:[new Paragraph({children:[new TextRun({text:l.purpose,size:20})]})]}),
+          new TableCell({borders:{top:border,bottom:border,left:border,right:border},width:{size:3613,type:WidthType.DXA},margins:cm,children:[new Paragraph({children:[new TextRun({text:l.roles,size:20})]})]})
+        ]}))
+      ]}),
+      ...(m.triggers.length?[new Paragraph({heading:HeadingLevel.HEADING_2,children:[new TextRun(`5. ${t("s5")}`)]}), ...m.triggers.map(x=>new Paragraph({numbering:{reference:"bullets",level:0},children:[new TextRun(x)]}))]:[]),
+      new Paragraph({heading:HeadingLevel.HEADING_2,children:[new TextRun(`6. ${t("s10")}`)]}),
+      new Paragraph({children:[new TextRun(m.rhythm||"—")]})
+    ]}]
+  });
+  const buffer=await Packer.toBlob(doc);const url=URL.createObjectURL(buffer);const a=document.createElement("a");a.href=url;a.download="escalation-model.docx";a.click();URL.revokeObjectURL(url);toast("↓ .docx")
+}
+
+function exportHtml(){const html=document.getElementById("outputDoc").outerHTML;const full=`<!DOCTYPE html><html lang="${S.lang}"><head><meta charset="utf-8"><title>${t("opH")}</title><style>body{font-family:Arial,sans-serif;max-width:800px;margin:40px auto;padding:20px;color:#1b1c19;line-height:1.6}h1{color:#27443d}h5{color:#3e5c54;text-transform:uppercase;font-size:11px;letter-spacing:0.04em}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ddd;padding:6px 8px;text-align:left;font-size:13px}th{background:#e8f0ec}</style></head><body>${html}</body></html>`;downloadFile(full,"html")}
+
+function resetAll(){if(!confirm(S.lang==="de"?"Alle Daten zurücksetzen?":"Reset all data?"))return;S=structuredClone(DEF);S.lang=document.documentElement.lang||"de";localStorage.removeItem(KEY);render();toast("✓")}
+function toast(msg){const el=document.getElementById("toast");document.getElementById("toastMsg").textContent=msg;el.classList.remove("opacity-0","translate-y-2","pointer-events-none");el.classList.add("opacity-100","translate-y-0");setTimeout(()=>{el.classList.add("opacity-0","translate-y-2","pointer-events-none");el.classList.remove("opacity-100","translate-y-0")},2200)}
+
+render();
+</script>
+</body>
+</html>
