@@ -1,3 +1,4 @@
+import { BookOpen } from "lucide-react";
 import type { StepId } from "../app/routes";
 import type { TranslationSet } from "../tools/protection-path/translations";
 
@@ -13,30 +14,31 @@ export function EducationPanel({
   const step = translations.steps[activeStep];
 
   return (
-    <aside className="app-edu-panel fixed right-0 top-16 z-20 hidden h-[calc(100vh-4rem)] w-72 overflow-y-auto border-l border-stone-200 bg-[#f9f7f2] px-5 py-6 shadow-[-4px_0_12px_rgba(62,92,84,0.05)] xl:block">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-sm font-bold text-primary">
-          {translations.learningPanel}
-        </h2>
-        <span className="rounded-full bg-sage-soft px-2 py-1 text-[10px] font-bold uppercase text-primary">
+    <aside className="app-edu-panel fixed right-0 top-14 z-20 hidden h-[calc(100vh-3.5rem)] w-72 overflow-y-auto px-5 py-6 xl:block">
+      <div className="mb-3 flex items-center justify-between">
+        <div className="flex items-center gap-2 text-ink-2">
+          <BookOpen aria-hidden="true" className="h-3.5 w-3.5" />
+          <h2 className="text-[12px] font-semibold tracking-tight">
+            {translations.learningPanel}
+          </h2>
+        </div>
+        <span className="chip chip-muted text-[10px] uppercase tracking-[0.12em]">
           {translations.draftBadge}
         </span>
       </div>
 
-      <div className="rounded-xl border border-surface-high bg-white p-4 shadow-sage">
-        <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-stone-400">
-          {step.label}
-        </p>
-        <h3 className="mt-2 text-sm font-bold text-ink">
+      <div className="card animate-fade-in p-4">
+        <p className="eyebrow">{step.label}</p>
+        <h3 className="mt-2 text-[14px] font-semibold tracking-tight text-ink">
           {step.educationTitle}
         </h3>
-        <p className="mt-2 text-xs leading-relaxed text-ink-muted">
+        <p className="mt-2 text-[13px] leading-relaxed text-ink-2">
           {step.educationText}
         </p>
       </div>
 
-      <div className="mt-3 rounded-xl border border-dashed border-outline bg-surface-low p-4">
-        <p className="text-xs leading-relaxed text-ink-muted">
+      <div className="mt-3 rounded-2xl border border-dashed border-hairline-strong bg-surface-2 p-4">
+        <p className="text-[12.5px] leading-relaxed italic text-ink-3">
           {activeStep === "vision"
             ? translations.vision.coreQuote
             : translations.learningFooter}

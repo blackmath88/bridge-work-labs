@@ -3,25 +3,73 @@
 @tailwind utilities;
 
 :root {
-  color: #1b1c19;
-  background: #fbf9f4;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  color-scheme: light;
+  --canvas: #f6f5f1;
+  --grain: rgba(20, 24, 22, 0.04);
 }
 
 * {
   box-sizing: border-box;
 }
 
+html,
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+html {
+  font-feature-settings: "cv11", "ss01", "ss03";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
 body {
   min-width: 320px;
-  min-height: 100vh;
-  margin: 0;
-  background:
-    radial-gradient(#d1cdc0 0.5px, transparent 0.5px) 0 0 / 24px 24px,
-    #fbf9f4;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+  color: #15171a;
+  background: var(--canvas);
+  background-image:
+    radial-gradient(
+      1200px 600px at 20% -10%,
+      rgba(95, 141, 128, 0.06),
+      transparent 60%
+    ),
+    radial-gradient(
+      900px 500px at 100% 0%,
+      rgba(227, 169, 62, 0.04),
+      transparent 60%
+    );
+  background-attachment: fixed;
+}
+
+/* Custom scrollbars — Apple-feel */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(20, 24, 22, 0.14);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(20, 24, 22, 0.24);
+  background-clip: padding-box;
+}
+
+::selection {
+  background: rgba(95, 141, 128, 0.22);
+  color: #15171a;
 }
 
 button,
@@ -29,29 +77,194 @@ input,
 textarea,
 select {
   font: inherit;
+  letter-spacing: inherit;
 }
 
 button {
   cursor: pointer;
 }
 
+@layer base {
+  :focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 2px #f6f5f1,
+      0 0 0 4px rgba(95, 141, 128, 0.45);
+    border-radius: 8px;
+  }
+}
+
+@layer components {
+  /* Eyebrow / micro-label */
+  .eyebrow {
+    @apply font-mono text-[10.5px] font-medium uppercase tracking-[0.16em] text-ink-3;
+  }
+
+  .eyebrow-accent {
+    @apply font-mono text-[10.5px] font-medium uppercase tracking-[0.16em] text-sage-500;
+  }
+
+  /* Card primitives */
+  .card {
+    @apply rounded-2xl border border-hairline bg-surface shadow-e1;
+  }
+
+  .card-elevated {
+    @apply rounded-2xl border border-hairline bg-surface shadow-e3;
+  }
+
+  .card-flat {
+    @apply rounded-2xl bg-surface-2;
+  }
+
+  .card-inset {
+    @apply rounded-xl border border-hairline bg-surface-2;
+  }
+
+  /* Glass / vibrancy surface — for top bar, popovers */
+  .glass {
+    background: rgba(246, 245, 241, 0.72);
+    backdrop-filter: saturate(140%) blur(18px);
+    -webkit-backdrop-filter: saturate(140%) blur(18px);
+    border-bottom: 1px solid rgba(20, 24, 22, 0.06);
+  }
+
+  .glass-side {
+    background: rgba(250, 249, 246, 0.78);
+    backdrop-filter: saturate(140%) blur(18px);
+    -webkit-backdrop-filter: saturate(140%) blur(18px);
+    border-right: 1px solid rgba(20, 24, 22, 0.06);
+  }
+
+  /* Buttons */
+  .btn {
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-lg px-3.5 py-2 text-[13px] font-medium tracking-tight transition-[transform,box-shadow,background-color,color,border-color] duration-150 ease-spring active:scale-[0.98];
+  }
+
+  .btn-primary {
+    @apply btn bg-sage-600 text-white shadow-e1 hover:bg-sage-700;
+  }
+
+  .btn-secondary {
+    @apply btn border border-hairline-strong bg-surface text-ink-2 shadow-e1 hover:border-sage-300 hover:text-ink;
+  }
+
+  .btn-ghost {
+    @apply btn text-ink-2 hover:bg-surface-3 hover:text-ink;
+  }
+
+  .btn-icon {
+    @apply inline-flex h-9 w-9 items-center justify-center rounded-lg text-ink-3 transition-colors duration-150 hover:bg-surface-3 hover:text-ink active:scale-[0.96];
+  }
+
+  .btn-lg {
+    @apply px-4 py-2.5 text-[14px];
+  }
+
+  /* Form fields — iOS Settings-style grouped list */
+  .field-label {
+    @apply mb-1.5 block text-[11px] font-medium uppercase tracking-[0.1em] text-ink-3;
+  }
+
+  .field {
+    @apply w-full rounded-lg border border-transparent bg-surface-3 px-3.5 py-2.5 text-[14px] tracking-tight text-ink outline-none transition-[box-shadow,border-color,background-color] duration-150 placeholder:text-ink-4 focus:border-sage-300 focus:bg-surface focus:shadow-focus;
+  }
+
+  textarea.field {
+    @apply min-h-[88px] resize-y leading-6;
+  }
+
+  /* Grouped form list (iOS Settings) */
+  .group-list {
+    @apply divide-y divide-hairline overflow-hidden rounded-2xl border border-hairline bg-surface;
+  }
+
+  .group-list-row {
+    @apply flex flex-col gap-1.5 px-4 py-3;
+  }
+
+  /* Pill / chip */
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-hairline bg-surface px-2.5 py-1 text-[12px] font-medium tracking-tight text-ink-2;
+  }
+
+  .chip-active {
+    @apply border-sage-400 bg-sage-50 text-sage-700;
+  }
+
+  .chip-muted {
+    @apply border-transparent bg-surface-3 text-ink-3;
+  }
+
+  /* Segmented control — macOS/iOS style */
+  .segmented {
+    @apply inline-flex rounded-lg bg-surface-3 p-0.5 shadow-hairline;
+  }
+
+  .segmented > button {
+    @apply rounded-[7px] px-3 py-1 text-[12px] font-medium tracking-tight text-ink-3 transition-[background-color,color,box-shadow] duration-200 ease-spring;
+  }
+
+  .segmented > button[data-active="true"] {
+    @apply bg-surface text-ink shadow-e1;
+  }
+
+  /* Keyboard hint */
+  .kbd {
+    @apply inline-flex h-5 min-w-[20px] items-center justify-center rounded-md border border-hairline bg-surface px-1.5 font-mono text-[10.5px] font-medium text-ink-3 shadow-e1;
+  }
+
+  /* Sidebar nav row */
+  .sidebar-row {
+    @apply relative flex w-full items-center gap-3 rounded-lg px-2.5 py-2 text-left text-[13.5px] font-medium tracking-tight text-ink-2 transition-[background-color,color] duration-150 hover:bg-surface-3 hover:text-ink;
+  }
+
+  .sidebar-row[data-active="true"] {
+    @apply bg-surface text-ink shadow-e1;
+  }
+
+  /* Display heading — used for hero and step headers */
+  .display-1 {
+    @apply font-sans font-semibold tracking-tightest text-ink;
+    font-size: clamp(2rem, 1.5rem + 2vw, 3.25rem);
+    line-height: 1.05;
+  }
+
+  .display-2 {
+    @apply font-sans font-semibold tracking-tighter text-ink;
+    font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2.125rem);
+    line-height: 1.12;
+  }
+
+  .display-3 {
+    @apply font-sans text-[20px] font-semibold tracking-tight text-ink;
+  }
+
+  .lede {
+    @apply text-[16.5px] leading-[1.6] tracking-tight text-ink-2;
+  }
+
+  /* Divider */
+  .hr-soft {
+    @apply h-px w-full bg-hairline;
+  }
+}
+
 @media print {
   body {
     background: #ffffff;
+    background-image: none;
   }
-
   .app-sidebar,
   .app-topbar,
   .app-edu-panel,
   .no-print {
     display: none !important;
   }
-
   main {
     margin: 0 !important;
     padding: 0 !important;
   }
-
   .print-document {
     border: 0 !important;
     border-radius: 0 !important;

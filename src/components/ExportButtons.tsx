@@ -1,3 +1,4 @@
+import { Check, Copy, FileDown, Printer, FileText } from "lucide-react";
 import { useState } from "react";
 import { downloadDocx } from "../lib/exportDocx";
 import { downloadTextFile } from "../lib/exportMarkdown";
@@ -82,32 +83,32 @@ export function ExportButtons({ state, translations: t }: ExportButtonsProps) {
 
   return (
     <div className="flex flex-wrap gap-2">
-      <button
-        className="rounded-lg border border-sage bg-white px-4 py-2 text-xs font-bold text-sage shadow-sage transition-colors hover:bg-sage hover:text-white"
-        onClick={copyText}
-        type="button"
-      >
+      <button className="btn-secondary" onClick={copyText} type="button">
+        {copied ? (
+          <Check aria-hidden="true" className="h-3.5 w-3.5 text-sage-500" />
+        ) : (
+          <Copy aria-hidden="true" className="h-3.5 w-3.5" />
+        )}
         {copied ? t.export.copied : t.export.copyText}
       </button>
       <button
-        className="rounded-lg border border-sage bg-white px-4 py-2 text-xs font-bold text-sage shadow-sage transition-colors hover:bg-sage hover:text-white"
+        className="btn-secondary"
         onClick={downloadMarkdown}
         type="button"
       >
+        <FileText aria-hidden="true" className="h-3.5 w-3.5" />
         {t.export.markdown}
       </button>
-      <button
-        className="rounded-lg border border-sage bg-white px-4 py-2 text-xs font-bold text-sage shadow-sage transition-colors hover:bg-sage hover:text-white"
-        onClick={exportWord}
-        type="button"
-      >
+      <button className="btn-secondary" onClick={exportWord} type="button">
+        <FileDown aria-hidden="true" className="h-3.5 w-3.5" />
         {t.export.word}
       </button>
       <button
-        className="rounded-lg border border-sage bg-white px-4 py-2 text-xs font-bold text-sage shadow-sage transition-colors hover:bg-sage hover:text-white"
+        className="btn-secondary"
         onClick={() => window.print()}
         type="button"
       >
+        <Printer aria-hidden="true" className="h-3.5 w-3.5" />
         {t.export.print}
       </button>
     </div>

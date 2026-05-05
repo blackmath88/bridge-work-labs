@@ -1,3 +1,4 @@
+import { RotateCcw, Sparkles } from "lucide-react";
 import type { StepId } from "../app/routes";
 import type { Language } from "../tools/protection-path/schema";
 import type { TranslationSet } from "../tools/protection-path/translations";
@@ -20,29 +21,37 @@ export function TopBar({
   onReset,
 }: TopBarProps) {
   return (
-    <header className="app-topbar sticky top-0 z-30 flex min-h-16 items-center justify-between gap-4 border-b border-stone-200 bg-[#f9f7f2] px-5 py-3 shadow-sm lg:fixed lg:left-64 lg:right-0 lg:h-16 lg:px-8 lg:py-0">
-      <div>
-        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-stone-400">
-          {translations.appEyebrow}
-        </p>
-        <h1 className="text-lg font-bold text-primary">
+    <header className="app-topbar glass sticky top-0 z-30 flex min-h-14 items-center justify-between gap-4 px-5 py-2.5 lg:fixed lg:left-64 lg:right-0 lg:h-14 lg:px-7 lg:py-0">
+      <div className="flex items-center gap-3">
+        <p className="eyebrow hidden sm:block">{translations.appEyebrow}</p>
+        <span className="hidden h-3 w-px bg-hairline-strong sm:block" />
+        <h1 className="text-[14px] font-semibold tracking-tight text-ink">
           {translations.appTitle}
         </h1>
+        <span
+          aria-hidden="true"
+          className="hidden h-3 w-px bg-hairline-strong md:block"
+        />
+        <span className="hidden text-[13px] font-medium tracking-tight text-ink-3 md:inline">
+          {translations.steps[activeStep].label}
+        </span>
       </div>
       <div className="flex shrink-0 items-center gap-2">
         {demoMode ? (
-          <span className="hidden rounded-full bg-sage-soft px-3 py-1 text-xs font-bold text-primary shadow-sage sm:inline-flex">
+          <span className="hidden items-center gap-1.5 rounded-full bg-accent-400/20 px-2.5 py-1 text-[11.5px] font-medium tracking-tight text-accent-600 sm:inline-flex">
+            <Sparkles aria-hidden="true" className="h-3 w-3" />
             {translations.demoBadge}
           </span>
         ) : null}
-        <div className="flex rounded-full border border-outline bg-white p-1 shadow-sage">
+
+        <div
+          className="segmented"
+          role="group"
+          aria-label="Language"
+        >
           {(["en", "de"] as const).map((option) => (
             <button
-              className={`rounded-full px-3 py-1 text-xs font-bold transition-colors ${
-                language === option
-                  ? "bg-sage text-white"
-                  : "text-stone-500 hover:text-primary"
-              }`}
+              data-active={language === option}
               key={option}
               onClick={() => onLanguageChange(option)}
               type="button"
@@ -51,16 +60,16 @@ export function TopBar({
             </button>
           ))}
         </div>
+
         <button
-          className="rounded-full border border-outline bg-white px-3 py-1 text-xs font-semibold text-sage shadow-sage transition-colors hover:border-sage hover:text-primary"
+          aria-label={translations.reset}
+          className="btn-icon"
           onClick={onReset}
+          title={translations.reset}
           type="button"
         >
-          {translations.reset}
+          <RotateCcw aria-hidden="true" className="h-4 w-4" />
         </button>
-        <div className="hidden rounded-full border border-outline bg-white px-3 py-1 text-xs font-semibold text-sage shadow-sage md:block">
-          {translations.steps[activeStep].label}
-        </div>
       </div>
     </header>
   );

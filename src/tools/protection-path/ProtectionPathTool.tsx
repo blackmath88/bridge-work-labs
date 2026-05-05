@@ -1,3 +1,13 @@
+import {
+  Check,
+  ChevronDown,
+  Copy,
+  PlayCircle,
+  Plus,
+  Sparkles,
+  Wrench,
+  X,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { stepRoutes, type StepId } from "../../app/routes";
@@ -77,7 +87,6 @@ export function ProtectionPathTool() {
   function toggleTrigger(trigger: string) {
     setToolState((current) => {
       const selected = current.selectedTriggers.includes(trigger);
-
       return {
         ...current,
         selectedTriggers: selected
@@ -92,12 +101,10 @@ export function ProtectionPathTool() {
     if (!trimmed) {
       return;
     }
-
     setToolState((current) => {
       const alreadyExists =
         current.customTriggers.includes(trimmed) ||
         current.selectedTriggers.includes(trimmed);
-
       return alreadyExists
         ? current
         : { ...current, customTriggers: [...current.customTriggers, trimmed] };
@@ -122,15 +129,21 @@ export function ProtectionPathTool() {
   }
 
   return (
-    <div className="min-h-screen bg-surface font-sans text-ink">
-      <aside className="app-sidebar z-40 flex w-full flex-col border-b border-stone-200 bg-[#f9f7f2] py-6 shadow-[4px_0_12px_rgba(62,92,84,0.05)] lg:fixed lg:left-0 lg:top-0 lg:h-screen lg:w-64 lg:border-b-0 lg:border-r">
-        <div className="mb-8 px-6">
-          <h2 className="text-xl font-extrabold text-primary">
+    <div className="min-h-screen font-sans text-ink">
+      <aside className="app-sidebar glass-side z-40 flex w-full flex-col py-6 lg:fixed lg:left-0 lg:top-0 lg:h-screen lg:w-64">
+        <div className="mb-7 px-5">
+          <div className="flex items-center gap-2">
+            <span
+              aria-hidden="true"
+              className="flex h-7 w-7 items-center justify-center rounded-lg bg-sage-600 text-white shadow-e1"
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+            </span>
+            <p className="eyebrow">{t.sideSub}</p>
+          </div>
+          <h2 className="mt-3 text-[17px] font-semibold tracking-tight text-ink">
             {t.sideTitle}
           </h2>
-          <p className="mt-0.5 text-xs font-medium uppercase tracking-widest text-stone-500">
-            {t.sideSub}
-          </p>
         </div>
 
         <StepNavigation
@@ -140,18 +153,18 @@ export function ProtectionPathTool() {
           translations={t}
         />
 
-        <div className="mt-auto border-t border-stone-200 px-6 pt-6">
-          <p className="text-[11px] leading-relaxed text-stone-400">
+        <div className="mt-auto px-5 pt-6">
+          <div className="hr-soft" />
+          <p className="mt-4 text-[11.5px] leading-relaxed text-ink-3">
             {t.privacyNote}
           </p>
-          <div className="mt-3 border-t border-stone-100 pt-3">
-            <p className="text-[10px] font-semibold text-stone-400">
+          <div className="mt-4 flex items-center justify-between">
+            <p className="text-[10.5px] font-mono uppercase tracking-[0.14em] text-ink-3">
               {t.brandLine}
             </p>
-            <p className="mt-0.5 text-[9px] text-stone-300">
-              {t.brandSub}
-            </p>
+            <span className="kbd">v1</span>
           </div>
+          <p className="mt-1 text-[10.5px] text-ink-4">{t.brandSub}</p>
         </div>
       </aside>
 
@@ -165,8 +178,8 @@ export function ProtectionPathTool() {
       />
       <EducationPanel activeStep={activeStep} translations={t} />
 
-      <main className="min-h-screen px-5 pb-12 pt-6 lg:ml-64 lg:px-8 lg:pt-24 xl:mr-72">
-        <section className="mx-auto max-w-5xl">
+      <main className="min-h-screen px-5 pb-16 pt-8 lg:ml-64 lg:px-10 lg:pt-20 xl:mr-72">
+        <section className="mx-auto max-w-5xl animate-fade-in">
           {activeStep === "vision" ? (
             <VisionScreen
               demoMode={toolState.demoMode}
@@ -217,16 +230,10 @@ type RouteCopy = {
 
 function StepHeader({ route }: { route: RouteCopy }) {
   return (
-    <div className="no-print mb-8 rounded-2xl border border-surface-high bg-white/75 p-8 shadow-sage backdrop-blur">
-      <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-sage">
-        {route.eyebrow}
-      </p>
-      <h2 className="mt-3 max-w-3xl text-3xl font-extrabold leading-tight text-primary md:text-4xl">
-        {route.title}
-      </h2>
-      <p className="mt-4 max-w-2xl text-lg leading-8 text-ink-muted">
-        {route.description}
-      </p>
+    <div className="no-print mb-9 animate-fade-in">
+      <p className="eyebrow-accent">{route.eyebrow}</p>
+      <h2 className="display-2 mt-3 max-w-3xl">{route.title}</h2>
+      <p className="lede mt-4 max-w-2xl">{route.description}</p>
     </div>
   );
 }
@@ -245,127 +252,83 @@ function VisionScreen({
   onBuildOwn,
 }: VisionScreenProps) {
   return (
-    <div className="space-y-8">
-      <section className="overflow-hidden rounded-2xl border border-surface-high bg-white/80 shadow-lift backdrop-blur">
-        <div className="grid gap-0 lg:grid-cols-[1.15fr_0.85fr]">
-          <div className="p-8 md:p-10">
-            <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-sage">
-              {t.vision.heroEyebrow}
-            </p>
-            <h2 className="mt-4 max-w-3xl text-4xl font-extrabold leading-tight text-primary md:text-5xl">
-              {t.vision.heroTitle}
-            </h2>
-            <p className="mt-4 text-2xl font-semibold italic leading-9 text-stone-500">
-              {t.vision.heroSub}
-            </p>
-            <div className="mt-5 h-1 w-20 rounded-full bg-sage-soft" />
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-ink-muted">
-              {t.vision.heroLead}
-            </p>
+    <div className="space-y-12">
+      <section className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
+        <div>
+          <p className="eyebrow-accent">{t.vision.heroEyebrow}</p>
+          <h2 className="display-1 mt-4 max-w-3xl">{t.vision.heroTitle}</h2>
+          <p className="mt-5 max-w-2xl text-[20px] font-medium leading-[1.45] tracking-tight text-ink-2">
+            {t.vision.heroSub}
+          </p>
+          <p className="lede mt-5 max-w-2xl">{t.vision.heroLead}</p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <button
-                className="rounded-lg bg-primary px-5 py-3 text-sm font-bold text-white shadow-sage transition-colors hover:bg-sage"
-                onClick={onLoadDemo}
-                type="button"
-              >
-                {t.vision.startDemo}
-              </button>
-              <button
-                className="rounded-lg border-2 border-sage px-5 py-3 text-sm font-bold text-sage transition-colors hover:bg-sage hover:text-white"
-                onClick={onBuildOwn}
-                type="button"
-              >
-                {t.vision.buildOwn}
-              </button>
-              {demoMode ? (
-                <span className="rounded-full bg-sage-soft px-3 py-1 text-xs font-bold text-primary">
-                  {t.vision.demoLoaded}
-                </span>
-              ) : null}
-            </div>
-          </div>
-
-          <div className="flex min-h-80 flex-col justify-between bg-sage p-8 text-white md:p-10">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-sage-muted">
-                {t.vision.coreLabel}
-              </p>
-              <blockquote className="mt-4 text-xl italic leading-9">
-                {t.vision.coreQuote}
-              </blockquote>
-            </div>
-            <p className="mt-8 text-xs leading-5 text-sage-muted">
-              {t.steps.vision.educationText}
-            </p>
+          <div className="mt-8 flex flex-wrap items-center gap-2.5">
+            <button
+              className="btn-primary btn-lg"
+              onClick={onLoadDemo}
+              type="button"
+            >
+              <PlayCircle aria-hidden="true" className="h-4 w-4" />
+              {t.vision.startDemo}
+            </button>
+            <button
+              className="btn-secondary btn-lg"
+              onClick={onBuildOwn}
+              type="button"
+            >
+              <Wrench aria-hidden="true" className="h-3.5 w-3.5" />
+              {t.vision.buildOwn}
+            </button>
+            {demoMode ? (
+              <span className="chip chip-active">
+                <Check aria-hidden="true" className="h-3 w-3" />
+                {t.vision.demoLoaded}
+              </span>
+            ) : null}
           </div>
         </div>
+
+        <figure className="card-elevated relative overflow-hidden bg-gradient-to-br from-sage-700 to-sage-900 p-8 text-white md:p-10">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-12 -top-12 h-44 w-44 rounded-full bg-sage-400/20 blur-2xl"
+          />
+          <p className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-sage-200">
+            {t.vision.coreLabel}
+          </p>
+          <blockquote className="mt-4 text-[19px] font-medium leading-[1.5] tracking-tight">
+            “{t.vision.coreQuote}”
+          </blockquote>
+          <p className="mt-6 text-[12.5px] leading-relaxed text-sage-100/80">
+            {t.steps.vision.educationText}
+          </p>
+        </figure>
       </section>
 
-      <div className="rounded-xl border border-surface-high bg-white p-6 shadow-sage">
-        <div className="flex flex-col justify-between gap-2 md:flex-row md:items-end">
-          <div>
-            <h3 className="text-sm font-bold uppercase tracking-[0.16em] text-primary">
-              {t.vision.pathTitle}
-            </h3>
-            <p className="mt-1 text-sm text-ink-muted">
-              {t.vision.pathSubtitle}
-            </p>
-          </div>
-        </div>
-        <div className="relative mt-7 grid grid-cols-1 gap-4 sm:grid-cols-5">
-          <div className="absolute left-[10%] right-[10%] top-6 -z-0 hidden h-0.5 bg-outline sm:block" />
-          {t.vision.pathway.map((level, index) => (
-            <div
-              className="relative z-10 flex flex-col items-center text-center"
-              key={level.label}
-            >
-              <div
-                className="flex h-12 w-12 items-center justify-center rounded-full border-[3px] border-surface text-sm font-bold text-white shadow-sage"
-                style={{ backgroundColor: pathwayColors[index] }}
-              >
-                {index}
-              </div>
-              <p className="mt-2 text-xs font-bold text-primary">
-                {level.label}
-              </p>
-              <p className="mt-1 text-[11px] text-ink-muted">{level.sub}</p>
-            </div>
-          ))}
-        </div>
-      </div>
+      <Pathway translations={t} />
 
       <section>
-        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-sage">
-          {t.vision.conceptTag}
+        <p className="eyebrow-accent">{t.vision.conceptTag}</p>
+        <h3 className="display-3 mt-2">{t.vision.conceptTitle}</h3>
+        <p className="mt-2 max-w-2xl text-[14px] leading-6 text-ink-2">
+          {t.vision.conceptDesc}
         </p>
-        <div className="mt-2 flex flex-col justify-between gap-2 md:flex-row md:items-end">
-          <div>
-            <h3 className="text-2xl font-bold text-primary">
-              {t.vision.conceptTitle}
-            </h3>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-muted">
-              {t.vision.conceptDesc}
-            </p>
-          </div>
-        </div>
 
-        <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-6 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {conceptKeys.map((key) => {
             const concept = t.vision.concepts[key];
-
             return (
               <article
-                className="rounded-xl border border-surface-high bg-white p-5 shadow-sage transition-transform hover:-translate-y-0.5"
+                className="card group p-5 transition-[transform,box-shadow] duration-200 ease-out-expo hover:-translate-y-0.5 hover:shadow-e2"
                 key={key}
               >
-                <h4 className="text-sm font-bold text-primary">
+                <h4 className="text-[14px] font-semibold tracking-tight text-ink">
                   {concept.title}
                 </h4>
-                <p className="mt-3 text-sm leading-6 text-ink-muted">
+                <p className="mt-2 text-[13.5px] leading-6 text-ink-2">
                   {concept.text}
                 </p>
-                <p className="mt-4 border-t border-dashed border-outline pt-3 text-xs font-semibold leading-5 text-sage">
+                <p className="mt-4 border-t border-dashed border-hairline pt-3 text-[12.5px] font-medium leading-5 text-sage-600">
                   {concept.question}
                 </p>
               </article>
@@ -374,6 +337,53 @@ function VisionScreen({
         </div>
       </section>
     </div>
+  );
+}
+
+function Pathway({
+  translations: t,
+}: {
+  translations: (typeof translations)[Language];
+}) {
+  return (
+    <section className="card p-6 md:p-8">
+      <div className="flex items-end justify-between">
+        <div>
+          <p className="eyebrow-accent">{t.vision.pathTitle}</p>
+          <h3 className="display-3 mt-2">{t.vision.pathSubtitle}</h3>
+        </div>
+        <span className="hidden font-mono text-[11px] uppercase tracking-[0.14em] text-ink-4 md:inline">
+          0 → 4
+        </span>
+      </div>
+
+      <div className="relative mt-8 grid grid-cols-1 gap-6 sm:grid-cols-5">
+        <div
+          aria-hidden="true"
+          className="absolute left-[10%] right-[10%] top-5 hidden h-px bg-gradient-to-r from-hairline-strong via-sage-300 to-hairline-strong sm:block"
+        />
+        {t.vision.pathway.map((level, index) => (
+          <div
+            className="relative z-10 flex flex-col items-center text-center"
+            key={level.label}
+          >
+            <div
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-white bg-surface font-mono text-[12px] font-semibold tracking-tight text-ink shadow-e2"
+              style={{
+                background: `linear-gradient(180deg, ${pathwayColors[index]}22, transparent), white`,
+                borderColor: pathwayColors[index],
+              }}
+            >
+              {index}
+            </div>
+            <p className="mt-3 text-[12.5px] font-semibold tracking-tight text-ink">
+              {level.label}
+            </p>
+            <p className="mt-1 text-[11.5px] text-ink-3">{level.sub}</p>
+          </div>
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -430,83 +440,89 @@ function BuildScreen({
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <ContextForm
         context={state.context}
         onUpdateContext={onUpdateContext}
         translations={t}
       />
 
-      <section className="rounded-xl border border-surface-high bg-white p-6 shadow-sage">
-        <div className="mb-5">
-          <h3 className="text-xl font-bold text-primary">
-            {t.build.triggersTitle}
-          </h3>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-muted">
-            {t.build.triggersIntro}
-          </p>
+      <section>
+        <div className="mb-5 flex items-end justify-between gap-4">
+          <div>
+            <p className="eyebrow-accent">02 / Triggers</p>
+            <h3 className="display-3 mt-2">{t.build.triggersTitle}</h3>
+            <p className="mt-2 max-w-2xl text-[14px] leading-6 text-ink-2">
+              {t.build.triggersIntro}
+            </p>
+          </div>
         </div>
 
-        <div className="flex flex-wrap gap-2">
-          {predefinedTriggerKeys.map((key: PredefinedTriggerKey) => {
-            const label = t.build.triggerLabels[key];
-            const selected = state.selectedTriggers.includes(key);
+        <div className="card p-5">
+          <div className="flex flex-wrap gap-1.5">
+            {predefinedTriggerKeys.map((key: PredefinedTriggerKey) => {
+              const label = t.build.triggerLabels[key];
+              const selected = state.selectedTriggers.includes(key);
 
-            return (
-              <button
-                className={`rounded-full border px-3 py-2 text-xs font-bold transition-colors ${
-                  selected
-                    ? "border-sage bg-sage text-white"
-                    : "border-outline bg-surface-low text-sage hover:border-sage"
-                }`}
-                key={key}
-                onClick={() => onToggleTrigger(key)}
-                type="button"
-              >
-                {label}
-              </button>
-            );
-          })}
-        </div>
+              return (
+                <button
+                  className={`chip transition-all duration-150 ease-spring active:scale-[0.97] ${
+                    selected
+                      ? "chip-active"
+                      : "hover:border-sage-300 hover:text-ink"
+                  }`}
+                  key={key}
+                  onClick={() => onToggleTrigger(key)}
+                  type="button"
+                >
+                  {selected ? (
+                    <Check aria-hidden="true" className="h-3 w-3" />
+                  ) : (
+                    <Plus aria-hidden="true" className="h-3 w-3 text-ink-4" />
+                  )}
+                  {label}
+                </button>
+              );
+            })}
+          </div>
 
-        <div className="mt-5 flex flex-col gap-2 sm:flex-row">
-          <input
-            className="min-h-11 flex-1 rounded-lg border border-outline bg-surface-low px-4 text-sm outline-none transition-colors focus:border-sage"
-            onChange={(event) => setCustomTrigger(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === "Enter") {
-                event.preventDefault();
-                submitCustomTrigger();
-              }
-            }}
-            placeholder={t.build.customTriggerPlaceholder}
-            type="text"
-            value={customTrigger}
-          />
-          <button
-            className="rounded-lg bg-primary px-5 py-2 text-sm font-bold text-white transition-colors hover:bg-sage"
-            onClick={submitCustomTrigger}
-            type="button"
-          >
-            {t.build.addTrigger}
-          </button>
-        </div>
+          <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+            <input
+              className="field flex-1"
+              onChange={(event) => setCustomTrigger(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  submitCustomTrigger();
+                }
+              }}
+              placeholder={t.build.customTriggerPlaceholder}
+              type="text"
+              value={customTrigger}
+            />
+            <button
+              className="btn-primary"
+              onClick={submitCustomTrigger}
+              type="button"
+            >
+              <Plus aria-hidden="true" className="h-3.5 w-3.5" />
+              {t.build.addTrigger}
+            </button>
+          </div>
 
-        <div className="mt-6 rounded-lg border border-dashed border-outline bg-surface-low p-4">
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">
-            {t.build.selectedTriggers}
-          </p>
-          {selectedTriggers.length ? (
-            <div className="mt-3 flex flex-wrap gap-2">
-              {selectedTriggers.map((trigger) => {
-                return (
+          <div className="mt-5 rounded-xl border border-hairline bg-surface-2 p-4">
+            <p className="eyebrow">{t.build.selectedTriggers}</p>
+            {selectedTriggers.length ? (
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {selectedTriggers.map((trigger) => (
                   <span
-                    className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-semibold text-sage shadow-sage"
+                    className="chip chip-active gap-2"
                     key={`${trigger.custom ? "custom" : "selected"}-${trigger.id}`}
                   >
                     {trigger.label}
                     <button
-                      className="text-stone-400 hover:text-primary"
+                      aria-label={t.build.remove}
+                      className="-mr-1 rounded-full p-0.5 text-sage-700/70 transition-colors hover:bg-sage-100 hover:text-sage-700"
                       onClick={() =>
                         trigger.custom
                           ? onRemoveCustomTrigger(trigger.id)
@@ -514,64 +530,68 @@ function BuildScreen({
                       }
                       type="button"
                     >
-                      {t.build.remove}
+                      <X aria-hidden="true" className="h-3 w-3" />
                     </button>
                   </span>
-                );
-              })}
-            </div>
-          ) : (
-            <p className="mt-2 text-sm text-ink-muted">{t.build.noTriggers}</p>
-          )}
+                ))}
+              </div>
+            ) : (
+              <p className="mt-2 text-[13px] text-ink-3">{t.build.noTriggers}</p>
+            )}
+          </div>
         </div>
       </section>
 
       <section>
         <div className="mb-5">
-          <h3 className="text-xl font-bold text-primary">
-            {t.build.levelsTitle}
-          </h3>
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-muted">
+          <p className="eyebrow-accent">03 / Levels</p>
+          <h3 className="display-3 mt-2">{t.build.levelsTitle}</h3>
+          <p className="mt-2 max-w-2xl text-[14px] leading-6 text-ink-2">
             {t.build.levelsIntro}
           </p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-2.5">
           {state.levels.map((level, index) => {
             const open = openLevels.includes(level.id);
+            const accent = pathwayColors[index];
 
             return (
               <article
-                className="overflow-hidden rounded-xl border border-surface-high bg-white shadow-sage"
+                className="card overflow-hidden transition-shadow duration-200 ease-out-expo data-[open=true]:shadow-e2"
+                data-open={open}
                 key={level.id}
-                style={{ borderLeft: `5px solid ${pathwayColors[index]}` }}
               >
                 <button
-                  className="flex w-full items-center gap-4 p-4 text-left transition-colors hover:bg-surface-low"
+                  className="flex w-full items-center gap-4 px-4 py-3.5 text-left transition-colors hover:bg-surface-2"
                   onClick={() => toggleLevel(level.id)}
                   type="button"
                 >
                   <span
-                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-sm font-bold text-white"
-                    style={{ backgroundColor: pathwayColors[index] }}
+                    aria-hidden="true"
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg font-mono text-[13px] font-semibold text-white shadow-e1"
+                    style={{ backgroundColor: accent }}
                   >
                     {level.number}
                   </span>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-bold text-primary">
+                    <span className="block truncate text-[14px] font-semibold tracking-tight text-ink">
                       {level.name || t.build.fields.name}
                     </span>
-                    <span className="block truncate text-xs text-ink-muted">
+                    <span className="block truncate text-[12.5px] text-ink-3">
                       {level.purpose || t.build.fields.purpose}
                     </span>
                   </span>
-                  <span className="text-xl text-stone-400" aria-hidden="true">
-                    {open ? "-" : "+"}
-                  </span>
+                  <ChevronDown
+                    aria-hidden="true"
+                    className={`h-4 w-4 shrink-0 text-ink-3 transition-transform duration-200 ease-spring ${
+                      open ? "rotate-180" : ""
+                    }`}
+                  />
                 </button>
 
                 {open ? (
-                  <div className="grid gap-4 border-t border-surface-high p-4 md:grid-cols-2">
+                  <div className="grid animate-fade-in gap-4 border-t border-hairline bg-surface-2 p-5 md:grid-cols-2">
                     <LevelTextField
                       label={t.build.fields.name}
                       onChange={(value) =>
@@ -660,38 +680,39 @@ function ContextForm({
   onUpdateContext,
 }: ContextFormProps) {
   return (
-    <section className="rounded-xl border border-surface-high bg-white p-6 shadow-sage">
+    <section>
       <div className="mb-5">
-        <h3 className="text-xl font-bold text-primary">
-          {t.build.contextTitle}
-        </h3>
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-ink-muted">
+        <p className="eyebrow-accent">01 / Context</p>
+        <h3 className="display-3 mt-2">{t.build.contextTitle}</h3>
+        <p className="mt-2 max-w-2xl text-[14px] leading-6 text-ink-2">
           {t.build.contextIntro}
         </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <ContextInput
-          label={t.build.contextFields.teamName}
-          onChange={(value) => onUpdateContext("teamName", value)}
-          placeholder={t.build.contextPlaceholders.teamName}
-          value={context.teamName}
-        />
-        <ContextInput
-          label={t.build.contextFields.rhythm}
-          onChange={(value) => onUpdateContext("rhythm", value)}
-          placeholder={t.build.contextPlaceholders.rhythm}
-          value={context.rhythm}
-        />
-        {contextTextAreas.map((field) => (
-          <ContextTextArea
-            field={field}
-            key={field}
-            onChange={onUpdateContext}
-            translations={t}
-            value={context[field]}
+      <div className="card p-5">
+        <div className="grid gap-4 md:grid-cols-2">
+          <ContextInput
+            label={t.build.contextFields.teamName}
+            onChange={(value) => onUpdateContext("teamName", value)}
+            placeholder={t.build.contextPlaceholders.teamName}
+            value={context.teamName}
           />
-        ))}
+          <ContextInput
+            label={t.build.contextFields.rhythm}
+            onChange={(value) => onUpdateContext("rhythm", value)}
+            placeholder={t.build.contextPlaceholders.rhythm}
+            value={context.rhythm}
+          />
+          {contextTextAreas.map((field) => (
+            <ContextTextArea
+              field={field}
+              key={field}
+              onChange={onUpdateContext}
+              translations={t}
+              value={context[field]}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -710,11 +731,9 @@ function ContextInput({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-[11px] font-bold uppercase tracking-[0.14em] text-sage">
-        {label}
-      </span>
+      <span className="field-label">{label}</span>
       <input
-        className="min-h-11 w-full rounded-lg border border-transparent bg-surface-low px-3 text-sm outline-none transition-colors focus:border-sage"
+        className="field"
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         type="text"
@@ -737,11 +756,9 @@ function ContextTextArea({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-[11px] font-bold uppercase tracking-[0.14em] text-sage">
-        {t.build.contextFields[field]}
-      </span>
+      <span className="field-label">{t.build.contextFields[field]}</span>
       <textarea
-        className="min-h-28 w-full resize-y rounded-lg border border-transparent bg-surface-low p-3 text-sm leading-6 outline-none transition-colors focus:border-sage"
+        className="field"
         onChange={(event) => onChange(field, event.target.value)}
         placeholder={t.build.contextPlaceholders[field]}
         value={value}
@@ -761,11 +778,9 @@ function LevelTextField({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-[11px] font-bold uppercase tracking-[0.14em] text-sage">
-        {label}
-      </span>
+      <span className="field-label">{label}</span>
       <input
-        className="min-h-11 w-full rounded-lg border border-transparent bg-surface-low px-3 text-sm outline-none transition-colors focus:border-sage"
+        className="field"
         onChange={(event) => onChange(event.target.value)}
         type="text"
         value={value}
@@ -785,11 +800,9 @@ function LevelTextArea({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-[11px] font-bold uppercase tracking-[0.14em] text-sage">
-        {label}
-      </span>
+      <span className="field-label">{label}</span>
       <textarea
-        className="min-h-24 w-full resize-y rounded-lg border border-transparent bg-surface-low p-3 text-sm leading-6 outline-none transition-colors focus:border-sage"
+        className="field"
         onChange={(event) => onChange(event.target.value)}
         value={value}
       />
@@ -830,39 +843,46 @@ function ReflectScreen({ state, translations: t }: ReflectScreenProps) {
       document.execCommand("copy");
       document.body.removeChild(textarea);
     }
-
     setCopied(id);
     window.setTimeout(() => setCopied(null), 1600);
   }
 
   return (
     <div className="space-y-5">
-      <div className="rounded-xl border border-amber/40 bg-[#fff8e1] p-5 shadow-sage">
-        <p className="text-sm font-bold text-primary">{t.reflect.note}</p>
+      <div className="rounded-2xl border border-accent-400/40 bg-accent-400/10 p-4">
+        <p className="text-[13.5px] font-medium leading-6 tracking-tight text-ink">
+          {t.reflect.note}
+        </p>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid gap-4 lg:grid-cols-2">
         {cards.map((card) => (
           <article
-            className="flex min-h-[32rem] flex-col rounded-xl border border-surface-high bg-white p-6 shadow-sage"
+            className="card flex min-h-[32rem] flex-col p-6"
             key={card.id}
           >
             <div>
-              <h3 className="text-xl font-bold text-primary">{card.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-ink-muted">
+              <p className="eyebrow">{card.id === "sharpen" ? "Prompt 01" : "Prompt 02"}</p>
+              <h3 className="display-3 mt-2">{card.title}</h3>
+              <p className="mt-2 text-[13.5px] leading-6 text-ink-2">
                 {card.description}
               </p>
             </div>
 
-            <pre className="mt-5 min-h-0 flex-1 overflow-auto rounded-lg border border-surface-high bg-surface-low p-4 text-xs leading-5 text-ink-muted">
+            <pre className="mt-5 min-h-0 flex-1 overflow-auto rounded-xl border border-hairline bg-surface-2 p-4 font-mono text-[12px] leading-5 text-ink-2">
               {card.prompt}
             </pre>
 
             <button
-              className="mt-5 rounded-lg border-2 border-sage px-4 py-3 text-sm font-bold text-sage transition-colors hover:bg-sage hover:text-white"
+              className="btn-secondary mt-5 self-start"
               onClick={() => copyPrompt(card.id, card.prompt)}
               type="button"
             >
+              {copied === card.id ? (
+                <Check aria-hidden="true" className="h-3.5 w-3.5 text-sage-500" />
+              ) : (
+                <Copy aria-hidden="true" className="h-3.5 w-3.5" />
+              )}
               {copied === card.id ? t.reflect.copied : t.reflect.copy}
             </button>
           </article>
@@ -882,37 +902,40 @@ function OutputScreen({ state, translations: t }: OutputScreenProps) {
 
   return (
     <div className="space-y-5">
-      <div className="no-print flex flex-col justify-between gap-4 rounded-xl border border-surface-high bg-white p-5 shadow-sage md:flex-row md:items-center">
+      <div className="no-print card flex flex-col justify-between gap-4 p-5 md:flex-row md:items-center">
         <div>
-          <h3 className="text-xl font-bold text-primary">
-            {t.output.previewTitle}
-          </h3>
-          <p className="mt-1 text-sm leading-6 text-ink-muted">
+          <p className="eyebrow">Preview</p>
+          <h3 className="display-3 mt-1">{t.output.previewTitle}</h3>
+          <p className="mt-1 text-[13.5px] leading-6 text-ink-2">
             {t.output.previewIntro}
           </p>
         </div>
         <ExportButtons state={state} translations={t} />
       </div>
 
-      <article className="print-document rounded-xl border border-surface-high bg-white p-7 shadow-lift md:p-10">
-        <header className="mb-8 flex flex-col justify-between gap-4 border-b-2 border-primary pb-5 md:flex-row md:items-start">
+      <article className="print-document card-elevated p-7 md:p-12">
+        <header className="mb-9 flex flex-col justify-between gap-4 border-b border-hairline-strong pb-6 md:flex-row md:items-start">
           <div>
-            <h3 className="text-3xl font-extrabold uppercase text-primary">
+            <p className="eyebrow">Protection Path</p>
+            <h3 className="mt-2 text-[26px] font-semibold tracking-tightest text-ink md:text-[32px]">
               {model.title}
             </h3>
-            <p className="mt-1 text-sm font-semibold text-stone-500">
+            <p className="mt-2 text-[13.5px] tracking-tight text-ink-2">
               {model.subtitle}
             </p>
           </div>
-          <p className="text-left text-[11px] font-bold uppercase tracking-[0.14em] text-stone-400 md:text-right">
-            v1.0
-            <br />
-            {model.date}
-          </p>
+          <div className="text-left md:text-right">
+            <p className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink-3">
+              v1.0 — {model.date}
+            </p>
+            <p className="mt-1 font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink-4">
+              Folio 01 / 01
+            </p>
+          </div>
         </header>
 
-        <div className="grid gap-8 lg:grid-cols-[0.8fr_1.4fr]">
-          <aside className="space-y-6 border-surface-high lg:border-r lg:pr-6">
+        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.4fr]">
+          <aside className="space-y-7 lg:border-r lg:border-hairline lg:pr-8">
             <OutputBlock title={t.output.guidingPrinciples}>
               <OutputList items={model.principles} empty={t.output.noContent} />
             </OutputBlock>
@@ -924,47 +947,51 @@ function OutputScreen({ state, translations: t }: OutputScreenProps) {
             </OutputBlock>
           </aside>
 
-          <section className="space-y-6">
+          <section className="space-y-7">
             <OutputBlock title={t.output.purpose}>
-              <p className="text-sm leading-6 text-ink-muted">
+              <p className="text-[14px] leading-7 text-ink-2">
                 {model.purpose || t.output.noContent}
               </p>
             </OutputBlock>
 
             <OutputBlock title={t.output.context}>
-              <p className="text-sm leading-6 text-ink-muted">
+              <p className="text-[14px] leading-7 text-ink-2">
                 {model.context || t.output.noContent}
               </p>
             </OutputBlock>
 
             <OutputBlock title={t.output.levels}>
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse text-left text-xs">
-                  <thead>
-                    <tr className="border-b border-surface-high text-primary">
-                      <th className="py-2 pr-3 font-bold">#</th>
-                      <th className="px-3 py-2 font-bold">
+              <div className="overflow-hidden rounded-xl border border-hairline">
+                <table className="w-full border-collapse text-left text-[13px]">
+                  <thead className="bg-surface-2">
+                    <tr className="text-ink-3">
+                      <th className="px-3 py-2.5 font-mono text-[10.5px] font-medium uppercase tracking-[0.14em]">
+                        #
+                      </th>
+                      <th className="px-3 py-2.5 font-mono text-[10.5px] font-medium uppercase tracking-[0.14em]">
                         {t.build.fields.name}
                       </th>
-                      <th className="px-3 py-2 font-bold">
+                      <th className="px-3 py-2.5 font-mono text-[10.5px] font-medium uppercase tracking-[0.14em]">
                         {t.build.fields.purpose}
                       </th>
-                      <th className="py-2 pl-3 font-bold">{t.output.roles}</th>
+                      <th className="px-3 py-2.5 font-mono text-[10.5px] font-medium uppercase tracking-[0.14em]">
+                        {t.output.roles}
+                      </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-surface-high">
+                  <tbody className="divide-y divide-hairline">
                     {model.levels.map((level) => (
                       <tr key={level.number}>
-                        <td className="py-2 pr-3 font-bold text-primary">
-                          {level.number}
+                        <td className="px-3 py-3 font-mono text-[12px] font-semibold text-ink">
+                          {String(level.number).padStart(2, "0")}
                         </td>
-                        <td className="px-3 py-2 font-semibold text-ink">
+                        <td className="px-3 py-3 font-medium text-ink">
                           {level.name || t.output.noContent}
                         </td>
-                        <td className="px-3 py-2 text-ink-muted">
+                        <td className="px-3 py-3 text-ink-2">
                           {level.purpose || t.output.noContent}
                         </td>
-                        <td className="py-2 pl-3 text-ink-muted">
+                        <td className="px-3 py-3 text-ink-2">
                           {level.roles || t.output.noContent}
                         </td>
                       </tr>
@@ -975,14 +1002,14 @@ function OutputScreen({ state, translations: t }: OutputScreenProps) {
             </OutputBlock>
 
             <OutputBlock title={t.output.reviewRhythm}>
-              <p className="text-sm leading-6 text-ink-muted">
+              <p className="text-[14px] leading-7 text-ink-2">
                 {model.rhythm || t.output.noContent}
               </p>
             </OutputBlock>
           </section>
         </div>
 
-        <footer className="mt-8 flex items-center justify-between border-t border-surface-high pt-4 text-[10px] uppercase tracking-[0.14em] text-stone-300">
+        <footer className="mt-10 flex items-center justify-between border-t border-hairline pt-4 font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink-4">
           <span>{t.sideTitle}</span>
           <span>{t.brandLine}</span>
         </footer>
@@ -1000,7 +1027,7 @@ function OutputBlock({
 }) {
   return (
     <section>
-      <h4 className="mb-2 text-[11px] font-extrabold uppercase tracking-[0.14em] text-primary">
+      <h4 className="mb-3 font-mono text-[10.5px] font-medium uppercase tracking-[0.16em] text-ink-3">
         {title}
       </h4>
       {children}
@@ -1010,9 +1037,12 @@ function OutputBlock({
 
 function OutputList({ items, empty }: { items: string[]; empty: string }) {
   return (
-    <ul className="space-y-1.5 text-sm leading-6 text-ink-muted">
+    <ul className="space-y-1.5 text-[14px] leading-7 text-ink-2">
       {(items.length ? items : [empty]).map((item) => (
-        <li key={item}>- {item}</li>
+        <li className="flex gap-2.5" key={item}>
+          <span aria-hidden="true" className="mt-3 h-px w-3 shrink-0 bg-ink-4" />
+          <span>{item}</span>
+        </li>
       ))}
     </ul>
   );
@@ -1023,7 +1053,7 @@ function OutputPills({ items, empty }: { items: string[]; empty: string }) {
     <div className="flex flex-wrap gap-1.5">
       {items.map((item) => (
         <span
-          className="rounded-full bg-sage-soft px-2 py-1 text-[11px] font-bold text-primary"
+          className="inline-flex items-center rounded-full border border-sage-200 bg-sage-50 px-2.5 py-1 text-[11.5px] font-medium tracking-tight text-sage-700"
           key={item}
         >
           {item}
@@ -1031,7 +1061,7 @@ function OutputPills({ items, empty }: { items: string[]; empty: string }) {
       ))}
     </div>
   ) : (
-    <p className="text-sm text-ink-muted">{empty}</p>
+    <p className="text-[14px] text-ink-3">{empty}</p>
   );
 }
 
@@ -1041,11 +1071,11 @@ type StepPlaceholderProps = {
 
 function StepPlaceholder({ translations: t }: StepPlaceholderProps) {
   return (
-    <div className="rounded-xl border border-dashed border-outline bg-surface-low p-8 text-center shadow-sage">
-      <p className="text-sm font-semibold text-primary">
+    <div className="rounded-2xl border border-dashed border-hairline-strong bg-surface-2 p-10 text-center">
+      <p className="text-[14px] font-semibold tracking-tight text-ink">
         {t.placeholderTitle}
       </p>
-      <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-ink-muted">
+      <p className="mx-auto mt-2 max-w-xl text-[13.5px] leading-6 text-ink-2">
         {t.placeholderText}
       </p>
     </div>
