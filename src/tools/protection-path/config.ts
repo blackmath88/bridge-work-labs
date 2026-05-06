@@ -17,6 +17,24 @@ export const conceptKeys = [
 
 export type ConceptKey = (typeof conceptKeys)[number];
 
+export const orgScopeKeys = [
+  "person",
+  "team",
+  "department",
+  "organization",
+  "external",
+] as const;
+
+export type OrgScopeKey = (typeof orgScopeKeys)[number];
+
+export const orgScopeColors: Record<OrgScopeKey, string> = {
+  person: "#3e6b5e",
+  team: "#5f8d80",
+  department: "#b8860b",
+  organization: "#c05621",
+  external: "#5b6470",
+};
+
 export const predefinedTriggerKeys = [
   "powerImbalance",
   "retaliationConcern",

@@ -1,5 +1,11 @@
-import type { ConceptKey, PredefinedTriggerKey } from "./config";
+import type { ConceptKey, OrgScopeKey, PredefinedTriggerKey } from "./config";
 import type { Language } from "./schema";
+
+export type PathwayActor = {
+  scope: OrgScopeKey;
+  label: string;
+  newlyJoined?: boolean;
+};
 
 export type TranslationSet = {
   languageName: string;
@@ -69,6 +75,12 @@ export type TranslationSet = {
     demoLoaded: string;
     ownStarted: string;
     pathway: Array<{ label: string; sub: string }>;
+    pathwayInvolvementTitle: string;
+    pathwayInvolvementSub: string;
+    pathwayInvolvementHint: string;
+    pathwayInvolvementNewBadge: string;
+    pathwayScopes: Record<OrgScopeKey, { label: string; description: string }>;
+    pathwayActors: Array<Array<PathwayActor>>;
     concepts: Record<ConceptKey, { title: string; text: string; question: string }>;
   };
   build: {
@@ -234,6 +246,55 @@ export const translations: Record<Language, TranslationSet> = {
         { label: "Protected Consultation", sub: "Neutral help" },
         { label: "Formal Clarification", sub: "Formal route" },
         { label: "Protection Mode", sub: "Immediate protection" },
+      ],
+      pathwayInvolvementTitle: "Who is involved at each level?",
+      pathwayInvolvementSub:
+        "Each step widens the circle of authority. New people enter; earlier ones may stay informed.",
+      pathwayInvolvementHint:
+        "Default scaffold — adjust roles and contacts in the Build step.",
+      pathwayInvolvementNewBadge: "new",
+      pathwayScopes: {
+        person: {
+          label: "Person",
+          description: "Affected individual or peer",
+        },
+        team: {
+          label: "Team",
+          description: "Direct team or committee",
+        },
+        department: {
+          label: "Department",
+          description: "Line management / unit",
+        },
+        organization: {
+          label: "Organization",
+          description: "Executive, HR, compliance",
+        },
+        external: {
+          label: "Independent / External",
+          description: "Outside the line of authority",
+        },
+      },
+      pathwayActors: [
+        [
+          { scope: "person", label: "Affected person" },
+          { scope: "team", label: "Team peers" },
+        ],
+        [
+          { scope: "team", label: "Team lead", newlyJoined: true },
+        ],
+        [
+          { scope: "external", label: "Ombudsperson", newlyJoined: true },
+          { scope: "department", label: "Trusted manager", newlyJoined: true },
+        ],
+        [
+          { scope: "department", label: "Head of department", newlyJoined: true },
+          { scope: "organization", label: "HR / compliance", newlyJoined: true },
+        ],
+        [
+          { scope: "organization", label: "Executive sponsor", newlyJoined: true },
+          { scope: "external", label: "Legal / authority", newlyJoined: true },
+        ],
       ],
       concepts: {
         psychologicalSafety: {
@@ -451,6 +512,55 @@ export const translations: Record<Language, TranslationSet> = {
         { label: "Geschützte Beratung", sub: "Neutrale Hilfe" },
         { label: "Formale Klärung", sub: "Formaler Weg" },
         { label: "Schutzmodus", sub: "Sofortschutz" },
+      ],
+      pathwayInvolvementTitle: "Wer ist auf welcher Stufe beteiligt?",
+      pathwayInvolvementSub:
+        "Jede Stufe weitet den Kreis der Autorität. Neue Personen kommen hinzu; frühere bleiben ggf. informiert.",
+      pathwayInvolvementHint:
+        "Standard-Gerüst — Rollen und Kontakte im Bauen-Schritt anpassen.",
+      pathwayInvolvementNewBadge: "neu",
+      pathwayScopes: {
+        person: {
+          label: "Person",
+          description: "Betroffene Person oder Peer",
+        },
+        team: {
+          label: "Team",
+          description: "Direktes Team oder Gremium",
+        },
+        department: {
+          label: "Abteilung",
+          description: "Linienführung / Einheit",
+        },
+        organization: {
+          label: "Organisation",
+          description: "Geschäftsleitung, HR, Compliance",
+        },
+        external: {
+          label: "Unabhängig / Extern",
+          description: "Ausserhalb der Linienführung",
+        },
+      },
+      pathwayActors: [
+        [
+          { scope: "person", label: "Betroffene Person" },
+          { scope: "team", label: "Team-Peers" },
+        ],
+        [
+          { scope: "team", label: "Teamleitung", newlyJoined: true },
+        ],
+        [
+          { scope: "external", label: "Ombudsperson", newlyJoined: true },
+          { scope: "department", label: "Vertrauensperson Linie", newlyJoined: true },
+        ],
+        [
+          { scope: "department", label: "Abteilungsleitung", newlyJoined: true },
+          { scope: "organization", label: "HR / Compliance", newlyJoined: true },
+        ],
+        [
+          { scope: "organization", label: "Geschäftsleitung", newlyJoined: true },
+          { scope: "external", label: "Rechtsdienst / Behörde", newlyJoined: true },
+        ],
       ],
       concepts: {
         psychologicalSafety: {

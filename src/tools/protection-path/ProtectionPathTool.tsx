@@ -18,8 +18,11 @@ import { TopBar } from "../../components/TopBar";
 import { clearStorage, loadFromStorage, saveToStorage } from "../../lib/storage";
 import {
   conceptKeys,
+  orgScopeColors,
+  orgScopeKeys,
   pathwayColors,
   predefinedTriggerKeys,
+  type OrgScopeKey,
   type PredefinedTriggerKey,
 } from "./config";
 import { demoState } from "./demo";
@@ -345,6 +348,8 @@ function Pathway({
 }: {
   translations: (typeof translations)[Language];
 }) {
+  const [activeLevel, setActiveLevel] = useState<number | null>(null);
+
   return (
     <section className="card p-6 md:p-8">
       <div className="flex items-end justify-between">
@@ -362,28 +367,273 @@ function Pathway({
           aria-hidden="true"
           className="absolute left-[10%] right-[10%] top-5 hidden h-px bg-gradient-to-r from-hairline-strong via-sage-300 to-hairline-strong sm:block"
         />
-        {t.vision.pathway.map((level, index) => (
-          <div
-            className="relative z-10 flex flex-col items-center text-center"
-            key={level.label}
-          >
-            <div
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-white bg-surface font-mono text-[12px] font-semibold tracking-tight text-ink shadow-e2"
+        {t.vision.pathway.map((level, index) => {
+          const isActive = activeLevel === index;
+          return (
+            <button
+              className="relative z-10 flex flex-col items-center text-center transition-opacity duration-150 hover:opacity-100"
+              key={level.label}
+              onMouseEnter={() => setActiveLevel(index)}
+              onMouseLeave={() => setActiveLevel(null)}
+              onFocus={() => setActiveLevel(index)}
+              onBlur={() => setActiveLevel(null)}
               style={{
-                background: `linear-gradient(180deg, ${pathwayColors[index]}22, transparent), white`,
-                borderColor: pathwayColors[index],
+                opacity: activeLevel === null || isActive ? 1 : 0.55,
               }}
+              type="button"
             >
-              {index}
-            </div>
-            <p className="mt-3 text-[12.5px] font-semibold tracking-tight text-ink">
-              {level.label}
+              <div
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white bg-surface font-mono text-[12px] font-semibold tracking-tight text-ink shadow-e2 transition-transform duration-200 ease-spring"
+                style={{
+                  background: `linear-gradient(180deg, ${pathwayColors[index]}22, transparent), white`,
+                  borderColor: pathwayColors[index],
+                  transform: isActive ? "scale(1.08)" : "scale(1)",
+                }}
+              >
+                {index}
+              </div>
+              <p className="mt-3 text-[12.5px] font-semibold tracking-tight text-ink">
+                {level.label}
+              </p>
+              <p className="mt-1 text-[11.5px] text-ink-3">{level.sub}</p>
+            </button>
+          );
+        })}
+      </div>
+
+      <PathwayInvolvement activeLevel={activeLevel} translations={t} />
+    </section>
+  );
+}
+
+function PathwayInvolvement({
+  activeLevel,
+  translations: t,
+}: {
+  activeLevel: number | null;
+  translations: (typeof translations)[Language];
+}) {
+  const actorsByLevel = t.vision.pathwayActors;
+
+  const cumulativeByLevel: Array<Array<{
+    scope: OrgScopeKey;
+    label: string;
+    newlyJoined: boolean;
+  }>> = actorsByLevel.map((_, levelIndex) => {
+    const seen = new Set<string>();
+    const merged: Array<{ scope: OrgScopeKey; label: string; newlyJoined: boolean }> = [];
+    for (let i = 0; i <= levelIndex; i += 1) {
+      for (const actor of actorsByLevel[i]) {
+        const key = `${actor.scope}::${actor.label}`;
+        if (seen.has(key)) {
+          continue;
+        }
+        seen.add(key);
+        merged.push({
+          scope: actor.scope,
+          label: actor.label,
+          newlyJoined: i === levelIndex && Boolean(actor.newlyJoined),
+        });
+      }
+    }
+    return merged;
+  });
+
+  return (
+    <div className="mt-9 border-t border-hairline pt-6">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <div>
+          <p className="eyebrow">{t.vision.pathwayInvolvementTitle}</p>
+          <p className="mt-1 max-w-2xl text-[13px] leading-6 text-ink-2">
+            {t.vision.pathwayInvolvementSub}
+          </p>
+        </div>
+        <p className="font-mono text-[10.5px] uppercase tracking-[0.14em] text-ink-4">
+          {t.vision.pathwayInvolvementHint}
+        </p>
+      </div>
+
+      <div className="mt-5 hidden grid-cols-[10rem_repeat(5,_minmax(0,1fr))] gap-x-3 gap-y-2 lg:grid">
+        <div />
+        {t.vision.pathway.map((level, index) => (
+          <div className="text-center" key={`head-${level.label}`}>
+            <p
+              className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em]"
+              style={{ color: pathwayColors[index] }}
+            >
+              {String(index).padStart(2, "0")}
             </p>
-            <p className="mt-1 text-[11.5px] text-ink-3">{level.sub}</p>
           </div>
         ))}
+
+        {orgScopeKeys.map((scope) => (
+          <PathwayMatrixRow
+            actorsByLevel={actorsByLevel}
+            activeLevel={activeLevel}
+            key={scope}
+            newBadgeLabel={t.vision.pathwayInvolvementNewBadge}
+            scope={scope}
+            scopeLabel={t.vision.pathwayScopes[scope].label}
+            scopeDescription={t.vision.pathwayScopes[scope].description}
+          />
+        ))}
       </div>
-    </section>
+
+      <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:hidden">
+        {t.vision.pathway.map((level, index) => (
+          <article
+            className="rounded-xl border border-hairline bg-surface-2 p-4"
+            key={`mobile-${level.label}`}
+          >
+            <div className="flex items-center gap-2">
+              <span
+                aria-hidden="true"
+                className="flex h-6 w-6 items-center justify-center rounded-md font-mono text-[11px] font-semibold text-white"
+                style={{ backgroundColor: pathwayColors[index] }}
+              >
+                {index}
+              </span>
+              <p className="text-[13px] font-semibold tracking-tight text-ink">
+                {level.label}
+              </p>
+            </div>
+            <ul className="mt-3 space-y-1.5">
+              {cumulativeByLevel[index].map((actor) => (
+                <li
+                  className="flex items-center gap-2 text-[12.5px] leading-5 text-ink-2"
+                  key={`${index}-${actor.scope}-${actor.label}`}
+                >
+                  <span
+                    aria-hidden="true"
+                    className="h-1.5 w-1.5 shrink-0 rounded-full"
+                    style={{ backgroundColor: orgScopeColors[actor.scope] }}
+                  />
+                  <span className="truncate">{actor.label}</span>
+                  {actor.newlyJoined ? (
+                    <span className="ml-auto rounded-full bg-sage-100 px-1.5 py-0.5 font-mono text-[9.5px] font-semibold uppercase tracking-[0.12em] text-sage-700">
+                      {t.vision.pathwayInvolvementNewBadge}
+                    </span>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+
+      <div className="mt-5 flex flex-wrap gap-3 border-t border-dashed border-hairline pt-4">
+        {orgScopeKeys.map((scope) => (
+          <span
+            className="inline-flex items-center gap-1.5 text-[11.5px] text-ink-3"
+            key={`legend-${scope}`}
+          >
+            <span
+              aria-hidden="true"
+              className="h-2 w-2 rounded-full"
+              style={{ backgroundColor: orgScopeColors[scope] }}
+            />
+            {t.vision.pathwayScopes[scope].label}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PathwayMatrixRow({
+  actorsByLevel,
+  activeLevel,
+  newBadgeLabel,
+  scope,
+  scopeLabel,
+  scopeDescription,
+}: {
+  actorsByLevel: Array<Array<{
+    scope: OrgScopeKey;
+    label: string;
+    newlyJoined?: boolean;
+  }>>;
+  activeLevel: number | null;
+  newBadgeLabel: string;
+  scope: OrgScopeKey;
+  scopeLabel: string;
+  scopeDescription: string;
+}) {
+  const color = orgScopeColors[scope];
+  const firstActiveLevel = actorsByLevel.findIndex((actors) =>
+    actors.some((actor) => actor.scope === scope),
+  );
+
+  return (
+    <>
+      <div className="flex flex-col justify-center border-r border-hairline pr-3">
+        <div className="flex items-center gap-2">
+          <span
+            aria-hidden="true"
+            className="h-2 w-2 shrink-0 rounded-full"
+            style={{ backgroundColor: color }}
+          />
+          <p className="text-[12.5px] font-semibold tracking-tight text-ink">
+            {scopeLabel}
+          </p>
+        </div>
+        <p className="mt-0.5 pl-4 text-[11px] leading-4 text-ink-3">
+          {scopeDescription}
+        </p>
+      </div>
+
+      {actorsByLevel.map((actors, levelIndex) => {
+        const cellActors = actors.filter((actor) => actor.scope === scope);
+        const isCarried =
+          firstActiveLevel !== -1 &&
+          levelIndex > firstActiveLevel &&
+          cellActors.length === 0;
+        const dimmed = activeLevel !== null && activeLevel !== levelIndex;
+
+        return (
+          <div
+            className="flex min-h-[2.25rem] flex-col items-stretch justify-center gap-1 transition-opacity duration-150"
+            key={`cell-${scope}-${levelIndex}`}
+            style={{ opacity: dimmed ? 0.35 : 1 }}
+          >
+            {cellActors.length ? (
+              cellActors.map((actor) => (
+                <div
+                  className="rounded-md border bg-surface px-2 py-1 text-[11.5px] leading-4 tracking-tight text-ink"
+                  key={`${scope}-${levelIndex}-${actor.label}`}
+                  style={{
+                    borderColor: `${color}55`,
+                    boxShadow: actor.newlyJoined
+                      ? `inset 3px 0 0 ${color}`
+                      : undefined,
+                  }}
+                >
+                  <div className="flex items-center gap-1.5">
+                    <span className="truncate">{actor.label}</span>
+                    {actor.newlyJoined ? (
+                      <span
+                        className="ml-auto shrink-0 rounded-full px-1.5 py-[1px] font-mono text-[9px] font-semibold uppercase tracking-[0.12em] text-white"
+                        style={{ backgroundColor: color }}
+                      >
+                        {newBadgeLabel}
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
+              ))
+            ) : isCarried ? (
+              <div
+                aria-hidden="true"
+                className="mx-auto h-px w-8"
+                style={{ backgroundColor: `${color}55` }}
+              />
+            ) : (
+              <div aria-hidden="true" className="h-px" />
+            )}
+          </div>
+        );
+      })}
+    </>
   );
 }
 
