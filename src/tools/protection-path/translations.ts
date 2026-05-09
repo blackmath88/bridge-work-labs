@@ -11,6 +11,7 @@ export type TranslationSet = {
   appEyebrow: string;
   appTitle: string;
   reset: string;
+  resetConfirm: string;
   demoBadge: string;
   draftBadge: string;
   learningPanel: string;
@@ -103,6 +104,11 @@ export type TranslationSet = {
     customTriggerPlaceholder: string;
     addTrigger: string;
     remove: string;
+    sectionLabels: {
+      context: string;
+      triggers: string;
+      levels: string;
+    };
     fields: {
       name: string;
       purpose: string;
@@ -121,12 +127,15 @@ export type TranslationSet = {
     sharpenDescription: string;
     riskTitle: string;
     riskDescription: string;
+    promptLabel: string;
     copy: string;
     copied: string;
   };
   output: {
     previewTitle: string;
     previewIntro: string;
+    previewEyebrow: string;
+    brand: string;
     documentTitle: string;
     draft: string;
     purpose: string;
@@ -138,6 +147,12 @@ export type TranslationSet = {
     reviewRhythm: string;
     noContent: string;
     principles: string[];
+    columns: {
+      number: string;
+      name: string;
+      purpose: string;
+      roles: string;
+    };
   };
   export: {
     copyText: string;
@@ -159,15 +174,16 @@ export const translations: Record<Language, TranslationSet> = {
     appEyebrow: "Protection Path Designer",
     appTitle: "Protection & Escalation Model",
     reset: "Reset",
+    resetConfirm: "Reset everything? Your context, triggers, and levels will be cleared.",
     demoBadge: "Demo loaded",
     draftBadge: "Draft",
     learningPanel: "Learning panel",
     learningFallback:
       "Educational guidance for this step will appear here as the tool grows.",
-    learningFooter: "Keep the path clear, visible, and agreed before difficult moments arrive.",
-    placeholderTitle: "Placeholder screen for this step",
+    learningFooter: "Agree the path while it is calm. It is harder to draw under pressure.",
+    placeholderTitle: "Nothing to show on this step yet",
     placeholderText:
-      "This area is reserved for a later issue. Forms, editors, prompts, preview, and exports are intentionally not implemented here.",
+      "Pick a step from the sidebar to continue.",
     steps: {
       vision: {
         label: "Vision",
@@ -177,37 +193,37 @@ export const translations: Record<Language, TranslationSet> = {
           "A shared frame for sensitive teams before pressure, hierarchy, or uncertainty makes the next step harder.",
         educationTitle: "Why start with the path?",
         educationText:
-          "A protection path turns escalation from a personal confrontation into a previously agreed route.",
+          "A protection path turns escalation from a personal confrontation into a route the team has agreed in advance.",
       },
       build: {
         label: "Build",
         eyebrow: "Model builder",
         title: "Shape the protection model",
         description:
-          "The context form and level editor will live here in later issues. For now, this is a clean shell placeholder.",
+          "Capture the team's context, the signals that should trigger a step up, and what each escalation level looks like in practice.",
         educationTitle: "Build guidance",
         educationText:
-          "Later, this area will help teams describe context, roles, signals, and safeguards.",
+          "Describe context, roles, signals, and safeguards so the path is concrete enough to act on.",
       },
       reflect: {
         label: "Reflect",
         eyebrow: "Thinking support",
         title: "Review the model before use",
         description:
-          "Reflection prompts will appear here later, helping teams sharpen the model and review risks.",
+          "Two prompts to sharpen the model and surface blind spots before you share it with the team.",
         educationTitle: "Reflection guidance",
         educationText:
-          "Later, this area will support model sharpening and risk review prompts.",
+          "Use these prompts in a workshop or paste them into an AI assistant. The thinking stays with your team.",
       },
       output: {
         label: "Output",
         eyebrow: "One-page model",
         title: "Preview the protection path",
         description:
-          "The live one-page output and export controls will be added in later issues.",
+          "A live one-page summary that updates from your inputs. Copy, download, or print to share with the team.",
         educationTitle: "Output guidance",
         educationText:
-          "Later, this area will explain how to read and use the one-page model.",
+          "The one-pager is for reference, not for resolving the situation. Keep it short, visible, and current.",
       },
     },
     vision: {
@@ -220,7 +236,7 @@ export const translations: Record<Language, TranslationSet> = {
       buildOwn: "Build your own",
       coreLabel: "Core message",
       coreQuote:
-        "In sensitive teams and committees, escalation is not a sign of failure. It is a pre-agreed protection path when people, roles, or decisions come under pressure.",
+        "In sensitive teams and committees, escalation is not a sign of failure. It is a route the team has agreed in advance, for when people, roles, or decisions come under pressure.",
       pathTitle: "Escalation pathway",
       pathSubtitle: "A visible route from normal dialogue to immediate protection.",
       conceptTag: "Foundations",
@@ -294,15 +310,20 @@ export const translations: Record<Language, TranslationSet> = {
       },
       levelsTitle: "Escalation levels",
       levelsIntro:
-        "Edit the five default levels. Each card expands so the model can stay compact while you work.",
-      triggersTitle: "Trigger selector",
+        "Define what each of the five levels looks like in your team's day-to-day.",
+      triggersTitle: "Triggers",
       triggersIntro:
-        "Choose predefined triggers or add your own. These signals remain separate from the later context form.",
+        "Pick the signals that should move the team to a higher level, or add your own.",
       selectedTriggers: "Selected triggers",
       noTriggers: "No triggers selected yet.",
       customTriggerPlaceholder: "Add a custom trigger",
       addTrigger: "Add",
       remove: "Remove",
+      sectionLabels: {
+        context: "Context",
+        triggers: "Triggers",
+        levels: "Levels",
+      },
       fields: {
         name: "Name",
         purpose: "Purpose",
@@ -325,13 +346,14 @@ export const translations: Record<Language, TranslationSet> = {
       },
     },
     reflect: {
-      note: "This is not an AI tool. It is a thinking aid.",
+      note: "These prompts are written for a workshop or to paste into an AI assistant. The thinking and the decisions stay with your team.",
       sharpenTitle: "Sharpen model",
       sharpenDescription:
         "Use this prompt to make the current protection path clearer, more practical, and easier to discuss.",
       riskTitle: "Risk review",
       riskDescription:
         "Use this prompt to inspect blind spots, power risks, retaliation risks, and unclear safeguards.",
+      promptLabel: "Prompt",
       copy: "Copy prompt",
       copied: "Copied",
     },
@@ -339,6 +361,8 @@ export const translations: Record<Language, TranslationSet> = {
       previewTitle: "Live one-page model",
       previewIntro:
         "This preview updates from the current context, triggers, and escalation levels.",
+      previewEyebrow: "Preview",
+      brand: "Protection Path",
       documentTitle: "Protection & Escalation Model",
       draft: "Draft",
       purpose: "Purpose",
@@ -349,10 +373,16 @@ export const translations: Record<Language, TranslationSet> = {
       roles: "Roles",
       reviewRhythm: "Review rhythm",
       noContent: "Not yet specified",
+      columns: {
+        number: "#",
+        name: "Name",
+        purpose: "Purpose",
+        roles: "Roles",
+      },
       principles: [
         "Escalation is a protection path, not a punishment.",
         "Concerns raised in good faith must not create disadvantage.",
-        "Confidentiality follows need-to-know.",
+        "Information is shared on a need-to-know basis.",
         "De-escalation is intentional and documented.",
       ],
     },
@@ -374,16 +404,17 @@ export const translations: Record<Language, TranslationSet> = {
     appEyebrow: "Protection Path Designer",
     appTitle: "Schutz- & Eskalationsmodell",
     reset: "Zurücksetzen",
+    resetConfirm: "Alles zurücksetzen? Kontext, Auslöser und Stufen werden gelöscht.",
     demoBadge: "Demo geladen",
     draftBadge: "Entwurf",
-    learningPanel: "Wissen",
+    learningPanel: "Erläuterungen",
     learningFallback:
-      "Pädagogische Hinweise für diesen Schritt erscheinen hier, wenn das Tool wächst.",
+      "Hinweise zu diesem Schritt erscheinen hier.",
     learningFooter:
-      "Halten Sie den Weg klar, sichtbar und vereinbart, bevor schwierige Momente entstehen.",
-    placeholderTitle: "Platzhalter für diesen Schritt",
+      "Vereinbaren Sie den Weg in ruhigen Momenten. Unter Druck ist er schwerer zu zeichnen.",
+    placeholderTitle: "Für diesen Schritt gibt es noch keinen Inhalt",
     placeholderText:
-      "Dieser Bereich ist für ein späteres Issue reserviert. Formulare, Editoren, Prompts, Vorschau und Exporte sind hier bewusst noch nicht umgesetzt.",
+      "Wählen Sie einen Schritt in der Seitenleiste, um fortzufahren.",
     steps: {
       vision: {
         label: "Vision",
@@ -393,37 +424,37 @@ export const translations: Record<Language, TranslationSet> = {
           "Ein gemeinsamer Rahmen für sensible Teams, bevor Druck, Hierarchie oder Unsicherheit den nächsten Schritt erschweren.",
         educationTitle: "Warum mit dem Weg beginnen?",
         educationText:
-          "Ein Schutzweg macht Eskalation zu einer vorab vereinbarten Route statt zu einer persönlichen Konfrontation.",
+          "Ein Schutzweg macht aus einer persönlichen Konfrontation einen Weg, den das Team vorab vereinbart hat.",
       },
       build: {
-        label: "Bauen",
-        eyebrow: "Modellbau",
-        title: "Schutzmodell formen",
+        label: "Erstellen",
+        eyebrow: "Modell erstellen",
+        title: "Schutzmodell ausarbeiten",
         description:
-          "Kontextformular und Stufeneditor kommen in späteren Issues. Vorerst bleibt dies ein sauberer Shell-Platzhalter.",
-        educationTitle: "Hinweise zum Bauen",
+          "Erfassen Sie den Kontext des Teams, die Auslöser für eine höhere Stufe und wie jede Eskalationsstufe in der Praxis aussieht.",
+        educationTitle: "Hinweise zum Erstellen",
         educationText:
-          "Später hilft dieser Bereich, Kontext, Rollen, Signale und Schutzmassnahmen zu beschreiben.",
+          "Beschreiben Sie Kontext, Rollen, Signale und Schutzmassnahmen so konkret, dass der Weg im Ernstfall trägt.",
       },
       reflect: {
         label: "Reflektieren",
         eyebrow: "Denkhilfe",
         title: "Modell vor der Nutzung prüfen",
         description:
-          "Reflexionsprompts erscheinen später hier, um das Modell zu schärfen und Risiken zu prüfen.",
+          "Zwei Prompts, um das Modell zu schärfen und blinde Flecken sichtbar zu machen, bevor Sie es im Team teilen.",
         educationTitle: "Hinweise zur Reflexion",
         educationText:
-          "Später unterstützt dieser Bereich beim Schärfen des Modells und bei der Risikoprüfung.",
+          "Nutzen Sie die Prompts in einem Workshop oder fügen Sie sie in einen KI-Assistenten ein. Das Denken bleibt im Team.",
       },
       output: {
         label: "Output",
         eyebrow: "Einseiter",
         title: "Schutzweg in der Vorschau",
         description:
-          "Live-Einseiter und Exportfunktionen werden in späteren Issues ergänzt.",
+          "Eine einseitige Übersicht, die sich aus Ihren Eingaben aktualisiert. Kopieren, herunterladen oder drucken zum Teilen.",
         educationTitle: "Hinweise zum Output",
         educationText:
-          "Später erklärt dieser Bereich, wie der Einseiter gelesen und genutzt werden kann.",
+          "Der Einseiter dient als Referenz, nicht zur Lösung der Situation. Halten Sie ihn kurz, sichtbar und aktuell.",
       },
     },
     vision: {
@@ -511,19 +542,24 @@ export const translations: Record<Language, TranslationSet> = {
       },
       levelsTitle: "Eskalationsstufen",
       levelsIntro:
-        "Bearbeiten Sie die fünf Standardstufen. Jede Karte lässt sich aufklappen, damit das Modell beim Arbeiten übersichtlich bleibt.",
-      triggersTitle: "Trigger-Auswahl",
+        "Beschreiben Sie, wie jede der fünf Stufen im Alltag des Teams aussieht.",
+      triggersTitle: "Auslöser",
       triggersIntro:
-        "Wählen Sie vordefinierte Trigger oder ergänzen Sie eigene. Diese Signale bleiben getrennt vom späteren Kontextformular.",
-      selectedTriggers: "Ausgewählte Trigger",
-      noTriggers: "Noch keine Trigger ausgewählt.",
-      customTriggerPlaceholder: "Eigenen Trigger ergänzen",
+        "Wählen Sie die Signale, die einen Wechsel auf eine höhere Stufe rechtfertigen, oder ergänzen Sie eigene.",
+      selectedTriggers: "Ausgewählte Auslöser",
+      noTriggers: "Noch keine Auslöser ausgewählt.",
+      customTriggerPlaceholder: "Eigenen Auslöser ergänzen",
       addTrigger: "Hinzufügen",
       remove: "Entfernen",
+      sectionLabels: {
+        context: "Kontext",
+        triggers: "Auslöser",
+        levels: "Stufen",
+      },
       fields: {
         name: "Name",
         purpose: "Zweck",
-        triggers: "Trigger",
+        triggers: "Auslöser",
         safeFirstStep: "Sicherer erster Schritt",
         roles: "Rollen / Kontakte",
         safeguards: "Schutzmassnahmen",
@@ -542,27 +578,30 @@ export const translations: Record<Language, TranslationSet> = {
       },
     },
     reflect: {
-      note: "Dies ist kein KI-Tool. Es ist eine Denkhilfe.",
+      note: "Diese Prompts sind für einen Workshop gedacht oder zum Einfügen in einen KI-Assistenten. Das Denken und die Entscheidungen bleiben im Team.",
       sharpenTitle: "Modell schärfen",
       sharpenDescription:
         "Nutzen Sie diesen Prompt, um den aktuellen Schutzweg klarer, praktischer und besser besprechbar zu machen.",
       riskTitle: "Risikoprüfung",
       riskDescription:
         "Nutzen Sie diesen Prompt, um blinde Flecken, Machtrisiken, Vergeltungsrisiken und unklare Schutzmassnahmen zu prüfen.",
+      promptLabel: "Prompt",
       copy: "Prompt kopieren",
       copied: "Kopiert",
     },
     output: {
       previewTitle: "Live-Einseiter",
       previewIntro:
-        "Diese Vorschau aktualisiert sich aus Kontext, Triggern und Eskalationsstufen.",
+        "Diese Vorschau aktualisiert sich aus Kontext, Auslösern und Eskalationsstufen.",
+      previewEyebrow: "Vorschau",
+      brand: "Schutzweg",
       documentTitle: "Schutz- & Eskalationsmodell",
       draft: "Entwurf",
       purpose: "Zweck",
       context: "Kontext",
       guidingPrinciples: "Leitprinzipien",
       levels: "Stufen",
-      triggers: "Trigger",
+      triggers: "Auslöser",
       roles: "Rollen",
       reviewRhythm: "Überprüfungsrhythmus",
       noContent: "Noch nicht festgelegt",
@@ -572,6 +611,12 @@ export const translations: Record<Language, TranslationSet> = {
         "Vertraulichkeit folgt dem Need-to-know-Prinzip.",
         "De-Eskalation ist bewusst und dokumentiert.",
       ],
+      columns: {
+        number: "#",
+        name: "Name",
+        purpose: "Zweck",
+        roles: "Rollen",
+      },
     },
     export: {
       copyText: "Text kopieren",

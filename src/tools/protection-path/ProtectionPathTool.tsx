@@ -66,6 +66,9 @@ export function ProtectionPathTool() {
   }
 
   function resetState() {
+    if (!window.confirm(t.resetConfirm)) {
+      return;
+    }
     clearStorage(STORAGE_KEY);
     setToolState((current) => createDefaultToolState(current.language));
     setActiveStep("vision");
@@ -450,7 +453,7 @@ function BuildScreen({
       <section>
         <div className="mb-5 flex items-end justify-between gap-4">
           <div>
-            <p className="eyebrow-accent">02 / Triggers</p>
+            <p className="eyebrow-accent">02 / {t.build.sectionLabels.triggers}</p>
             <h3 className="display-3 mt-2">{t.build.triggersTitle}</h3>
             <p className="mt-2 max-w-2xl text-[14px] leading-6 text-ink-2">
               {t.build.triggersIntro}
@@ -502,6 +505,7 @@ function BuildScreen({
             />
             <button
               className="btn-primary"
+              disabled={!customTrigger.trim()}
               onClick={submitCustomTrigger}
               type="button"
             >
@@ -544,7 +548,7 @@ function BuildScreen({
 
       <section>
         <div className="mb-5">
-          <p className="eyebrow-accent">03 / Levels</p>
+          <p className="eyebrow-accent">03 / {t.build.sectionLabels.levels}</p>
           <h3 className="display-3 mt-2">{t.build.levelsTitle}</h3>
           <p className="mt-2 max-w-2xl text-[14px] leading-6 text-ink-2">
             {t.build.levelsIntro}
@@ -682,7 +686,7 @@ function ContextForm({
   return (
     <section>
       <div className="mb-5">
-        <p className="eyebrow-accent">01 / Context</p>
+        <p className="eyebrow-accent">01 / {t.build.sectionLabels.context}</p>
         <h3 className="display-3 mt-2">{t.build.contextTitle}</h3>
         <p className="mt-2 max-w-2xl text-[14px] leading-6 text-ink-2">
           {t.build.contextIntro}
@@ -856,13 +860,15 @@ function ReflectScreen({ state, translations: t }: ReflectScreenProps) {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        {cards.map((card) => (
+        {cards.map((card, index) => (
           <article
             className="card flex min-h-[32rem] flex-col p-6"
             key={card.id}
           >
             <div>
-              <p className="eyebrow">{card.id === "sharpen" ? "Prompt 01" : "Prompt 02"}</p>
+              <p className="eyebrow">
+                {t.reflect.promptLabel} {String(index + 1).padStart(2, "0")}
+              </p>
               <h3 className="display-3 mt-2">{card.title}</h3>
               <p className="mt-2 text-[13.5px] leading-6 text-ink-2">
                 {card.description}
@@ -904,7 +910,7 @@ function OutputScreen({ state, translations: t }: OutputScreenProps) {
     <div className="space-y-5">
       <div className="no-print card flex flex-col justify-between gap-4 p-5 md:flex-row md:items-center">
         <div>
-          <p className="eyebrow">Preview</p>
+          <p className="eyebrow">{t.output.previewEyebrow}</p>
           <h3 className="display-3 mt-1">{t.output.previewTitle}</h3>
           <p className="mt-1 text-[13.5px] leading-6 text-ink-2">
             {t.output.previewIntro}
@@ -916,7 +922,7 @@ function OutputScreen({ state, translations: t }: OutputScreenProps) {
       <article className="print-document card-elevated p-7 md:p-12">
         <header className="mb-9 flex flex-col justify-between gap-4 border-b border-hairline-strong pb-6 md:flex-row md:items-start">
           <div>
-            <p className="eyebrow">Protection Path</p>
+            <p className="eyebrow">{t.output.brand}</p>
             <h3 className="mt-2 text-[26px] font-semibold tracking-tightest text-ink md:text-[32px]">
               {model.title}
             </h3>
@@ -966,16 +972,16 @@ function OutputScreen({ state, translations: t }: OutputScreenProps) {
                   <thead className="bg-surface-2">
                     <tr className="text-ink-3">
                       <th className="px-3 py-2.5 font-mono text-[10.5px] font-medium uppercase tracking-[0.14em]">
-                        #
+                        {t.output.columns.number}
                       </th>
                       <th className="px-3 py-2.5 font-mono text-[10.5px] font-medium uppercase tracking-[0.14em]">
-                        {t.build.fields.name}
+                        {t.output.columns.name}
                       </th>
                       <th className="px-3 py-2.5 font-mono text-[10.5px] font-medium uppercase tracking-[0.14em]">
-                        {t.build.fields.purpose}
+                        {t.output.columns.purpose}
                       </th>
                       <th className="px-3 py-2.5 font-mono text-[10.5px] font-medium uppercase tracking-[0.14em]">
-                        {t.output.roles}
+                        {t.output.columns.roles}
                       </th>
                     </tr>
                   </thead>

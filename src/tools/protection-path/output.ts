@@ -137,7 +137,7 @@ export function buildMarkdownOutput(
     formatMarkdownList(model.principles, empty),
     "",
     `## ${t.output.levels}`,
-    "| # | Name | Purpose | Roles |",
+    `| ${t.output.columns.number} | ${t.output.columns.name} | ${t.output.columns.purpose} | ${t.output.columns.roles} |`,
     "|---|---|---|---|",
     ...model.levels.map(
       (level) =>
