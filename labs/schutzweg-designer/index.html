@@ -1,0 +1,1500 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Schutzweg Designer</title>
+<style>
+:root {
+  --bg: #F6F8FB;
+  --surface: #FFFFFF;
+  --surface-soft: #F9FBFD;
+  --text: #26323F;
+  --muted: #6B7785;
+  --primary: #1F4E79;
+  --primary-dark: #18324A;
+  --primary-soft: #DCEAF7;
+  --teal: #2F7D7E;
+  --teal-soft: #DDEFEA;
+  --amber: #F5C000;
+  --amber-soft: #FFF3C4;
+  --danger-soft: #FDECEC;
+  --border: #D8E0E8;
+  --line: #CBD5E1;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --shadow-soft: 0 10px 30px rgba(24, 50, 74, 0.08);
+  --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 24px 24px, rgba(31, 78, 121, 0.06) 1.5px, transparent 1.5px) 0 0 / 32px 32px,
+    var(--bg);
+  color: var(--text);
+  font-family: var(--font-main);
+  line-height: 1.45;
+}
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+.app { min-height: 100vh; }
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(246, 248, 251, 0.94);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+}
+.top-inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 16px 24px 12px;
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+}
+.brand-kicker {
+  color: var(--teal);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.brand h1 {
+  margin: 2px 0 0;
+  color: var(--primary-dark);
+  font-size: clamp(24px, 4vw, 42px);
+  letter-spacing: 0;
+}
+.subtitle {
+  margin: 4px 0 0;
+  max-width: 780px;
+  color: var(--muted);
+  font-size: 15px;
+}
+.save-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.save-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--teal);
+}
+.nav-wrap {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 24px 14px;
+  overflow-x: auto;
+}
+.steps {
+  display: flex;
+  gap: 8px;
+  min-width: max-content;
+}
+.step-btn {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 9px 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 750;
+}
+.step-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+.step-num {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: 12px;
+}
+.step-btn.active .step-num { background: rgba(255,255,255,0.2); color: white; }
+.main {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 26px 24px 70px;
+}
+.section { display: none; }
+.section.active { display: block; }
+.canvas {
+  background: rgba(255,255,255,0.74);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  padding: clamp(18px, 3vw, 30px);
+}
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+  margin-bottom: 22px;
+}
+.eyebrow {
+  color: var(--teal);
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+h2, h3, h4 { color: var(--primary-dark); letter-spacing: 0; }
+h2 { margin: 2px 0 6px; font-size: clamp(24px, 3vw, 34px); }
+h3 { margin: 0 0 12px; font-size: 19px; }
+h4 { margin: 0 0 8px; font-size: 15px; }
+p { margin: 0; }
+.lead { color: var(--muted); max-width: 780px; }
+.quote {
+  border-left: 4px solid var(--teal);
+  background: var(--teal-soft);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 15px 18px;
+  color: var(--primary-dark);
+  font-size: 17px;
+  font-weight: 650;
+  margin: 18px 0;
+}
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.field { display: grid; gap: 7px; }
+.field label {
+  font-size: 12px;
+  color: var(--primary-dark);
+  font-weight: 800;
+}
+.field input, .field textarea, .field select {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  padding: 10px 11px;
+  outline: none;
+}
+.field textarea { min-height: 92px; resize: vertical; }
+.field input:focus, .field textarea:focus, .field select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+.soft-panel {
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.btn {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--primary-dark);
+  border-radius: var(--radius-sm);
+  padding: 9px 12px;
+  font-size: 13px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.btn.primary { background: var(--primary); border-color: var(--primary); color: white; }
+.btn.teal { background: var(--teal); border-color: var(--teal); color: white; }
+.btn.ghost { background: transparent; }
+.btn.warn { background: var(--amber-soft); border-color: #E7C84F; }
+.btn.danger { background: var(--danger-soft); border-color: #F0B7B7; color: #8A2D2D; }
+.btn.small { padding: 6px 9px; font-size: 12px; }
+.icon { font-weight: 900; line-height: 1; }
+.schutzpfad {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  position: relative;
+  margin-top: 18px;
+}
+.schutzpfad::before {
+  content: "";
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 28px;
+  height: 3px;
+  background: var(--line);
+  z-index: 0;
+}
+.station {
+  position: relative;
+  z-index: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 12px;
+  min-height: 118px;
+}
+.station .bubble {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--primary);
+  color: white;
+  font-weight: 850;
+  margin-bottom: 12px;
+}
+.station:nth-child(4) .bubble { background: var(--teal); }
+.station:nth-child(5) .bubble { background: var(--primary-dark); }
+.station strong { display: block; color: var(--primary-dark); }
+.station span { color: var(--muted); font-size: 12px; }
+.entity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+.entity-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+}
+.entity-card header {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+.entity-name { font-weight: 850; color: var(--primary-dark); }
+.entity-type { color: var(--muted); font-size: 12px; }
+.badges { display: flex; flex-wrap: wrap; gap: 6px; }
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+  font-size: 11px;
+  font-weight: 750;
+}
+.badge.teal { background: var(--teal-soft); color: #205D5E; }
+.badge.amber { background: var(--amber-soft); color: #684F00; }
+.badge.danger { background: var(--danger-soft); color: #8A2D2D; }
+.mini-text { color: var(--muted); font-size: 12px; }
+.network-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.95fr) minmax(360px, 1.25fr);
+  gap: 18px;
+}
+.hierarchy {
+  display: grid;
+  gap: 12px;
+  position: relative;
+}
+.hier-node {
+  position: relative;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  padding: 13px;
+}
+.hier-node:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 28px;
+  bottom: -13px;
+  width: 2px;
+  height: 12px;
+  background: var(--line);
+}
+.route-list { display: grid; gap: 10px; }
+.route {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  padding: 10px;
+}
+.arrow {
+  height: 2px;
+  min-width: 34px;
+  background: var(--teal);
+  position: relative;
+}
+.arrow::after {
+  content: "";
+  position: absolute;
+  right: -1px;
+  top: -4px;
+  border-left: 8px solid var(--teal);
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+}
+.level-list { display: grid; gap: 14px; }
+.level-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.level-top {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 13px;
+  padding: 15px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(90deg, var(--surface), var(--surface-soft));
+}
+.level-num {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: var(--primary);
+  color: white;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+}
+.level-body { padding: 15px; }
+.scenario-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 14px;
+}
+.scenario-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+}
+.path-visual {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  margin-top: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.path-step {
+  min-width: 132px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-soft);
+  padding: 9px;
+  font-size: 12px;
+}
+.path-step strong { display: block; color: var(--primary-dark); font-size: 11px; margin-bottom: 3px; }
+.path-arrow {
+  align-self: center;
+  color: var(--teal);
+  font-weight: 900;
+}
+.amber-box {
+  background: var(--amber-soft);
+  border: 1px solid #E7C84F;
+  border-left: 5px solid var(--amber);
+  border-radius: var(--radius-md);
+  padding: 15px;
+  color: var(--primary-dark);
+}
+.prompt-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+.prompt-card {
+  background: var(--surface);
+  border: 1px solid #E7C84F;
+  border-radius: var(--radius-md);
+  padding: 15px;
+}
+.prompt-preview {
+  margin: 12px 0;
+  max-height: 210px;
+  overflow: auto;
+  background: #FFFBEB;
+  border: 1px solid #F2D979;
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  white-space: pre-wrap;
+  color: #423800;
+  font-size: 12px;
+}
+.tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.tab-btn {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 999px;
+  padding: 8px 12px;
+  color: var(--muted);
+  font-weight: 800;
+  font-size: 13px;
+}
+.tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+.result-pane { display: none; }
+.result-pane.active { display: block; }
+.onepager {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: clamp(18px, 3vw, 28px);
+}
+.onepager h3 {
+  border-bottom: 2px solid var(--primary-soft);
+  padding-bottom: 8px;
+  margin-top: 22px;
+}
+.onepager h3:first-child { margin-top: 0; }
+.onepager ul { margin: 8px 0 0; padding-left: 19px; }
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: rgba(24, 50, 74, 0.28);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-backdrop.open { display: flex; }
+.modal {
+  width: min(620px, 100%);
+  max-height: 86vh;
+  overflow: auto;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 28px 70px rgba(24, 50, 74, 0.22);
+  padding: 22px;
+}
+.toast {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 50;
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--primary-dark);
+  color: white;
+  box-shadow: var(--shadow-soft);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: 0.2s ease;
+}
+.toast.show { opacity: 1; transform: translateY(0); }
+.hidden { display: none !important; }
+.mt { margin-top: 18px; }
+.mb { margin-bottom: 18px; }
+
+@media (max-width: 920px) {
+  .top-inner { grid-template-columns: 1fr; }
+  .grid-2, .grid-3, .grid-4, .network-layout, .prompt-grid { grid-template-columns: 1fr; }
+  .schutzpfad { grid-template-columns: 1fr; }
+  .schutzpfad::before { display: none; }
+  .section-head { display: block; }
+}
+
+@media print {
+  body { background: white; }
+  .topbar, .actions, .tabs, .btn, .modal-backdrop, .toast, .no-print { display: none !important; }
+  .main { padding: 0; max-width: none; }
+  .section { display: none !important; }
+  #step-6 { display: block !important; }
+  .canvas, .onepager, .panel, .soft-panel, .entity-card, .level-card, .scenario-card {
+    box-shadow: none;
+    border-color: #B8C4D0;
+  }
+  .result-pane { display: block !important; page-break-inside: avoid; margin-bottom: 22px; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="top-inner">
+      <div class="brand">
+        <div class="brand-kicker">Bridge Work Labs</div>
+        <h1>Schutzweg Designer</h1>
+        <p class="subtitle">Ein Tool zur Entwicklung klarer Eskalations- und Schutzwege für sensible Teams, Gremien und Abteilungen.</p>
+      </div>
+      <div class="save-pill"><span class="save-dot"></span><span id="saveStatus">Lokal gespeichert</span></div>
+    </div>
+    <div class="nav-wrap"><nav class="steps" id="stepNav"></nav></div>
+  </header>
+
+  <main class="main">
+    <section class="section active" id="step-1"></section>
+    <section class="section" id="step-2"></section>
+    <section class="section" id="step-3"></section>
+    <section class="section" id="step-4"></section>
+    <section class="section" id="step-5"></section>
+    <section class="section" id="step-6"></section>
+  </main>
+</div>
+
+<div class="modal-backdrop" id="eduModal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="section-head">
+      <div>
+        <div class="eyebrow" id="eduTopic">Warum wichtig?</div>
+        <h2 id="eduTitle">Research Layer</h2>
+      </div>
+      <button class="btn small" onclick="closeEducation()">Schliessen</button>
+    </div>
+    <div id="eduBody"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const STORAGE_KEY = "schutzweg-designer-v2";
+const steps = ["Ausgangslage", "Personen & Rollen", "Organigramm", "Eskalationslogik", "Prüfen", "Ergebnis"];
+const pathStations = ["Normalmodus", "Frühsignal", "Geschützte Beratung", "Formale Klärung", "Schutzmodus"];
+const entityTypes = ["Person", "Rolle", "Stelle", "Gremium"];
+const levels = ["niedrig", "mittel", "hoch"];
+
+const education = {
+  "Psychologische Sicherheit": {
+    why: "Menschen sprechen Risiken frueher an, wenn sie keine Blossstellung oder Nachteile erwarten.",
+    step: "Das Modell muss Sprechen normalisieren, bevor es formal wird.",
+    implication: "Benennen Sie sichere erste Kontakte und eine klare Nicht-Vergeltungslogik."
+  },
+  "Speak-up Culture": {
+    why: "Sensible Organisationen brauchen Wege, in denen Bedenken gehoert werden, bevor Schaden entsteht.",
+    step: "Eskalation wird als verantwortliches Handeln gerahmt, nicht als Loyalitaetsbruch.",
+    implication: "Formulieren Sie einfache Trigger und sichtbare Rueckmeldewege."
+  },
+  "Machtasymmetrie": {
+    why: "Formale Hierarchien koennen den direkten Weg unsicher machen.",
+    step: "Der Schutzweg muss Bypass-Routen sichtbar und legitim machen.",
+    implication: "Markieren Sie Rollen, die Teil des Problems sein koennen, und schaffen Sie alternative Kontakte."
+  },
+  "Non-Retaliation": {
+    why: "Ohne Schutz vor Nachteilen werden viele Bedenken nicht gemeldet.",
+    step: "Das Modell braucht eine explizite Schutzlogik fuer meldende und betroffene Personen.",
+    implication: "Ergaenzen Sie Monitoring, Dokumentation und klare Verantwortlichkeit."
+  },
+  "Vertraulichkeit": {
+    why: "Vertraulichkeit senkt die Schwelle, darf aber nicht mit absoluter Geheimhaltung verwechselt werden.",
+    step: "Beteiligte muessen wissen, wer was aus welchem Grund erfaehrt.",
+    implication: "Nutzen Sie Need-to-know, Rollenklärung und sichere Dokumentation."
+  },
+  "Unabhaengige Kanaele": {
+    why: "Wenn die Linie befangen ist, braucht es Stellen ausserhalb des Konfliktfelds.",
+    step: "Ombuds, HR, Compliance oder externe Pruefung werden als geschuetzte Routen abgebildet.",
+    implication: "Ordnen Sie unabhaengige Stellen als Eskalationskontakte zu."
+  },
+  "Under-escalation vs. Over-escalation": {
+    why: "Zu spaete Eskalation laesst Risiken wachsen; zu fruehe Formalisierung kann Vertrauen beschaedigen.",
+    step: "Die Stufen helfen, auf der niedrigsten wirksamen Ebene zu handeln.",
+    implication: "Definieren Sie Trigger, Schwellen und Rueckkehrkriterien pro Stufe."
+  },
+  "PACE / Graded Assertiveness": {
+    why: "Abgestufte Sprache hilft besonders junioren oder abhaengigen Personen, Bedenken klar zu benennen.",
+    step: "Aus Fruehsignalen werden legitime naechste Schritte.",
+    implication: "Nutzen Sie Formulierungen wie Hinweis, Warnung, klare Intervention, Eskalation."
+  },
+  "Deeskalation": {
+    why: "Ein Schutzweg braucht auch einen Weg zurueck in arbeitsfaehige Strukturen.",
+    step: "Deeskalation verhindert, dass formale Prozesse laenger als noetig dominieren.",
+    implication: "Beschreiben Sie Rueckkehr, Kommunikation, Monitoring und Review."
+  }
+};
+
+const defaults = {
+  context: {
+    owner: "Vorsitz Ethikkommission / HR Partner:in",
+    unit: "Universitaere Ethikkommission",
+    useCase: "Ein sensibles Gremium entwickelt ein Schutz- und Eskalationsmodell, weil Professor:innen, Mitarbeitende, Vertraulichkeit und Arbeitnehmer:innenschutz beteiligt sind.",
+    sensitiveSituations: "Druck durch Professor:in oder PI, Interessenkonflikte, vertrauliche Hinweise, Abhaengigkeiten in Qualifikation oder Anstellung, Umgang mit personenbezogenen Daten.",
+    modelGoal: "Klare und sichtbare Wege schaffen, damit Betroffene sicher Orientierung, Beratung, formale Klaerung und Schutz erhalten.",
+    redLines: "Vergeltung, informelle Vorverurteilung, unkontrollierte Weitergabe vertraulicher Informationen, Befangenheit im direkten Berichtsweg.",
+    existingChannels: "HR / Personalstelle, Ombudsstelle, Dekanat, Rechtsdienst / Compliance, Gremienvorsitz.",
+    reviewRhythm: "Halbjaehrlich und nach relevanten Vorfaellen."
+  },
+  entities: [
+    { id: "e1", name: "Betroffene Person / Mitarbeitende:r", type: "Person", orgUnit: "Team / Fallbearbeitung", formalAuthority: "niedrig", informalInfluence: "niedrig", protectionRole: false, canBeConflict: false, escalationContact: false, notes: "Kann Schutz, Beratung und vertrauliche Orientierung benoetigen." },
+    { id: "e2", name: "Professor:in / PI", type: "Rolle", orgUnit: "Fakultaet / Forschungsleitung", formalAuthority: "hoch", informalInfluence: "hoch", protectionRole: false, canBeConflict: true, escalationContact: false, notes: "Kann Fachautoritaet und Abhaengigkeiten buendeln." },
+    { id: "e3", name: "Vorsitz Ethikkommission", type: "Rolle", orgUnit: "Gremium", formalAuthority: "hoch", informalInfluence: "mittel", protectionRole: true, canBeConflict: false, escalationContact: true, notes: "Traegt Verantwortung fuer Gremienprozess und Eskalationsklarheit." },
+    { id: "e4", name: "Administrative Koordination", type: "Rolle", orgUnit: "Gremiensekretariat", formalAuthority: "mittel", informalInfluence: "mittel", protectionRole: true, canBeConflict: false, escalationContact: true, notes: "Kann als erste Orientierung und Lotsenstelle wirken." },
+    { id: "e5", name: "HR / Personalstelle", type: "Stelle", orgUnit: "Institution", formalAuthority: "hoch", informalInfluence: "mittel", protectionRole: true, canBeConflict: false, escalationContact: true, notes: "Zustaendig fuer Arbeitnehmer:innenschutz und formale Massnahmen." },
+    { id: "e6", name: "Ombudsstelle", type: "Stelle", orgUnit: "Unabhaengiger Kanal", formalAuthority: "mittel", informalInfluence: "hoch", protectionRole: true, canBeConflict: false, escalationContact: true, notes: "Vertrauliche, neutrale Orientierung ausserhalb der Linie." },
+    { id: "e7", name: "Dekanat", type: "Stelle", orgUnit: "Fakultaetsleitung", formalAuthority: "hoch", informalInfluence: "hoch", protectionRole: false, canBeConflict: false, escalationContact: true, notes: "Formale Entscheidungs- und Steuerungsebene." },
+    { id: "e8", name: "Rechtsdienst / Compliance", type: "Stelle", orgUnit: "Institution", formalAuthority: "hoch", informalInfluence: "mittel", protectionRole: true, canBeConflict: false, escalationContact: true, notes: "Pruefung rechtlicher, regulatorischer und institutioneller Risiken." }
+  ],
+  formalLine: ["Dekanat", "Vorsitz Ethikkommission", "Administrative Koordination", "Betroffene Person / Mitarbeitende:r"],
+  protectedRoutes: [
+    { from: "Betroffene Person / Mitarbeitende:r", to: "Administrative Koordination" },
+    { from: "Betroffene Person / Mitarbeitende:r", to: "Ombudsstelle" },
+    { from: "Betroffene Person / Mitarbeitende:r", to: "HR / Personalstelle" },
+    { from: "Betroffene Person / Mitarbeitende:r", to: "Rechtsdienst / Compliance" },
+    { from: "Betroffene Person / Mitarbeitende:r", to: "Vorsitz Ethikkommission" }
+  ],
+  levels: [
+    { number: 0, name: "Normalmodus", question: "Wer kann das lokal klaeren?", purpose: "Anliegen kann im normalen Arbeitsdialog behandelt werden.", triggers: "Klare Prozessfrage, Missverstaendnis, fachliche Differenz ohne Schutzrisiko.", firstContact: "Direkte Arbeitsbeziehung oder Koordination", roles: "Team / Fallbearbeitung, Administrative Koordination", safeguards: "Respektvoller Dialog, kein Druck zur Formalisierung.", documentation: "Keine oder kurze Prozessnotiz.", decisionRights: "Lokale Rollen im normalen Mandat.", deescalation: "Direkte Klaerung und Rueckkehr in Normalmodus." },
+    { number: 1, name: "Fruehsignal", question: "Wer hoert zu, ohne sofort zu formalisieren?", purpose: "Irritation, Unsicherheit oder wiederholtes Unbehagen wird sichtbar.", triggers: "Wiederholtes Unbehagen, Unsicherheit zu Abhaengigkeiten, Sorge vor Folgen.", firstContact: "Vertrauens-/Schutzrolle oder Administrative Koordination", roles: "Vertrauensperson, Koordination, ggf. Gremienvorsitz", safeguards: "Kein Formalisierungsdruck, vertrauliche Orientierung.", documentation: "Nur falls Muster, Risiko oder Wunsch der betroffenen Person.", decisionRights: "Orientierung und Lotsung, keine Sachentscheidung.", deescalation: "Fruehe Klaerung oder Wechsel in geschuetzte Beratung." },
+    { number: 2, name: "Geschuetzte Beratung", question: "Welche neutrale oder vertrauliche Stelle gibt Orientierung?", purpose: "Eine geschuetzte Beratung wird moeglich, ohne sofort formale Eskalation auszuloesen.", triggers: "Direkter Weg ist unsicher, Machtasymmetrie blockiert Klaerung, vertraulicher Hinweis.", firstContact: "Ombudsstelle, HR / Personalstelle oder Compliance", roles: "Ombudsstelle, HR, Rechtsdienst / Compliance", safeguards: "Need-to-know, Nicht-Vergeltung, Rollentrennung.", documentation: "Sicher, minimal und zweckgebunden.", decisionRights: "Beratung, Optionen, Empfehlung fuer naechste Stufe.", deescalation: "Sicherer Weg zurueck oder formale Klaerung vorbereiten." },
+    { number: 3, name: "Formale Klaerung", question: "Wer hat Entscheidungs-, Pruef- oder Handlungskompetenz?", purpose: "Formale institutionelle Strukturen werden aktiviert.", triggers: "Schwerer Vorwurf, wiederholte Meldungen, Interessenkonflikt, arbeitsrechtliche Relevanz.", firstContact: "Dekanat, HR / Personalstelle, Rechtsdienst / Compliance", roles: "Dekanat, HR, Compliance, Gremienvorsitz", safeguards: "Aktenklarheit, Rollentrennung, Vertraulichkeit, Vergeltungsschutz.", documentation: "Formale Dokumentation mit Zugriffsregeln.", decisionRights: "Zustaendige institutionelle Stelle.", deescalation: "Entscheid, Massnahmen, Kommunikation und Monitoring." },
+    { number: 4, name: "Schutzmodus", question: "Wer kann sofort Schutz, Unabhaengigkeit oder externe Pruefung ausloesen?", purpose: "Akute Schutzmassnahmen, unabhaengige Pruefung oder Krisenintervention.", triggers: "Akute Gefaehrdung, Vergeltung, kompromittierte Linie, schwere Pflichtverletzung.", firstContact: "HR, Rechtsdienst / Compliance, Dekanat oder externe Stelle", roles: "HR, Compliance, Dekanat, externe Pruefung", safeguards: "Sofortige Schutzmassnahmen, unabhaengige Pruefung, strikte Zugriffsbegrenzung.", documentation: "Sofort, sicher, nachvollziehbar.", decisionRights: "Institutionelle Leitung oder beauftragte unabhaengige Stelle.", deescalation: "Risiko kontrolliert, Schutz bleibt bis Review abgeschlossen." }
+  ],
+  scenarios: [
+    { id: "s1", name: "Mitarbeitende fuehlen sich von Professor:in unter Druck gesetzt.", affected: "Betroffene Person / Mitarbeitende:r", possibleConflictActor: "Professor:in / PI", directPathSafe: false, firstSafeContact: "Ombudsstelle", formalEscalation: "HR / Personalstelle", safeguards: "Vertrauliche Erstberatung, Nicht-Vergeltung, Trennung von Betreuung und Klaerung.", returnPath: "Rueckkehr nur mit geklaerten Rollen, Monitoring und Review durch neutrale Stelle." }
+  ],
+  openQuestions: "Welche externe oder unabhaengige Stelle wird aktiviert, wenn interne Kanaele befangen sind?"
+};
+
+let state = loadState();
+let currentStep = 1;
+let currentResult = "canvas";
+let saveTimer;
+
+function clone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function uid(prefix) {
+  return prefix + Math.random().toString(36).slice(2, 9);
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return clone(defaults);
+    const parsed = JSON.parse(raw);
+    return {
+      ...clone(defaults),
+      ...parsed,
+      context: { ...clone(defaults.context), ...(parsed.context || {}) },
+      entities: Array.isArray(parsed.entities) ? parsed.entities : clone(defaults.entities),
+      formalLine: Array.isArray(parsed.formalLine) ? parsed.formalLine : clone(defaults.formalLine),
+      protectedRoutes: Array.isArray(parsed.protectedRoutes) ? parsed.protectedRoutes : clone(defaults.protectedRoutes),
+      levels: Array.isArray(parsed.levels) && parsed.levels.length ? parsed.levels : clone(defaults.levels),
+      scenarios: Array.isArray(parsed.scenarios) ? parsed.scenarios : clone(defaults.scenarios)
+    };
+  } catch (error) {
+    return clone(defaults);
+  }
+}
+
+function saveState() {
+  document.getElementById("saveStatus").textContent = "Speichert...";
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    document.getElementById("saveStatus").textContent = "Lokal gespeichert " + new Date().toLocaleTimeString("de-CH", { hour: "2-digit", minute: "2-digit" });
+  }, 180);
+}
+
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  }[char]));
+}
+
+function textOrDash(value) {
+  return value && String(value).trim() ? esc(value) : "<span class='mini-text'>Noch offen</span>";
+}
+
+function selectOptions(options, selected) {
+  return options.map(option => `<option value="${esc(option)}" ${option === selected ? "selected" : ""}>${esc(option)}</option>`).join("");
+}
+
+function entityNames() {
+  return state.entities.map(entity => entity.name).filter(Boolean);
+}
+
+function render() {
+  renderNav();
+  renderStep1();
+  renderStep2();
+  renderStep3();
+  renderStep4();
+  renderStep5();
+  renderStep6();
+  showStep(currentStep);
+}
+
+function renderNav() {
+  document.getElementById("stepNav").innerHTML = steps.map((label, index) => `
+    <button class="step-btn ${currentStep === index + 1 ? "active" : ""}" onclick="showStep(${index + 1})">
+      <span class="step-num">${index + 1}</span>${label}
+    </button>
+  `).join("");
+}
+
+function showStep(step) {
+  currentStep = step;
+  document.querySelectorAll(".section").forEach(section => section.classList.remove("active"));
+  document.getElementById("step-" + step).classList.add("active");
+  renderNav();
+}
+
+function contextField(key, label, rows = 1) {
+  const value = esc(state.context[key]);
+  if (rows > 1) {
+    return `<div class="field"><label>${label}</label><textarea data-context="${key}" rows="${rows}">${value}</textarea></div>`;
+  }
+  return `<div class="field"><label>${label}</label><input data-context="${key}" value="${value}"></div>`;
+}
+
+function renderPathStations() {
+  return `<div class="schutzpfad">${pathStations.map((station, index) => `
+    <div class="station">
+      <div class="bubble">${index}</div>
+      <strong>${station}</strong>
+      <span>${index === 0 ? "Arbeitsfaehiger Alltag" : index === 1 ? "Signal wird sichtbar" : index === 2 ? "Vertrauliche Orientierung" : index === 3 ? "Institutionelle Klaerung" : "Sofortige Sicherung"}</span>
+    </div>
+  `).join("")}</div>`;
+}
+
+function renderStep1() {
+  document.getElementById("step-1").innerHTML = `
+    <div class="canvas">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">1. Ausgangslage</div>
+          <h2>Modellauftrag klaeren</h2>
+          <p class="lead">Fuer verantwortliche Personen, die einen Schutz- und Eskalationsweg vorbereiten, designen und spaeter mit dem Gremium validieren.</p>
+        </div>
+        <button class="btn ghost" onclick="openEducation(['Psychologische Sicherheit','Speak-up Culture','Under-escalation vs. Over-escalation'])">Warum wichtig?</button>
+      </div>
+      <div class="quote">Eskalation ist kein Zeichen von Scheitern. Sie ist ein vereinbarter Schutzweg, wenn Menschen, Rollen oder Entscheidungen unter Druck geraten.</div>
+      <div class="grid-2">
+        ${contextField("owner", "Modellverantwortliche:r")}
+        ${contextField("unit", "Team / Gremium / Abteilung")}
+        ${contextField("useCase", "Anlass / Use Case", 3)}
+        ${contextField("sensitiveSituations", "Sensible Situationen", 3)}
+        ${contextField("modelGoal", "Ziel des Modells", 3)}
+        ${contextField("redLines", "Grenzen / No-Gos", 3)}
+        ${contextField("existingChannels", "Bestehende Kanaele", 2)}
+        ${contextField("reviewRhythm", "Review-Rhythmus", 2)}
+      </div>
+      <div class="mt">
+        <h3>Kompakter Schutzpfad</h3>
+        ${renderPathStations()}
+      </div>
+      <div class="actions mt">
+        <button class="btn primary" onclick="showStep(2)">Weiter zu Personen & Rollen</button>
+        <button class="btn" onclick="showStep(6)">Ergebnis ansehen</button>
+      </div>
+    </div>
+  `;
+  document.querySelectorAll("[data-context]").forEach(input => {
+    input.addEventListener("input", event => {
+      state.context[event.target.dataset.context] = event.target.value;
+      saveState();
+      renderStep5();
+      renderStep6();
+    });
+  });
+}
+
+function entityCard(entity) {
+  return `
+    <article class="entity-card">
+      <header>
+        <div>
+          <div class="entity-name">${esc(entity.name)}</div>
+          <div class="entity-type">${esc(entity.type)} · ${esc(entity.orgUnit || "Organisationseinheit offen")}</div>
+        </div>
+        <button class="btn small danger" onclick="removeEntity('${entity.id}')">Entfernen</button>
+      </header>
+      <div class="badges">
+        <span class="badge">Autoritaet: ${esc(entity.formalAuthority)}</span>
+        <span class="badge">Einfluss: ${esc(entity.informalInfluence)}</span>
+        ${entity.protectionRole ? "<span class='badge teal'>Schutzrolle</span>" : ""}
+        ${entity.canBeConflict ? "<span class='badge danger'>Konfliktpotenzial</span>" : ""}
+        ${entity.escalationContact ? "<span class='badge amber'>Eskalationskontakt</span>" : ""}
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Name / Rollenname</label><input data-entity="${entity.id}" data-key="name" value="${esc(entity.name)}"></div>
+        <div class="field"><label>Typ</label><select data-entity="${entity.id}" data-key="type">${selectOptions(entityTypes, entity.type)}</select></div>
+        <div class="field"><label>Organisationseinheit</label><input data-entity="${entity.id}" data-key="orgUnit" value="${esc(entity.orgUnit)}"></div>
+        <div class="field"><label>Formale Autoritaet</label><select data-entity="${entity.id}" data-key="formalAuthority">${selectOptions(levels, entity.formalAuthority)}</select></div>
+        <div class="field"><label>Informeller Einfluss</label><select data-entity="${entity.id}" data-key="informalInfluence">${selectOptions(levels, entity.informalInfluence)}</select></div>
+        <div class="field"><label>Markierungen</label>
+          <div class="badges">
+            ${checkbox(entity.id, "protectionRole", entity.protectionRole, "Schutzrolle")}
+            ${checkbox(entity.id, "canBeConflict", entity.canBeConflict, "Teil des Problems")}
+            ${checkbox(entity.id, "escalationContact", entity.escalationContact, "Eskalationskontakt")}
+          </div>
+        </div>
+      </div>
+      <div class="field"><label>Notizen</label><textarea data-entity="${entity.id}" data-key="notes">${esc(entity.notes)}</textarea></div>
+    </article>
+  `;
+}
+
+function checkbox(id, key, checked, label) {
+  return `<label class="badge"><input type="checkbox" data-entity="${id}" data-key="${key}" ${checked ? "checked" : ""}> ${label}</label>`;
+}
+
+function renderStep2() {
+  document.getElementById("step-2").innerHTML = `
+    <div class="canvas">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">2. Personen & Rollen</div>
+          <h2>Rollenkarte fuer Schutz und Risiko</h2>
+          <p class="lead">Hier wird sichtbar, wer Autoritaet, Einfluss, Schutzfunktion, Konfliktpotenzial oder Eskalationsmandat hat.</p>
+        </div>
+        <div class="actions">
+          <button class="btn ghost" onclick="openEducation(['Machtasymmetrie','Non-Retaliation','Vertraulichkeit'])">Warum wichtig?</button>
+          <button class="btn primary" onclick="addEntity()">Rolle hinzufuegen</button>
+        </div>
+      </div>
+      <div class="entity-grid">${state.entities.map(entityCard).join("")}</div>
+      <div class="actions mt">
+        <button class="btn primary" onclick="showStep(3)">Weiter zum Organigramm</button>
+      </div>
+    </div>
+  `;
+  document.querySelectorAll("[data-entity]").forEach(input => {
+    input.addEventListener("input", updateEntityFromInput);
+    input.addEventListener("change", updateEntityFromInput);
+  });
+}
+
+function updateEntityFromInput(event) {
+  const entity = state.entities.find(item => item.id === event.target.dataset.entity);
+  if (!entity) return;
+  const key = event.target.dataset.key;
+  entity[key] = event.target.type === "checkbox" ? event.target.checked : event.target.value;
+  syncRouteNames();
+  saveState();
+  renderStep3();
+  renderStep5();
+  renderStep6();
+}
+
+function addEntity() {
+  state.entities.push({
+    id: uid("e"),
+    name: "Neue Rolle",
+    type: "Rolle",
+    orgUnit: "",
+    formalAuthority: "mittel",
+    informalInfluence: "mittel",
+    protectionRole: false,
+    canBeConflict: false,
+    escalationContact: false,
+    notes: ""
+  });
+  saveState();
+  render();
+}
+
+function removeEntity(id) {
+  if (!confirm("Diese Rolle entfernen?")) return;
+  state.entities = state.entities.filter(entity => entity.id !== id);
+  saveState();
+  render();
+}
+
+function syncRouteNames() {
+  const names = entityNames();
+  state.formalLine = state.formalLine.filter(name => names.includes(name));
+  state.protectedRoutes = state.protectedRoutes.filter(route => names.includes(route.from) && names.includes(route.to));
+}
+
+function entitySelect(value, attrs) {
+  const opts = entityNames();
+  return `<select ${attrs}>${opts.map(name => `<option value="${esc(name)}" ${name === value ? "selected" : ""}>${esc(name)}</option>`).join("")}</select>`;
+}
+
+function renderStep3() {
+  document.getElementById("step-3").innerHTML = `
+    <div class="canvas">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">3. Organigramm & Schutznetz</div>
+          <h2>Formale Linie und geschuetzte Wege</h2>
+          <p class="lead">Der normale Berichtsweg ist nicht immer der sichere Weg. Ein Schutzmodell macht alternative Wege sichtbar.</p>
+        </div>
+        <button class="btn ghost" onclick="openEducation(['Unabhaengige Kanaele','Machtasymmetrie','Vertraulichkeit'])">Warum wichtig?</button>
+      </div>
+      <div class="network-layout">
+        <div class="panel">
+          <div class="section-head">
+            <div><h3>A. Formale Linie</h3><p class="mini-text">Institution / Dekanat bis betroffene Person.</p></div>
+            <button class="btn small" onclick="addFormalSlot()">Ebene +</button>
+          </div>
+          <div class="hierarchy">
+            ${state.formalLine.map((name, index) => `
+              <div class="hier-node">
+                <div class="field"><label>Ebene ${index + 1}</label>${entitySelect(name, `data-formal="${index}"`)}</div>
+                <button class="btn small danger mt" onclick="removeFormalSlot(${index})">Entfernen</button>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+        <div class="panel">
+          <div class="section-head">
+            <div><h3>B. Geschuetzte Routen</h3><p class="mini-text">Alternative sichere Pfade bei Befangenheit, Druck oder Vertraulichkeitsbedarf.</p></div>
+            <button class="btn small teal" onclick="addProtectedRoute()">Route +</button>
+          </div>
+          <div class="route-list">
+            ${state.protectedRoutes.map((route, index) => `
+              <div class="route">
+                <div class="field"><label>Von</label>${entitySelect(route.from, `data-route="${index}" data-route-key="from"`)}</div>
+                <div class="arrow"></div>
+                <div class="field"><label>Nach</label>${entitySelect(route.to, `data-route="${index}" data-route-key="to"`)}</div>
+                <button class="btn small danger" onclick="removeProtectedRoute(${index})">Entfernen</button>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      </div>
+      <div class="actions mt">
+        <button class="btn primary" onclick="showStep(4)">Weiter zur Eskalationslogik</button>
+      </div>
+    </div>
+  `;
+  document.querySelectorAll("[data-formal]").forEach(select => {
+    select.addEventListener("change", event => {
+      state.formalLine[Number(event.target.dataset.formal)] = event.target.value;
+      saveState();
+      renderStep6();
+    });
+  });
+  document.querySelectorAll("[data-route]").forEach(select => {
+    select.addEventListener("change", event => {
+      const route = state.protectedRoutes[Number(event.target.dataset.route)];
+      route[event.target.dataset.routeKey] = event.target.value;
+      saveState();
+      renderStep6();
+    });
+  });
+}
+
+function addFormalSlot() {
+  state.formalLine.push(entityNames()[0] || "");
+  saveState();
+  render();
+}
+
+function removeFormalSlot(index) {
+  state.formalLine.splice(index, 1);
+  saveState();
+  render();
+}
+
+function addProtectedRoute() {
+  const names = entityNames();
+  state.protectedRoutes.push({ from: names[0] || "", to: names[1] || names[0] || "" });
+  saveState();
+  render();
+}
+
+function removeProtectedRoute(index) {
+  state.protectedRoutes.splice(index, 1);
+  saveState();
+  render();
+}
+
+function levelCard(level, index) {
+  const fields = [
+    ["triggers", "Trigger"],
+    ["firstContact", "Sichere erste Anlaufstelle"],
+    ["roles", "Beteiligte Rollen / Personen"],
+    ["safeguards", "Schutzmechanismen"],
+    ["documentation", "Dokumentation"],
+    ["decisionRights", "Entscheidungsrechte"],
+    ["deescalation", "Deeskalation / Rueckkehr"]
+  ];
+  return `
+    <article class="level-card">
+      <div class="level-top">
+        <div class="level-num">${level.number}</div>
+        <div>
+          <h3>Level ${level.number} - ${esc(level.name)}</h3>
+          <p class="mini-text"><strong>${esc(level.question)}</strong></p>
+          <p class="mini-text">${esc(level.purpose)}</p>
+        </div>
+      </div>
+      <div class="level-body">
+        <div class="grid-2">
+          ${fields.map(([key, label]) => `<div class="field"><label>${label}</label><textarea data-level="${index}" data-key="${key}">${esc(level[key])}</textarea></div>`).join("")}
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function scenarioCard(scenario) {
+  return `
+    <article class="scenario-card">
+      <div class="section-head">
+        <div><h3>${esc(scenario.name || "Szenario")}</h3><p class="mini-text">Szenario-spezifischer sicherer Pfad.</p></div>
+        <button class="btn small danger" onclick="removeScenario('${scenario.id}')">Entfernen</button>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Szenario name</label><input data-scenario="${scenario.id}" data-key="name" value="${esc(scenario.name)}"></div>
+        <div class="field"><label>Wer ist betroffen?</label><input data-scenario="${scenario.id}" data-key="affected" value="${esc(scenario.affected)}"></div>
+        <div class="field"><label>Wer koennte Teil des Problems sein?</label><input data-scenario="${scenario.id}" data-key="possibleConflictActor" value="${esc(scenario.possibleConflictActor)}"></div>
+        <div class="field"><label>Direkter Weg sicher?</label><select data-scenario="${scenario.id}" data-key="directPathSafe"><option value="true" ${scenario.directPathSafe ? "selected" : ""}>ja</option><option value="false" ${!scenario.directPathSafe ? "selected" : ""}>nein</option></select></div>
+        <div class="field"><label>Erster sicherer Kontakt</label><input data-scenario="${scenario.id}" data-key="firstSafeContact" value="${esc(scenario.firstSafeContact)}"></div>
+        <div class="field"><label>Formale Eskalationsstelle</label><input data-scenario="${scenario.id}" data-key="formalEscalation" value="${esc(scenario.formalEscalation)}"></div>
+        <div class="field"><label>Schutzmassnahmen</label><textarea data-scenario="${scenario.id}" data-key="safeguards">${esc(scenario.safeguards)}</textarea></div>
+        <div class="field"><label>Rueckkehr / Deeskalation</label><textarea data-scenario="${scenario.id}" data-key="returnPath">${esc(scenario.returnPath)}</textarea></div>
+      </div>
+      ${renderScenarioPath(scenario)}
+    </article>
+  `;
+}
+
+function renderScenarioPath(scenario) {
+  const steps = [
+    ["Betroffene Person", scenario.affected],
+    ["Geschuetzter Kontakt", scenario.firstSafeContact],
+    ["Formale Stelle", scenario.formalEscalation],
+    ["Schutz / Klaerung", scenario.safeguards],
+    ["Rueckkehr", scenario.returnPath]
+  ];
+  return `<div class="path-visual">${steps.map(([label, value], index) => `
+    ${index ? "<div class='path-arrow'>→</div>" : ""}
+    <div class="path-step"><strong>${label}</strong>${textOrDash(value)}</div>
+  `).join("")}</div>`;
+}
+
+function renderStep4() {
+  document.getElementById("step-4").innerHTML = `
+    <div class="canvas">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">4. Eskalationslogik</div>
+          <h2>Stufen und sichere Pfade gestalten</h2>
+          <p class="lead">Die Logik beschreibt, wann eine Situation lokal bleibt, wann Beratung geschuetzt sein muss und wann formale oder sofortige Schutzmassnahmen greifen.</p>
+        </div>
+        <button class="btn ghost" onclick="openEducation(['PACE / Graded Assertiveness','Under-escalation vs. Over-escalation','Deeskalation'])">Warum wichtig?</button>
+      </div>
+      <div class="level-list">${state.levels.map(levelCard).join("")}</div>
+      <div class="mt">
+        <div class="section-head">
+          <div>
+            <h2>Pfad-Designer</h2>
+            <p class="lead">Szenario-spezifische sichere Wege, wenn der direkte Berichtsweg nicht passend oder nicht sicher ist.</p>
+          </div>
+          <button class="btn primary" onclick="addScenario()">Szenario hinzufuegen</button>
+        </div>
+        <div class="scenario-grid">${state.scenarios.map(scenarioCard).join("")}</div>
+      </div>
+      <div class="actions mt">
+        <button class="btn primary" onclick="showStep(5)">Weiter zu Pruefen</button>
+      </div>
+    </div>
+  `;
+  document.querySelectorAll("[data-level]").forEach(input => {
+    input.addEventListener("input", event => {
+      const level = state.levels[Number(event.target.dataset.level)];
+      level[event.target.dataset.key] = event.target.value;
+      saveState();
+      renderStep5();
+      renderStep6();
+    });
+  });
+  document.querySelectorAll("[data-scenario]").forEach(input => {
+    input.addEventListener("input", updateScenarioFromInput);
+    input.addEventListener("change", updateScenarioFromInput);
+  });
+}
+
+function updateScenarioFromInput(event) {
+  const scenario = state.scenarios.find(item => item.id === event.target.dataset.scenario);
+  if (!scenario) return;
+  const key = event.target.dataset.key;
+  scenario[key] = key === "directPathSafe" ? event.target.value === "true" : event.target.value;
+  saveState();
+  renderStep5();
+  renderStep6();
+}
+
+function addScenario() {
+  state.scenarios.push({
+    id: uid("s"),
+    name: "Neues Szenario",
+    affected: "",
+    possibleConflictActor: "",
+    directPathSafe: false,
+    firstSafeContact: "",
+    formalEscalation: "",
+    safeguards: "",
+    returnPath: ""
+  });
+  saveState();
+  render();
+}
+
+function removeScenario(id) {
+  if (!confirm("Dieses Szenario entfernen?")) return;
+  state.scenarios = state.scenarios.filter(scenario => scenario.id !== id);
+  saveState();
+  render();
+}
+
+function modelSnapshot() {
+  return [
+    "Kontext:",
+    `- Modellverantwortliche:r: ${state.context.owner || ""}`,
+    `- Einheit: ${state.context.unit || ""}`,
+    `- Anlass / Use Case: ${state.context.useCase || ""}`,
+    `- Sensible Situationen: ${state.context.sensitiveSituations || ""}`,
+    `- Ziel: ${state.context.modelGoal || ""}`,
+    `- Grenzen / No-Gos: ${state.context.redLines || ""}`,
+    `- Bestehende Kanaele: ${state.context.existingChannels || ""}`,
+    `- Review-Rhythmus: ${state.context.reviewRhythm || ""}`,
+    "",
+    "Rollen / Personen:",
+    ...state.entities.map(entity => `- ${entity.name} (${entity.type}, ${entity.orgUnit}) | Autoritaet: ${entity.formalAuthority}, Einfluss: ${entity.informalInfluence}, Schutzrolle: ${entity.protectionRole ? "ja" : "nein"}, Konfliktpotenzial: ${entity.canBeConflict ? "ja" : "nein"}, Eskalationskontakt: ${entity.escalationContact ? "ja" : "nein"}`),
+    "",
+    "Formale Linie:",
+    state.formalLine.join(" -> "),
+    "",
+    "Geschuetzte Routen:",
+    ...state.protectedRoutes.map(route => `- ${route.from} -> ${route.to}`),
+    "",
+    "Eskalationsstufen:",
+    ...state.levels.map(level => `Level ${level.number} - ${level.name}
+Frage: ${level.question}
+Zweck: ${level.purpose}
+Trigger: ${level.triggers}
+Erste Anlaufstelle: ${level.firstContact}
+Beteiligte Rollen: ${level.roles}
+Schutzmechanismen: ${level.safeguards}
+Dokumentation: ${level.documentation}
+Entscheidungsrechte: ${level.decisionRights}
+Deeskalation: ${level.deescalation}`),
+    "",
+    "Szenario-Pfade:",
+    ...state.scenarios.map(scenario => `- ${scenario.name}: ${scenario.affected} -> ${scenario.firstSafeContact} -> ${scenario.formalEscalation} -> Schutz: ${scenario.safeguards} -> Rueckkehr: ${scenario.returnPath}`)
+  ].join("\n");
+}
+
+function buildPrompt(type) {
+  const snapshot = modelSnapshot();
+  const tasks = {
+    sharpen: "Pruefe dieses Schutz- und Eskalationsmodell fuer ein sensibles universitaeres Gremium. Schaerfe Zweck, Trigger, Grenzen und Sprache, ohne Entscheidungen zu treffen.",
+    power: "Analysiere Machtasymmetrien, Abhaengigkeiten, Befangenheit und Vergeltungsrisiken. Zeige konkrete blinde Flecken und praktikable Schutzverbesserungen.",
+    network: "Pruefe das Organigramm und Schutznetz. Wo ist der formale Weg unsicher? Welche unabhaengigen Kanaele oder Bypass-Routen fehlen?",
+    onepager: "Formuliere daraus einen governance-ready Onepager in warmem, professionellem Deutsch mit Schweizer ss-Schreibung."
+  };
+  return `${tasks[type]}\n\nAI entscheidet nicht. AI hilft, das Modell zu pruefen, blinde Flecken zu finden und Sprache zu schaerfen.\n\n${snapshot}\n\nBitte antworte strukturiert, konkret und mit Fokus auf Schutz, Vertraulichkeit, Arbeitnehmer:innenschutz, Entscheidungsrechte und Deeskalation.`;
+}
+
+function renderStep5() {
+  const promptCards = [
+    ["sharpen", "Modell schaerfen"],
+    ["power", "Machtasymmetrien pruefen"],
+    ["network", "Organigramm-Risiko pruefen"],
+    ["onepager", "Governance-Onepager formulieren"]
+  ];
+  document.getElementById("step-5").innerHTML = `
+    <div class="canvas">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">5. Pruefen</div>
+          <h2>Reflexionslayer fuer blinde Flecken</h2>
+          <p class="lead">Eine zweite Ebene fuer Review, Sprachschaerfung und Governance-Qualitaet. Nicht als Entscheidungsinstanz.</p>
+        </div>
+        <button class="btn ghost" onclick="openEducation(['Machtasymmetrie','Non-Retaliation','Unabhaengige Kanaele','Deeskalation'])">Research Layer</button>
+      </div>
+      <div class="amber-box mb"><strong>AI entscheidet nicht.</strong> AI hilft, das Modell zu pruefen, blinde Flecken zu finden und Sprache zu schaerfen.</div>
+      <div class="prompt-grid">
+        ${promptCards.map(([key, title]) => `
+          <article class="prompt-card">
+            <h3>${title}</h3>
+            <p class="mini-text">Dynamischer Prompt mit Kontext, Rollen, formaler Linie, geschuetzten Routen, Stufen und Szenario-Pfaden.</p>
+            <div class="prompt-preview">${esc(buildPrompt(key))}</div>
+            <button class="btn warn" onclick="copyText(buildPrompt('${key}'), 'Prompt kopiert')">Copy Prompt</button>
+          </article>
+        `).join("")}
+      </div>
+      <div class="actions mt">
+        <button class="btn primary" onclick="showStep(6)">Zum Ergebnis</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderCanvasOutput() {
+  return `
+    <div class="soft-panel">
+      <h3>Schutzweg Canvas</h3>
+      ${renderPathStations()}
+      <div class="grid-2 mt">
+        ${state.levels.map(level => `
+          <div class="panel">
+            <h4>Level ${level.number} - ${esc(level.name)}</h4>
+            <p class="mini-text">${esc(level.question)}</p>
+            <div class="badges mt">
+              <span class="badge teal">${esc(level.firstContact || "Anlaufstelle offen")}</span>
+              <span class="badge">${esc(level.roles || "Rollen offen")}</span>
+            </div>
+            <p class="mini-text mt">${esc(level.safeguards || "")}</p>
+          </div>
+        `).join("")}
+      </div>
+      <h3 class="mt">Szenario-Pfade</h3>
+      ${state.scenarios.map(scenario => `<div class="panel mb"><h4>${esc(scenario.name)}</h4>${renderScenarioPath(scenario)}</div>`).join("")}
+    </div>
+  `;
+}
+
+function renderNetworkOutput() {
+  return `
+    <div class="network-layout">
+      <div class="panel">
+        <h3>Formale Hierarchie</h3>
+        <div class="hierarchy">${state.formalLine.map(name => `<div class="hier-node"><strong>${esc(name)}</strong></div>`).join("")}</div>
+      </div>
+      <div class="panel">
+        <h3>Schutznetz und unabhaengige Kanaele</h3>
+        <div class="route-list">${state.protectedRoutes.map(route => `<div class="route"><strong>${esc(route.from)}</strong><div class="arrow"></div><strong>${esc(route.to)}</strong></div>`).join("")}</div>
+        <h3 class="mt">Rollen / Personen</h3>
+        <div class="entity-grid">${state.entities.map(entity => `
+          <div class="entity-card">
+            <div class="entity-name">${esc(entity.name)}</div>
+            <div class="badges">
+              <span class="badge">A: ${esc(entity.formalAuthority)}</span>
+              <span class="badge">E: ${esc(entity.informalInfluence)}</span>
+              ${entity.protectionRole ? "<span class='badge teal'>Schutz</span>" : ""}
+              ${entity.canBeConflict ? "<span class='badge danger'>Risiko</span>" : ""}
+              ${entity.escalationContact ? "<span class='badge amber'>Kontakt</span>" : ""}
+            </div>
+          </div>
+        `).join("")}</div>
+      </div>
+    </div>
+  `;
+}
+
+function list(items) {
+  const clean = items.filter(Boolean);
+  return clean.length ? `<ul>${clean.map(item => `<li>${esc(item)}</li>`).join("")}</ul>` : "<p class='mini-text'>Noch offen</p>";
+}
+
+function renderOnepager() {
+  return `
+    <article class="onepager" id="onepager">
+      <h2>Governance Onepager: Schutz- und Eskalationsmodell</h2>
+      <p><strong>${esc(state.context.unit || "Einheit offen")}</strong> · Verantwortlich: ${esc(state.context.owner || "offen")}</p>
+      <h3>Zweck</h3><p>${textOrDash(state.context.modelGoal)}</p>
+      <h3>Ausgangslage</h3><p>${textOrDash(state.context.useCase)}</p>
+      <h3>Personen/Rollen</h3>${list(state.entities.map(entity => `${entity.name} (${entity.type}, ${entity.orgUnit}) - Autoritaet ${entity.formalAuthority}, Einfluss ${entity.informalInfluence}${entity.protectionRole ? ", Schutzrolle" : ""}${entity.canBeConflict ? ", moegliches Konfliktpotenzial" : ""}${entity.escalationContact ? ", Eskalationskontakt" : ""}`))}
+      <h3>Formale Linie</h3><p>${esc(state.formalLine.join(" -> ") || "Noch offen")}</p>
+      <h3>Geschuetzte Wege</h3>${list(state.protectedRoutes.map(route => `${route.from} -> ${route.to}`))}
+      <h3>Eskalationsstufen</h3>${list(state.levels.map(level => `Level ${level.number} - ${level.name}: ${level.purpose} Erste Anlaufstelle: ${level.firstContact}.`))}
+      <h3>Szenario-Pfade</h3>${list(state.scenarios.map(scenario => `${scenario.name}: ${scenario.affected} -> ${scenario.firstSafeContact} -> ${scenario.formalEscalation} -> Schutz / Klaerung -> Rueckkehr.`))}
+      <h3>Schutzmechanismen</h3>${list(state.levels.map(level => `Level ${level.number}: ${level.safeguards}`).filter(Boolean))}
+      <h3>Dokumentation und Vertraulichkeit</h3>${list(state.levels.map(level => `Level ${level.number}: ${level.documentation}`).filter(Boolean))}
+      <h3>Entscheidungsrechte</h3>${list(state.levels.map(level => `Level ${level.number}: ${level.decisionRights}`).filter(Boolean))}
+      <h3>Deeskalation</h3>${list(state.levels.map(level => `Level ${level.number}: ${level.deescalation}`).filter(Boolean))}
+      <h3>Review-Rhythmus</h3><p>${textOrDash(state.context.reviewRhythm)}</p>
+      <h3>Offene Fragen</h3><p>${textOrDash(state.openQuestions)}</p>
+    </article>
+  `;
+}
+
+function markdownText() {
+  const bullets = arr => arr.filter(Boolean).map(item => `- ${item}`).join("\n") || "- Noch offen";
+  return `# Governance Onepager: Schutz- und Eskalationsmodell
+
+**Einheit:** ${state.context.unit || "offen"}
+**Verantwortlich:** ${state.context.owner || "offen"}
+
+## Zweck
+${state.context.modelGoal || "Noch offen"}
+
+## Ausgangslage
+${state.context.useCase || "Noch offen"}
+
+## Personen/Rollen
+${bullets(state.entities.map(entity => `${entity.name} (${entity.type}, ${entity.orgUnit}) - Autoritaet ${entity.formalAuthority}, Einfluss ${entity.informalInfluence}`))}
+
+## Formale Linie
+${state.formalLine.join(" -> ") || "Noch offen"}
+
+## Geschuetzte Wege
+${bullets(state.protectedRoutes.map(route => `${route.from} -> ${route.to}`))}
+
+## Eskalationsstufen
+${bullets(state.levels.map(level => `Level ${level.number} - ${level.name}: ${level.purpose}`))}
+
+## Szenario-Pfade
+${bullets(state.scenarios.map(scenario => `${scenario.name}: ${scenario.affected} -> ${scenario.firstSafeContact} -> ${scenario.formalEscalation} -> Schutz / Klaerung -> Rueckkehr`))}
+
+## Schutzmechanismen
+${bullets(state.levels.map(level => `Level ${level.number}: ${level.safeguards}`))}
+
+## Dokumentation und Vertraulichkeit
+${bullets(state.levels.map(level => `Level ${level.number}: ${level.documentation}`))}
+
+## Entscheidungsrechte
+${bullets(state.levels.map(level => `Level ${level.number}: ${level.decisionRights}`))}
+
+## Deeskalation
+${bullets(state.levels.map(level => `Level ${level.number}: ${level.deescalation}`))}
+
+## Review-Rhythmus
+${state.context.reviewRhythm || "Noch offen"}
+
+## Offene Fragen
+${state.openQuestions || "Noch offen"}
+`;
+}
+
+function onepagerText() {
+  const temp = document.createElement("div");
+  temp.innerHTML = renderOnepager();
+  return temp.textContent.replace(/\n{3,}/g, "\n\n").trim();
+}
+
+function renderStep6() {
+  document.getElementById("step-6").innerHTML = `
+    <div class="canvas">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">6. Ergebnis</div>
+          <h2>Governance-ready Modell</h2>
+          <p class="lead">Visuelle Schutzwege, Rollenkarte, Schutznetz und Onepager fuer Review, Abstimmung und Beschlussvorbereitung.</p>
+        </div>
+        <div class="actions">
+          <button class="btn" onclick="copyText(document.getElementById('resultArea').innerText, 'Canvas kopiert')">Canvas kopieren</button>
+          <button class="btn" onclick="copyText(onepagerText(), 'Onepager kopiert')">Onepager kopieren</button>
+          <button class="btn" onclick="copyText(markdownText(), 'Markdown kopiert')">Markdown kopieren</button>
+          <button class="btn primary" onclick="window.print()">Drucken / PDF</button>
+          <button class="btn danger" onclick="resetAll()">Zuruecksetzen</button>
+        </div>
+      </div>
+      <div class="tabs">
+        <button class="tab-btn ${currentResult === "canvas" ? "active" : ""}" onclick="showResult('canvas')">A. Schutzweg Canvas</button>
+        <button class="tab-btn ${currentResult === "network" ? "active" : ""}" onclick="showResult('network')">B. Organigramm & Schutznetz</button>
+        <button class="tab-btn ${currentResult === "onepager" ? "active" : ""}" onclick="showResult('onepager')">C. Governance Onepager</button>
+      </div>
+      <div id="resultArea">
+        <div class="result-pane ${currentResult === "canvas" ? "active" : ""}" id="result-canvas">${renderCanvasOutput()}</div>
+        <div class="result-pane ${currentResult === "network" ? "active" : ""}" id="result-network">${renderNetworkOutput()}</div>
+        <div class="result-pane ${currentResult === "onepager" ? "active" : ""}" id="result-onepager">${renderOnepager()}</div>
+      </div>
+      <div class="mt field">
+        <label>Offene Fragen</label>
+        <textarea id="openQuestions">${esc(state.openQuestions)}</textarea>
+      </div>
+    </div>
+  `;
+  const openQuestions = document.getElementById("openQuestions");
+  if (openQuestions) {
+    openQuestions.addEventListener("input", event => {
+      state.openQuestions = event.target.value;
+      saveState();
+    });
+  }
+}
+
+function showResult(key) {
+  currentResult = key;
+  renderStep6();
+}
+
+async function copyText(text, message) {
+  try {
+    await navigator.clipboard.writeText(text);
+    toast(message);
+  } catch (error) {
+    const area = document.createElement("textarea");
+    area.value = text;
+    document.body.appendChild(area);
+    area.select();
+    document.execCommand("copy");
+    area.remove();
+    toast(message);
+  }
+}
+
+function openEducation(topics) {
+  document.getElementById("eduTopic").textContent = "Research Layer";
+  document.getElementById("eduTitle").textContent = "Warum wichtig?";
+  document.getElementById("eduBody").innerHTML = topics.map(topic => {
+    const item = education[topic];
+    return `
+      <div class="panel mb">
+        <h3>${topic}</h3>
+        <p><strong>Kurz:</strong> ${item.why}</p>
+        <p class="mt"><strong>Warum hier wichtig:</strong> ${item.step}</p>
+        <p class="mt"><strong>Praktische Konsequenz:</strong> ${item.implication}</p>
+      </div>
+    `;
+  }).join("");
+  document.getElementById("eduModal").classList.add("open");
+}
+
+function closeEducation() {
+  document.getElementById("eduModal").classList.remove("open");
+}
+
+function resetAll() {
+  if (!confirm("Alle lokalen Daten zuruecksetzen und mit dem Beispielmodell neu starten?")) return;
+  state = clone(defaults);
+  localStorage.removeItem(STORAGE_KEY);
+  saveState();
+  render();
+  toast("Zurueckgesetzt");
+}
+
+function toast(message) {
+  const el = document.getElementById("toast");
+  el.textContent = message;
+  el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), 2200);
+}
+
+document.getElementById("eduModal").addEventListener("click", event => {
+  if (event.target.id === "eduModal") closeEducation();
+});
+
+render();
+</script>
+</body>
+</html>
