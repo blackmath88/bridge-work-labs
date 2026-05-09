@@ -17,6 +17,9 @@ export type TranslationSet = {
   closeMenu: string;
   toggleEducation: string;
   levelCompletion: (filled: number, total: number) => string;
+  continueToStep: (stepLabel: string) => string;
+  confirmReplaceWithDemo: string;
+  confirmStartBlank: string;
   demoBadge: string;
   draftBadge: string;
   learningPanel: string;
@@ -181,6 +184,11 @@ export const translations: Record<Language, TranslationSet> = {
     closeMenu: "Close menu",
     toggleEducation: "Learning panel",
     levelCompletion: (filled: number, total: number) => `${filled} of ${total}`,
+    continueToStep: (stepLabel: string) => `Continue to ${stepLabel}`,
+    confirmReplaceWithDemo:
+      "Replace your current model with the demo? Your inputs will be lost.",
+    confirmStartBlank:
+      "Start over with a blank model? Your inputs will be lost.",
     demoBadge: "Demo loaded",
     draftBadge: "Draft",
     learningPanel: "Learning panel",
@@ -412,6 +420,11 @@ export const translations: Record<Language, TranslationSet> = {
     closeMenu: "Menü schliessen",
     toggleEducation: "Erläuterungen",
     levelCompletion: (filled: number, total: number) => `${filled} von ${total}`,
+    continueToStep: (stepLabel: string) => `Weiter zu ${stepLabel}`,
+    confirmReplaceWithDemo:
+      "Aktuelles Modell durch die Demo ersetzen? Eingaben gehen verloren.",
+    confirmStartBlank:
+      "Mit einem leeren Modell neu beginnen? Eingaben gehen verloren.",
     demoBadge: "Demo geladen",
     draftBadge: "Entwurf",
     learningPanel: "Erläuterungen",

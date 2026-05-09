@@ -1,4 +1,4 @@
-import { Check, ChevronDown, Plus, X } from "lucide-react";
+import { ArrowRight, Check, ChevronDown, Plus, X } from "lucide-react";
 import { useState } from "react";
 import { pathwayColors, predefinedTriggerKeys, type PredefinedTriggerKey } from "../config";
 import type {
@@ -33,9 +33,15 @@ type BuildScreenProps = {
   state: ToolState;
   translations: TranslationSet;
   dispatch: (action: ToolAction) => void;
+  onAdvance: () => void;
 };
 
-export function BuildScreen({ state, translations: t, dispatch }: BuildScreenProps) {
+export function BuildScreen({
+  state,
+  translations: t,
+  dispatch,
+  onAdvance,
+}: BuildScreenProps) {
   const [openLevels, setOpenLevels] = useState<string[]>(() => {
     const first = state.levels[0]?.id;
     return first ? [first] : [];
@@ -250,6 +256,13 @@ export function BuildScreen({ state, translations: t, dispatch }: BuildScreenPro
           })}
         </div>
       </section>
+
+      <div className="flex justify-end pt-2">
+        <button className="btn-primary btn-lg" onClick={onAdvance} type="button">
+          {t.continueToStep(t.steps.reflect.label)}
+          <ArrowRight aria-hidden="true" className="h-4 w-4" />
+        </button>
+      </div>
     </div>
   );
 }

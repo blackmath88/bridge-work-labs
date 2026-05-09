@@ -146,6 +146,34 @@ function legacyArraysToTriggers(
   return result;
 }
 
+export function hasUserContent(state: ToolState): boolean {
+  if (state.demoMode) {
+    return true;
+  }
+  if (state.triggers.length > 0) {
+    return true;
+  }
+  for (const value of Object.values(state.context)) {
+    if (value.trim().length > 0) {
+      return true;
+    }
+  }
+  for (const level of state.levels) {
+    if (
+      level.purpose.trim() ||
+      level.triggers.trim() ||
+      level.safeFirstStep.trim() ||
+      level.roles.trim() ||
+      level.safeguards.trim() ||
+      level.documentation.trim() ||
+      level.deEscalation.trim()
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function isValidTrigger(value: unknown): value is Trigger {
   if (!value || typeof value !== "object") {
     return false;

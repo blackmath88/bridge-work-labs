@@ -1,4 +1,4 @@
-import { Check, Copy, RotateCcw } from "lucide-react";
+import { ArrowRight, Check, Copy, RotateCcw } from "lucide-react";
 import { useState } from "react";
 import { buildReflectionPrompt } from "../prompts";
 import type { ToolState } from "../schema";
@@ -7,6 +7,7 @@ import type { TranslationSet } from "../translations";
 type ReflectScreenProps = {
   state: ToolState;
   translations: TranslationSet;
+  onAdvance: () => void;
 };
 
 type PromptKind = "sharpen" | "risk";
@@ -15,7 +16,11 @@ type Edits = Record<PromptKind, string | null>;
 
 const initialEdits: Edits = { sharpen: null, risk: null };
 
-export function ReflectScreen({ state, translations: t }: ReflectScreenProps) {
+export function ReflectScreen({
+  state,
+  translations: t,
+  onAdvance,
+}: ReflectScreenProps) {
   const [copied, setCopied] = useState<PromptKind | null>(null);
   const [edits, setEdits] = useState<Edits>(initialEdits);
 
@@ -127,6 +132,13 @@ export function ReflectScreen({ state, translations: t }: ReflectScreenProps) {
             </article>
           );
         })}
+      </div>
+
+      <div className="flex justify-end pt-2">
+        <button className="btn-primary btn-lg" onClick={onAdvance} type="button">
+          {t.continueToStep(t.steps.output.label)}
+          <ArrowRight aria-hidden="true" className="h-4 w-4" />
+        </button>
       </div>
     </div>
   );

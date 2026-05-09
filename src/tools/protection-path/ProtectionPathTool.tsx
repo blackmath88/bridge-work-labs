@@ -17,6 +17,7 @@ import { StepHeader } from "./screens/StepHeader";
 import { StepPlaceholder } from "./screens/StepPlaceholder";
 import { VisionScreen } from "./screens/VisionScreen";
 import {
+  hasUserContent,
   migrateStoredState,
   toolStateReducer,
   type ToolAction,
@@ -96,13 +97,19 @@ export function ProtectionPathTool() {
   }, []);
 
   const loadDemo = useCallback(() => {
+    if (hasUserContent(toolState) && !window.confirm(t.confirmReplaceWithDemo)) {
+      return;
+    }
     dispatch({ type: "loadDemo" });
-  }, []);
+  }, [toolState, t.confirmReplaceWithDemo]);
 
   const buildOwn = useCallback(() => {
+    if (hasUserContent(toolState) && !window.confirm(t.confirmStartBlank)) {
+      return;
+    }
     dispatch({ type: "buildOwn" });
     setActiveStep("build");
-  }, []);
+  }, [toolState, t.confirmStartBlank]);
 
   const resetState = useCallback(() => {
     if (!window.confirm(t.resetConfirm)) {
@@ -149,6 +156,7 @@ export function ProtectionPathTool() {
             activeStep={activeStep}
             dispatch={dispatch}
             onBuildOwn={buildOwn}
+            onChangeStep={setActiveStep}
             onLoadDemo={loadDemo}
             route={route}
             state={toolState}
@@ -168,6 +176,7 @@ type ScreenProps = {
   dispatch: (action: ToolAction) => void;
   onLoadDemo: () => void;
   onBuildOwn: () => void;
+  onChangeStep: (step: StepId) => void;
 };
 
 function Screen({
@@ -178,6 +187,7 @@ function Screen({
   dispatch,
   onLoadDemo,
   onBuildOwn,
+  onChangeStep,
 }: ScreenProps) {
   if (activeStep === "vision") {
     return (
@@ -194,7 +204,12 @@ function Screen({
     return (
       <>
         <StepHeader route={route} />
-        <BuildScreen dispatch={dispatch} state={state} translations={t} />
+        <BuildScreen
+          dispatch={dispatch}
+          onAdvance={() => onChangeStep("reflect")}
+          state={state}
+          translations={t}
+        />
       </>
     );
   }
@@ -203,7 +218,11 @@ function Screen({
     return (
       <>
         <StepHeader route={route} />
-        <ReflectScreen state={state} translations={t} />
+        <ReflectScreen
+          onAdvance={() => onChangeStep("output")}
+          state={state}
+          translations={t}
+        />
       </>
     );
   }
