@@ -11,6 +11,24 @@ import type { ToolAction } from "../state";
 import type { TranslationSet } from "../translations";
 import { getTriggerLabel, isPredefinedSelected } from "../triggers";
 
+const LEVEL_FIELDS_FOR_COMPLETION: Array<keyof Omit<EscalationLevel, "id" | "number">> = [
+  "name",
+  "purpose",
+  "triggers",
+  "safeFirstStep",
+  "roles",
+  "safeguards",
+  "documentation",
+  "deEscalation",
+];
+
+function countFilledLevelFields(level: EscalationLevel): number {
+  return LEVEL_FIELDS_FOR_COMPLETION.reduce(
+    (count, field) => (level[field].trim() ? count + 1 : count),
+    0,
+  );
+}
+
 type BuildScreenProps = {
   state: ToolState;
   translations: TranslationSet;
@@ -185,6 +203,12 @@ export function BuildScreen({ state, translations: t, dispatch }: BuildScreenPro
                     <span className="block truncate text-[12.5px] text-ink-3">
                       {level.purpose || t.build.fields.purpose}
                     </span>
+                  </span>
+                  <span className="hidden shrink-0 font-mono text-[11px] tracking-wide text-ink-3 sm:inline">
+                    {t.levelCompletion(
+                      countFilledLevelFields(level),
+                      LEVEL_FIELDS_FOR_COMPLETION.length,
+                    )}
                   </span>
                   <ChevronDown
                     aria-hidden="true"

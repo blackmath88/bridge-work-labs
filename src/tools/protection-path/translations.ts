@@ -13,6 +13,10 @@ export type TranslationSet = {
   reset: string;
   resetConfirm: string;
   saved: string;
+  openMenu: string;
+  closeMenu: string;
+  toggleEducation: string;
+  levelCompletion: (filled: number, total: number) => string;
   demoBadge: string;
   draftBadge: string;
   learningPanel: string;
@@ -171,6 +175,10 @@ export const translations: Record<Language, TranslationSet> = {
     reset: "Reset",
     resetConfirm: "Reset everything? Your context, triggers, and levels will be cleared.",
     saved: "Saved",
+    openMenu: "Open menu",
+    closeMenu: "Close menu",
+    toggleEducation: "Learning panel",
+    levelCompletion: (filled: number, total: number) => `${filled} of ${total}`,
     demoBadge: "Demo loaded",
     draftBadge: "Draft",
     learningPanel: "Learning panel",
@@ -396,6 +404,10 @@ export const translations: Record<Language, TranslationSet> = {
     reset: "Zurücksetzen",
     resetConfirm: "Alles zurücksetzen? Kontext, Auslöser und Stufen werden gelöscht.",
     saved: "Gespeichert",
+    openMenu: "Menü öffnen",
+    closeMenu: "Menü schliessen",
+    toggleEducation: "Erläuterungen",
+    levelCompletion: (filled: number, total: number) => `${filled} von ${total}`,
     demoBadge: "Demo geladen",
     draftBadge: "Entwurf",
     learningPanel: "Erläuterungen",

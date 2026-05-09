@@ -1,4 +1,3 @@
-import { Sparkles } from "lucide-react";
 import { useCallback, useEffect, useReducer, useState } from "react";
 import {
   readStepFromHash,
@@ -7,7 +6,7 @@ import {
   type StepId,
 } from "../../app/routes";
 import { EducationPanel } from "../../components/EducationPanel";
-import { StepNavigation } from "../../components/StepNavigation";
+import { Sidebar } from "../../components/Sidebar";
 import { TopBar } from "../../components/TopBar";
 import { clearStorage, loadFromStorage, saveToStorage } from "../../lib/storage";
 import { createDefaultToolState, type Language, type ToolState } from "./schema";
@@ -25,10 +24,21 @@ import {
 import { translations } from "./translations";
 
 const STORAGE_KEY = "protection-path-designer-state";
+const EDUCATION_OPEN_KEY = "protection-path-education-open";
 
 function loadInitialState(): ToolState {
   const stored = loadFromStorage<unknown>(STORAGE_KEY, null);
   return migrateStoredState(stored) ?? createDefaultToolState();
+}
+
+function loadInitialEducationOpen(): boolean {
+  if (typeof window === "undefined") {
+    return false;
+  }
+  const raw = window.localStorage.getItem(EDUCATION_OPEN_KEY);
+  if (raw === "true") return true;
+  if (raw === "false") return false;
+  return window.matchMedia("(min-width: 1280px)").matches;
 }
 
 export function ProtectionPathTool() {
@@ -37,6 +47,8 @@ export function ProtectionPathTool() {
   );
   const [toolState, dispatch] = useReducer(toolStateReducer, undefined, loadInitialState);
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [educationOpen, setEducationOpen] = useState(loadInitialEducationOpen);
   const t = translations[toolState.language];
   const route = t.steps[activeStep];
 
@@ -60,6 +72,24 @@ export function ProtectionPathTool() {
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem(EDUCATION_OPEN_KEY, String(educationOpen));
+  }, [educationOpen]);
+
+  useEffect(() => {
+    if (!sidebarOpen && !educationOpen) {
+      return;
+    }
+    function onKey(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setSidebarOpen(false);
+        setEducationOpen(false);
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [sidebarOpen, educationOpen]);
 
   const setLanguage = useCallback((language: Language) => {
     dispatch({ type: "setLanguage", language });
@@ -85,56 +115,35 @@ export function ProtectionPathTool() {
 
   return (
     <div className="min-h-screen font-sans text-ink">
-      <aside className="app-sidebar glass-side z-40 flex w-full flex-col py-6 lg:fixed lg:left-0 lg:top-0 lg:h-screen lg:w-64">
-        <div className="mb-7 px-5">
-          <div className="flex items-center gap-2">
-            <span
-              aria-hidden="true"
-              className="flex h-7 w-7 items-center justify-center rounded-lg bg-sage-600 text-white shadow-e1"
-            >
-              <Sparkles className="h-3.5 w-3.5" />
-            </span>
-            <p className="eyebrow">{t.sideSub}</p>
-          </div>
-          <h2 className="mt-3 text-[17px] font-semibold tracking-tight text-ink">
-            {t.sideTitle}
-          </h2>
-        </div>
-
-        <StepNavigation
-          activeStep={activeStep}
-          onStepChange={setActiveStep}
-          steps={stepRoutes}
-          translations={t}
-        />
-
-        <div className="mt-auto px-5 pt-6">
-          <div className="hr-soft" />
-          <p className="mt-4 text-[11.5px] leading-relaxed text-ink-3">
-            {t.privacyNote}
-          </p>
-          <div className="mt-4 flex items-center justify-between">
-            <p className="text-[10.5px] font-mono uppercase tracking-[0.14em] text-ink-3">
-              {t.brandLine}
-            </p>
-            <span className="kbd">v1</span>
-          </div>
-          <p className="mt-1 text-[10.5px] text-ink-4">{t.brandSub}</p>
-        </div>
-      </aside>
+      <Sidebar
+        activeStep={activeStep}
+        onClose={() => setSidebarOpen(false)}
+        onStepChange={setActiveStep}
+        open={sidebarOpen}
+        steps={stepRoutes}
+        translations={t}
+      />
 
       <TopBar
         activeStep={activeStep}
         demoMode={toolState.demoMode}
+        educationOpen={educationOpen}
         language={toolState.language}
         lastSavedAt={lastSavedAt}
         onLanguageChange={setLanguage}
+        onOpenSidebar={() => setSidebarOpen(true)}
         onReset={resetState}
+        onToggleEducation={() => setEducationOpen((value) => !value)}
         translations={t}
       />
-      <EducationPanel activeStep={activeStep} translations={t} />
+      <EducationPanel
+        activeStep={activeStep}
+        onClose={() => setEducationOpen(false)}
+        open={educationOpen}
+        translations={t}
+      />
 
-      <main className="min-h-screen px-5 pb-16 pt-8 lg:ml-64 lg:px-10 lg:pt-20 xl:mr-72">
+      <main className="min-h-screen px-5 pb-16 pt-8 lg:ml-64 lg:px-10 lg:pt-20">
         <section className="mx-auto max-w-5xl animate-fade-in">
           <Screen
             activeStep={activeStep}
