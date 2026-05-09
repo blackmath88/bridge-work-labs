@@ -1,6 +1,18 @@
 import type { Language, ToolState } from "./schema";
 import { translations } from "./translations";
 
+export type OutputLevel = {
+  number: number;
+  name: string;
+  purpose: string;
+  triggers: string;
+  safeFirstStep: string;
+  roles: string;
+  safeguards: string;
+  documentation: string;
+  deEscalation: string;
+};
+
 export type OutputModel = {
   title: string;
   subtitle: string;
@@ -11,12 +23,7 @@ export type OutputModel = {
   triggers: string[];
   roles: string[];
   rhythm: string;
-  levels: Array<{
-    number: number;
-    name: string;
-    purpose: string;
-    roles: string;
-  }>;
+  levels: OutputLevel[];
 };
 
 export function buildOutputModel(
@@ -69,9 +76,28 @@ export function buildOutputModel(
       number: level.number,
       name: level.name,
       purpose: level.purpose,
+      triggers: level.triggers,
+      safeFirstStep: level.safeFirstStep,
       roles: level.roles,
+      safeguards: level.safeguards,
+      documentation: level.documentation,
+      deEscalation: level.deEscalation,
     })),
   };
+}
+
+const levelFieldOrder: ReadonlyArray<keyof Omit<OutputLevel, "number" | "name">> = [
+  "purpose",
+  "triggers",
+  "safeFirstStep",
+  "roles",
+  "safeguards",
+  "documentation",
+  "deEscalation",
+];
+
+export function getLevelFieldOrder() {
+  return levelFieldOrder;
 }
 
 export function buildPlainTextOutput(
@@ -81,6 +107,7 @@ export function buildPlainTextOutput(
   const t = translations[language];
   const model = buildOutputModel(state, language);
   const empty = t.output.noContent;
+  const fieldLabels = t.build.fields;
 
   return [
     model.title,
@@ -98,11 +125,14 @@ export function buildPlainTextOutput(
     "",
     `${t.output.levels}:`,
     model.levels
-      .map(
-        (level) =>
-          `${level.number}. ${level.name || empty}\n   ${t.build.fields.purpose}: ${level.purpose || empty}\n   ${t.output.roles}: ${level.roles || empty}`,
-      )
-      .join("\n"),
+      .map((level) => {
+        const header = `${level.number}. ${level.name || empty}`;
+        const lines = levelFieldOrder.map(
+          (field) => `   ${fieldLabels[field]}: ${level[field] || empty}`,
+        );
+        return [header, ...lines].join("\n");
+      })
+      .join("\n\n"),
     "",
     `${t.output.triggers}:`,
     formatPlainList(model.triggers, empty),
@@ -122,6 +152,15 @@ export function buildMarkdownOutput(
   const t = translations[language];
   const model = buildOutputModel(state, language);
   const empty = t.output.noContent;
+  const fieldLabels = t.build.fields;
+
+  const levelSections = model.levels.flatMap((level) => {
+    const heading = `### ${level.number}. ${level.name || empty}`;
+    const rows = levelFieldOrder.map(
+      (field) => `- **${fieldLabels[field]}:** ${level[field] || empty}`,
+    );
+    return [heading, ...rows, ""];
+  });
 
   return [
     `# ${model.title}`,
@@ -137,13 +176,8 @@ export function buildMarkdownOutput(
     formatMarkdownList(model.principles, empty),
     "",
     `## ${t.output.levels}`,
-    `| ${t.output.columns.number} | ${t.output.columns.name} | ${t.output.columns.purpose} | ${t.output.columns.roles} |`,
-    "|---|---|---|---|",
-    ...model.levels.map(
-      (level) =>
-        `| ${level.number} | ${escapeTable(level.name || empty)} | ${escapeTable(level.purpose || empty)} | ${escapeTable(level.roles || empty)} |`,
-    ),
     "",
+    ...levelSections,
     `## ${t.output.triggers}`,
     formatMarkdownList(model.triggers, empty),
     "",
@@ -161,10 +195,6 @@ function formatPlainList(items: string[], empty: string) {
 
 function formatMarkdownList(items: string[], empty: string) {
   return items.length ? items.map((item) => `- ${item}`).join("\n") : `- ${empty}`;
-}
-
-function escapeTable(value: string) {
-  return value.replace(/\|/g, "\\|").replace(/\n/g, "<br>");
 }
 
 function splitList(value: string) {

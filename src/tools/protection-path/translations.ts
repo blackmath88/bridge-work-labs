@@ -12,6 +12,7 @@ export type TranslationSet = {
   appTitle: string;
   reset: string;
   resetConfirm: string;
+  saved: string;
   demoBadge: string;
   draftBadge: string;
   learningPanel: string;
@@ -147,12 +148,6 @@ export type TranslationSet = {
     reviewRhythm: string;
     noContent: string;
     principles: string[];
-    columns: {
-      number: string;
-      name: string;
-      purpose: string;
-      roles: string;
-    };
   };
   export: {
     copyText: string;
@@ -175,6 +170,7 @@ export const translations: Record<Language, TranslationSet> = {
     appTitle: "Protection & Escalation Model",
     reset: "Reset",
     resetConfirm: "Reset everything? Your context, triggers, and levels will be cleared.",
+    saved: "Saved",
     demoBadge: "Demo loaded",
     draftBadge: "Draft",
     learningPanel: "Learning panel",
@@ -373,12 +369,6 @@ export const translations: Record<Language, TranslationSet> = {
       roles: "Roles",
       reviewRhythm: "Review rhythm",
       noContent: "Not yet specified",
-      columns: {
-        number: "#",
-        name: "Name",
-        purpose: "Purpose",
-        roles: "Roles",
-      },
       principles: [
         "Escalation is a protection path, not a punishment.",
         "Concerns raised in good faith must not create disadvantage.",
@@ -405,6 +395,7 @@ export const translations: Record<Language, TranslationSet> = {
     appTitle: "Schutz- & Eskalationsmodell",
     reset: "Zurücksetzen",
     resetConfirm: "Alles zurücksetzen? Kontext, Auslöser und Stufen werden gelöscht.",
+    saved: "Gespeichert",
     demoBadge: "Demo geladen",
     draftBadge: "Entwurf",
     learningPanel: "Erläuterungen",
@@ -611,12 +602,6 @@ export const translations: Record<Language, TranslationSet> = {
         "Vertraulichkeit folgt dem Need-to-know-Prinzip.",
         "De-Eskalation ist bewusst und dokumentiert.",
       ],
-      columns: {
-        number: "#",
-        name: "Name",
-        purpose: "Zweck",
-        roles: "Rollen",
-      },
     },
     export: {
       copyText: "Text kopieren",

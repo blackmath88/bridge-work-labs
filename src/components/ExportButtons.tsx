@@ -6,6 +6,7 @@ import {
   buildMarkdownOutput,
   buildOutputModel,
   buildPlainTextOutput,
+  getLevelFieldOrder,
 } from "../tools/protection-path/output";
 import type { Language, ToolState } from "../tools/protection-path/schema";
 import type { TranslationSet } from "../tools/protection-path/translations";
@@ -47,6 +48,18 @@ export function ExportButtons({ state, translations: t }: ExportButtonsProps) {
 
   async function exportWord() {
     const model = buildOutputModel(state, language);
+    const empty = t.output.noContent;
+    const fieldLabels = t.build.fields;
+    const fieldOrder = getLevelFieldOrder();
+
+    const levelSections = model.levels.flatMap((level) => [
+      {
+        heading: `${level.number}. ${level.name || empty}`,
+        body: fieldOrder.map(
+          (field) => `${fieldLabels[field]}: ${level[field] || empty}`,
+        ),
+      },
+    ]);
 
     await downloadDocx(
       {
@@ -54,26 +67,21 @@ export function ExportButtons({ state, translations: t }: ExportButtonsProps) {
         subtitle: `${model.subtitle} - ${model.date}`,
         sections: [
           { heading: t.output.purpose, body: model.purpose },
-          { heading: t.output.context, body: model.context || t.output.noContent },
+          { heading: t.output.context, body: model.context || empty },
           { heading: t.output.guidingPrinciples, body: model.principles },
-          {
-            heading: t.output.levels,
-            body: model.levels.map(
-              (level) =>
-                `${level.number}. ${level.name}: ${level.purpose || t.output.noContent} (${level.roles || t.output.noContent})`,
-            ),
-          },
+          { heading: t.output.levels, body: "" },
+          ...levelSections,
           {
             heading: t.output.triggers,
-            body: model.triggers.length ? model.triggers : [t.output.noContent],
+            body: model.triggers.length ? model.triggers : [empty],
           },
           {
             heading: t.output.roles,
-            body: model.roles.length ? model.roles : [t.output.noContent],
+            body: model.roles.length ? model.roles : [empty],
           },
           {
             heading: t.output.reviewRhythm,
-            body: model.rhythm || t.output.noContent,
+            body: model.rhythm || empty,
           },
         ],
       },

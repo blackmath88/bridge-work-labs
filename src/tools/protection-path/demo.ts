@@ -1,6 +1,6 @@
-import type { ToolState } from "./schema";
+import type { Language, ToolState } from "./schema";
 
-export const demoState: ToolState = {
+const demoStateEn: ToolState = {
   language: "en",
   demoMode: true,
   context: {
@@ -88,3 +88,96 @@ export const demoState: ToolState = {
     },
   ],
 };
+
+const demoStateDe: ToolState = {
+  language: "de",
+  demoMode: true,
+  context: {
+    teamName: "Forschungsethik-Gremium",
+    rhythm: "Vierteljährliche Überprüfung und nach jeder Eskalation auf Stufe 3 oder 4.",
+    situations:
+      "Sensible Urheberschaftskonflikte, Interessenkonflikte und Sicherheitsbedenken in geförderter Forschung.",
+    power:
+      "Junior-Forschende, Studierende und externe Beratende können gegenüber leitenden Entscheidungsträgern exponiert sein.",
+    protection:
+      "Studierende, Junior-Mitarbeitende, Hinweisgebende und alle, die gegen eine einflussreiche Person aussagen sollen.",
+    channels:
+      "Gremiumsleitung, unabhängige Ombudsperson, HR-Ansprechperson und vertrauliches Ethik-Postfach.",
+    redLines:
+      "Vergeltung, ungeregelte Interessenkonflikte und Druck, Sicherheitsbedenken zu unterdrücken.",
+    openQuestions:
+      "Wer kann eine Entscheidung pausieren, wenn die Leitung befangen ist? Wie schnell ist eine unabhängige Prüfung erreichbar?",
+  },
+  selectedTriggers: [
+    "powerImbalance",
+    "retaliationConcern",
+    "conflictedDecisionMaker",
+  ],
+  customTriggers: ["Druck durch externe Geldgeber"],
+  levels: [
+    {
+      id: "normal",
+      number: 0,
+      name: "Normal",
+      purpose: "Bedenken im regulären Rhythmus des Gremiums besprechbar halten.",
+      triggers: "Alltägliche Unsicherheit oder erste Meinungsverschiedenheiten.",
+      safeFirstStep: "Bedenken im Sitzungsprotokoll benennen und um Klärung bitten.",
+      roles: "Gremiumsleitung, Agenda-Verantwortliche",
+      safeguards: "Fragen normalisieren und das Ansprechen von Bedenken von Schuldzuweisungen trennen.",
+      documentation: "Kurzer Vermerk im regulären Protokoll.",
+      deEscalation: "Zur normalen Tagesordnung zurückkehren, sobald die Frage beantwortet ist.",
+    },
+    {
+      id: "early-signal",
+      number: 1,
+      name: "Frühsignal",
+      purpose: "Raum schaffen, bevor sich Druck zu einem Konflikt verhärtet.",
+      triggers: "Wiederholtes Unbehagen, fehlende Informationen oder sichtbares Schweigen.",
+      safeFirstStep: "Eine kurze Pause einlegen und Bedenken ohne Zuschreibung sammeln.",
+      roles: "Leitung, rotierende Sicherheitsbeobachtung",
+      safeguards: "Keine Namen ohne Einverständnis.",
+      documentation: "Internes Signalprotokoll.",
+      deEscalation: "Veränderungen zusammenfassen und mit der Gruppe abschliessen.",
+    },
+    {
+      id: "protected-consultation",
+      number: 2,
+      name: "Geschützte Beratung",
+      purpose: "Betroffenen einen unabhängigen Weg für Beratung eröffnen.",
+      triggers: "Machtasymmetrie, Vertraulichkeitsbedarf oder Angst vor Folgen.",
+      safeFirstStep: "Vertrauliche Beratung bei der Ombudsperson anbieten.",
+      roles: "Ombudsperson, geschützte teilnehmende Person",
+      safeguards: "Weitergabe nur nach Need-to-know-Prinzip.",
+      documentation: "Vertraulicher Beratungsvermerk.",
+      deEscalation: "Vereinbaren, was sicher ins Gremium zurückkehren kann.",
+    },
+    {
+      id: "formal-clarification",
+      number: 3,
+      name: "Formale Klärung",
+      purpose: "Von informellem Anliegen zu einem verantworteten Entscheidungsweg übergehen.",
+      triggers: "Ungelöster Konflikt, strittige Fakten oder eine befangene Entscheidungsperson.",
+      safeFirstStep: "Unabhängige Prüfperson benennen und Entscheidungsstopp festlegen.",
+      roles: "Unabhängige Prüfperson, stellvertretende Leitung, HR oder Recht nach Bedarf",
+      safeguards: "Befangenheitsprüfung und schriftliches Mandat.",
+      documentation: "Formaler Klärungsbericht.",
+      deEscalation: "Ergebnis, Schutzmassnahmen und nächsten Prüftermin teilen.",
+    },
+    {
+      id: "protection-mode",
+      number: 4,
+      name: "Schutzmodus",
+      purpose: "Personen oder Entscheidungen schützen, wenn unmittelbarer Schaden wahrscheinlich ist.",
+      triggers: "Vergeltung, Nötigung, ernstes Sicherheitsrisiko oder rechtliches Risiko.",
+      safeFirstStep: "Entscheidung pausieren und unabhängige Schutzrollen aktivieren.",
+      roles: "Ombudsperson, Geschäftsleitungs-Patenschaft, HR/Recht, externe Unterstützung",
+      safeguards: "Sofortige Vergeltungssperre und Zugriffsbegrenzungen.",
+      documentation: "Eingeschränkter Vorfallsbericht.",
+      deEscalation: "Nur nach Risikoprüfung und geschützter Nachbearbeitung herabstufen.",
+    },
+  ],
+};
+
+export function getDemoState(language: Language): ToolState {
+  return language === "de" ? demoStateDe : demoStateEn;
+}

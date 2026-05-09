@@ -10,7 +10,12 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import { stepRoutes, type StepId } from "../../app/routes";
+import {
+  readStepFromHash,
+  stepRoutes,
+  writeStepToHash,
+  type StepId,
+} from "../../app/routes";
 import { EducationPanel } from "../../components/EducationPanel";
 import { ExportButtons } from "../../components/ExportButtons";
 import { StepNavigation } from "../../components/StepNavigation";
@@ -22,8 +27,8 @@ import {
   predefinedTriggerKeys,
   type PredefinedTriggerKey,
 } from "./config";
-import { demoState } from "./demo";
-import { buildOutputModel } from "./output";
+import { getDemoState } from "./demo";
+import { buildOutputModel, getLevelFieldOrder, type OutputLevel } from "./output";
 import { buildReflectionPrompt } from "./prompts";
 import {
   createDefaultToolState,
@@ -37,27 +42,45 @@ import { translations } from "./translations";
 const STORAGE_KEY = "protection-path-designer-state";
 
 export function ProtectionPathTool() {
-  const [activeStep, setActiveStep] = useState<StepId>("vision");
+  const [activeStep, setActiveStep] = useState<StepId>(
+    () => readStepFromHash() ?? "vision",
+  );
   const [toolState, setToolState] = useState<ToolState>(() =>
     loadFromStorage(STORAGE_KEY, createDefaultToolState()),
   );
+  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const t = translations[toolState.language];
   const route = t.steps[activeStep];
 
   useEffect(() => {
     saveToStorage(STORAGE_KEY, toolState);
     document.documentElement.lang = toolState.language;
+    setLastSavedAt(new Date());
   }, [toolState]);
 
+  useEffect(() => {
+    writeStepToHash(activeStep);
+  }, [activeStep]);
+
+  useEffect(() => {
+    function onHashChange() {
+      const next = readStepFromHash();
+      if (next) {
+        setActiveStep(next);
+      }
+    }
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+
   function setLanguage(language: Language) {
-    setToolState((current) => ({ ...current, language }));
+    setToolState((current) =>
+      current.demoMode ? getDemoState(language) : { ...current, language },
+    );
   }
 
   function loadDemo() {
-    setToolState((current) => ({
-      ...demoState,
-      language: current.language,
-    }));
+    setToolState((current) => getDemoState(current.language));
   }
 
   function buildOwn() {
@@ -175,6 +198,7 @@ export function ProtectionPathTool() {
         activeStep={activeStep}
         demoMode={toolState.demoMode}
         language={toolState.language}
+        lastSavedAt={lastSavedAt}
         onLanguageChange={setLanguage}
         onReset={resetState}
         translations={t}
@@ -413,7 +437,10 @@ function BuildScreen({
   onAddCustomTrigger,
   onRemoveCustomTrigger,
 }: BuildScreenProps) {
-  const [openLevels, setOpenLevels] = useState<string[]>([state.levels[0]?.id]);
+  const [openLevels, setOpenLevels] = useState<string[]>(() => {
+    const first = state.levels[0]?.id;
+    return first ? [first] : [];
+  });
   const [customTrigger, setCustomTrigger] = useState("");
   const selectedTriggers = [
     ...state.selectedTriggers.map((trigger) => ({
@@ -967,43 +994,15 @@ function OutputScreen({ state, translations: t }: OutputScreenProps) {
             </OutputBlock>
 
             <OutputBlock title={t.output.levels}>
-              <div className="overflow-hidden rounded-xl border border-hairline">
-                <table className="w-full border-collapse text-left text-[13px]">
-                  <thead className="bg-surface-2">
-                    <tr className="text-ink-3">
-                      <th className="px-3 py-2.5 font-mono text-[10.5px] font-medium uppercase tracking-[0.14em]">
-                        {t.output.columns.number}
-                      </th>
-                      <th className="px-3 py-2.5 font-mono text-[10.5px] font-medium uppercase tracking-[0.14em]">
-                        {t.output.columns.name}
-                      </th>
-                      <th className="px-3 py-2.5 font-mono text-[10.5px] font-medium uppercase tracking-[0.14em]">
-                        {t.output.columns.purpose}
-                      </th>
-                      <th className="px-3 py-2.5 font-mono text-[10.5px] font-medium uppercase tracking-[0.14em]">
-                        {t.output.columns.roles}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-hairline">
-                    {model.levels.map((level) => (
-                      <tr key={level.number}>
-                        <td className="px-3 py-3 font-mono text-[12px] font-semibold text-ink">
-                          {String(level.number).padStart(2, "0")}
-                        </td>
-                        <td className="px-3 py-3 font-medium text-ink">
-                          {level.name || t.output.noContent}
-                        </td>
-                        <td className="px-3 py-3 text-ink-2">
-                          {level.purpose || t.output.noContent}
-                        </td>
-                        <td className="px-3 py-3 text-ink-2">
-                          {level.roles || t.output.noContent}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="space-y-3">
+                {model.levels.map((level) => (
+                  <OutputLevelCard
+                    key={level.number}
+                    empty={t.output.noContent}
+                    fieldLabels={t.build.fields}
+                    level={level}
+                  />
+                ))}
               </div>
             </OutputBlock>
 
@@ -1051,6 +1050,41 @@ function OutputList({ items, empty }: { items: string[]; empty: string }) {
         </li>
       ))}
     </ul>
+  );
+}
+
+type OutputLevelCardProps = {
+  level: OutputLevel;
+  empty: string;
+  fieldLabels: (typeof translations)[Language]["build"]["fields"];
+};
+
+function OutputLevelCard({ level, empty, fieldLabels }: OutputLevelCardProps) {
+  const fields = getLevelFieldOrder();
+
+  return (
+    <article className="break-inside-avoid rounded-xl border border-hairline bg-surface p-4">
+      <header className="mb-3 flex items-baseline gap-2.5">
+        <span className="font-mono text-[12px] font-semibold text-ink-3">
+          {String(level.number).padStart(2, "0")}
+        </span>
+        <h5 className="text-[14px] font-semibold tracking-tight text-ink">
+          {level.name || empty}
+        </h5>
+      </header>
+      <dl className="grid gap-x-6 gap-y-2.5 sm:grid-cols-2">
+        {fields.map((field) => (
+          <div key={field}>
+            <dt className="font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-ink-3">
+              {fieldLabels[field]}
+            </dt>
+            <dd className="mt-0.5 text-[13px] leading-6 text-ink-2">
+              {level[field] || empty}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </article>
   );
 }
 
