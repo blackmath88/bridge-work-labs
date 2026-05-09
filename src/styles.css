@@ -251,13 +251,20 @@ button {
 }
 
 @media print {
+  @page {
+    margin: 18mm;
+  }
   body {
     background: #ffffff;
     background-image: none;
+    color: #15171a;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
   }
   .app-sidebar,
   .app-topbar,
   .app-edu-panel,
+  .app-drawer-backdrop,
   .no-print {
     display: none !important;
   }
@@ -270,6 +277,17 @@ button {
     border-radius: 0 !important;
     box-shadow: none !important;
     margin: 0 !important;
-    padding: 24px !important;
+    padding: 0 !important;
+  }
+  .print-document h3,
+  .print-document h4,
+  .print-document h5 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+  .print-document article,
+  .print-document section {
+    page-break-inside: avoid;
+    break-inside: avoid;
   }
 }

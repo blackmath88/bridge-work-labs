@@ -313,12 +313,14 @@ function ContextForm({ context, translations: t, onUpdate }: ContextFormProps) {
       <div className="card p-5">
         <div className="grid gap-4 md:grid-cols-2">
           <FieldInput
+            filled={isFilled(context.teamName)}
             label={t.build.contextFields.teamName}
             onChange={(value) => onUpdate("teamName", value)}
             placeholder={t.build.contextPlaceholders.teamName}
             value={context.teamName}
           />
           <FieldInput
+            filled={isFilled(context.rhythm)}
             label={t.build.contextFields.rhythm}
             onChange={(value) => onUpdate("rhythm", value)}
             placeholder={t.build.contextPlaceholders.rhythm}
@@ -326,6 +328,7 @@ function ContextForm({ context, translations: t, onUpdate }: ContextFormProps) {
           />
           {contextTextAreas.map((field) => (
             <FieldTextArea
+              filled={isFilled(context[field])}
               key={field}
               label={t.build.contextFields[field]}
               onChange={(value) => onUpdate(field, value)}
@@ -339,20 +342,26 @@ function ContextForm({ context, translations: t, onUpdate }: ContextFormProps) {
   );
 }
 
+function isFilled(value: string): boolean {
+  return value.trim().length > 0;
+}
+
 function FieldInput({
   label,
   value,
   placeholder,
+  filled,
   onChange,
 }: {
   label: string;
   value: string;
   placeholder?: string;
+  filled?: boolean;
   onChange: (value: string) => void;
 }) {
   return (
     <label className="block">
-      <span className="field-label">{label}</span>
+      <FieldLabel filled={filled} label={label} />
       <input
         className="field"
         onChange={(event) => onChange(event.target.value)}
@@ -368,16 +377,18 @@ function FieldTextArea({
   label,
   value,
   placeholder,
+  filled,
   onChange,
 }: {
   label: string;
   value: string;
   placeholder?: string;
+  filled?: boolean;
   onChange: (value: string) => void;
 }) {
   return (
     <label className="block">
-      <span className="field-label">{label}</span>
+      <FieldLabel filled={filled} label={label} />
       <textarea
         className="field"
         onChange={(event) => onChange(event.target.value)}
@@ -385,5 +396,22 @@ function FieldTextArea({
         value={value}
       />
     </label>
+  );
+}
+
+function FieldLabel({ label, filled }: { label: string; filled?: boolean }) {
+  if (filled === undefined) {
+    return <span className="field-label">{label}</span>;
+  }
+  return (
+    <span className="field-label flex items-center gap-1.5">
+      <span
+        aria-hidden="true"
+        className={`h-1.5 w-1.5 rounded-full ${
+          filled ? "bg-sage-500" : "bg-ink-4/40"
+        }`}
+      />
+      {label}
+    </span>
   );
 }

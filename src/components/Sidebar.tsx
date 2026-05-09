@@ -29,7 +29,7 @@ export function Sidebar({
     <>
       <div
         aria-hidden={!open}
-        className={`fixed inset-0 z-30 bg-ink/30 backdrop-blur-[2px] transition-opacity duration-200 lg:hidden ${
+        className={`app-drawer-backdrop fixed inset-0 z-30 bg-ink/30 backdrop-blur-[2px] transition-opacity duration-200 lg:hidden ${
           open ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
         onClick={onClose}

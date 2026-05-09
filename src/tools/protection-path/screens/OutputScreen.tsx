@@ -36,14 +36,9 @@ export function OutputScreen({ state, translations: t }: OutputScreenProps) {
               {model.subtitle}
             </p>
           </div>
-          <div className="text-left md:text-right">
-            <p className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink-3">
-              v1.0 — {model.date}
-            </p>
-            <p className="mt-1 font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink-4">
-              Folio 01 / 01
-            </p>
-          </div>
+          <p className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink-3 md:text-right">
+            {model.date}
+          </p>
         </header>
 
         <div className="grid gap-10 lg:grid-cols-[0.8fr_1.4fr]">

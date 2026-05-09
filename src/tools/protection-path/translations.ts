@@ -135,6 +135,8 @@ export type TranslationSet = {
     promptLabel: string;
     copy: string;
     copied: string;
+    resetToGenerated: string;
+    edited: string;
   };
   output: {
     previewTitle: string;
@@ -360,6 +362,8 @@ export const translations: Record<Language, TranslationSet> = {
       promptLabel: "Prompt",
       copy: "Copy prompt",
       copied: "Copied",
+      resetToGenerated: "Reset to generated",
+      edited: "Edited",
     },
     output: {
       previewTitle: "Live one-page model",
@@ -591,6 +595,8 @@ export const translations: Record<Language, TranslationSet> = {
       promptLabel: "Prompt",
       copy: "Prompt kopieren",
       copied: "Kopiert",
+      resetToGenerated: "Auf generierten Stand zurücksetzen",
+      edited: "Bearbeitet",
     },
     output: {
       previewTitle: "Live-Einseiter",
