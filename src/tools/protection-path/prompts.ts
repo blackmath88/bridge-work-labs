@@ -1,5 +1,5 @@
 import type { Language, ToolState } from "./schema";
-import { translations } from "./translations";
+import { getAllTriggerLabels } from "./triggers";
 
 type PromptKind = "sharpen" | "risk";
 
@@ -93,22 +93,13 @@ export function buildReflectionPrompt(
     formatContext(state, language),
     "",
     `## ${copy.triggersHeading}`,
-    formatList(triggerLabels(state, language), language),
+    formatList(getAllTriggerLabels(state.triggers, language), language),
     "",
     `## ${copy.levelsHeading}`,
     state.levels.map((level) => formatLevel(level, language)).join("\n\n"),
     "",
     copy.closing,
   ].join("\n");
-}
-
-function triggerLabels(state: ToolState, language: Language) {
-  const labels = translations[language].build.triggerLabels;
-
-  return [
-    ...state.selectedTriggers.map((trigger) => labels[trigger as keyof typeof labels] ?? trigger),
-    ...state.customTriggers,
-  ];
 }
 
 function formatContext(state: ToolState, language: Language) {

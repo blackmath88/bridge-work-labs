@@ -19,12 +19,16 @@ const demoStateEn: ToolState = {
     openQuestions:
       "Who can pause a decision when the chair is conflicted? How quickly can an independent reviewer be reached?",
   },
-  selectedTriggers: [
-    "powerImbalance",
-    "retaliationConcern",
-    "conflictedDecisionMaker",
+  triggers: [
+    { source: "predefined", key: "powerImbalance" },
+    { source: "predefined", key: "retaliationConcern" },
+    { source: "predefined", key: "conflictedDecisionMaker" },
+    {
+      source: "custom",
+      id: "demo-en-funder-pressure",
+      label: "External funder pressure",
+    },
   ],
-  customTriggers: ["External funder pressure"],
   levels: [
     {
       id: "normal",
@@ -108,12 +112,16 @@ const demoStateDe: ToolState = {
     openQuestions:
       "Wer kann eine Entscheidung pausieren, wenn die Leitung befangen ist? Wie schnell ist eine unabhängige Prüfung erreichbar?",
   },
-  selectedTriggers: [
-    "powerImbalance",
-    "retaliationConcern",
-    "conflictedDecisionMaker",
+  triggers: [
+    { source: "predefined", key: "powerImbalance" },
+    { source: "predefined", key: "retaliationConcern" },
+    { source: "predefined", key: "conflictedDecisionMaker" },
+    {
+      source: "custom",
+      id: "demo-de-funder-pressure",
+      label: "Druck durch externe Geldgeber",
+    },
   ],
-  customTriggers: ["Druck durch externe Geldgeber"],
   levels: [
     {
       id: "normal",

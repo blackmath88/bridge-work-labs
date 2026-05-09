@@ -1,4 +1,10 @@
+import type { PredefinedTriggerKey } from "./config";
+
 export type Language = "de" | "en";
+
+export type Trigger =
+  | { source: "predefined"; key: PredefinedTriggerKey }
+  | { source: "custom"; id: string; label: string };
 
 export type ContextFields = {
   teamName: string;
@@ -28,8 +34,7 @@ export type ToolState = {
   language: Language;
   context: ContextFields;
   levels: EscalationLevel[];
-  selectedTriggers: string[];
-  customTriggers: string[];
+  triggers: Trigger[];
   demoMode: boolean;
 };
 
@@ -111,8 +116,7 @@ export const defaultToolState: ToolState = {
   language: "en",
   context: emptyContext,
   levels: defaultLevels,
-  selectedTriggers: [],
-  customTriggers: [],
+  triggers: [],
   demoMode: false,
 };
 
@@ -122,7 +126,6 @@ export function createDefaultToolState(language: Language = "en"): ToolState {
     language,
     context: { ...emptyContext },
     levels: defaultLevels.map((level) => ({ ...level })),
-    selectedTriggers: [],
-    customTriggers: [],
+    triggers: [],
   };
 }

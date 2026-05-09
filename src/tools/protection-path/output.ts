@@ -1,5 +1,6 @@
 import type { Language, ToolState } from "./schema";
 import { translations } from "./translations";
+import { getAllTriggerLabels } from "./triggers";
 
 export type OutputLevel = {
   number: number;
@@ -33,15 +34,7 @@ export function buildOutputModel(
   const t = translations[language];
   const teamName =
     state.context.teamName || (language === "de" ? "Dieses Team" : "This team");
-  const triggerLabels = [
-    ...state.selectedTriggers.map(
-      (trigger) =>
-        t.build.triggerLabels[
-          trigger as keyof typeof t.build.triggerLabels
-        ] ?? trigger,
-    ),
-    ...state.customTriggers,
-  ];
+  const triggerLabels = getAllTriggerLabels(state.triggers, language);
   const roles = unique(
     state.levels
       .map((level) => level.roles)
