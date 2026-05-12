@@ -101,6 +101,7 @@ export function ProtectionPathTool() {
       return;
     }
     dispatch({ type: "loadDemo" });
+    setActiveStep("build");
   }, [toolState, t.confirmReplaceWithDemo]);
 
   const buildOwn = useCallback(() => {

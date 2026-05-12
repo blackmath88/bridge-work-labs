@@ -29,6 +29,22 @@ const demoStateEn: ToolState = {
       label: "External funder pressure",
     },
   ],
+  orgRoles: [
+    { id: "committee", label: "Committee", kind: "team" },
+    { id: "chair", label: "Chair", kind: "team" },
+    { id: "observer", label: "Safety observer", kind: "independent" },
+    { id: "ombuds", label: "Ombudsperson", kind: "independent" },
+    { id: "reviewer", label: "Independent reviewer", kind: "formal" },
+    { id: "sponsor", label: "Executive sponsor", kind: "protection" },
+  ],
+  orgConnections: [
+    { from: "committee", to: "chair", levelId: "normal" },
+    { from: "chair", to: "observer", levelId: "early-signal" },
+    { from: "observer", to: "ombuds", levelId: "protected-consultation" },
+    { from: "ombuds", to: "reviewer", levelId: "formal-clarification" },
+    { from: "reviewer", to: "sponsor", levelId: "protection-mode" },
+  ],
+  currentLevelId: "protected-consultation",
   levels: [
     {
       id: "normal",
@@ -122,6 +138,22 @@ const demoStateDe: ToolState = {
       label: "Druck durch externe Geldgeber",
     },
   ],
+  orgRoles: [
+    { id: "committee", label: "Gremium", kind: "team" },
+    { id: "chair", label: "Leitung", kind: "team" },
+    { id: "observer", label: "Sicherheitsbeobachtung", kind: "independent" },
+    { id: "ombuds", label: "Ombudsperson", kind: "independent" },
+    { id: "reviewer", label: "Unabhängige Prüfung", kind: "formal" },
+    { id: "sponsor", label: "GL-Patenschaft", kind: "protection" },
+  ],
+  orgConnections: [
+    { from: "committee", to: "chair", levelId: "normal" },
+    { from: "chair", to: "observer", levelId: "early-signal" },
+    { from: "observer", to: "ombuds", levelId: "protected-consultation" },
+    { from: "ombuds", to: "reviewer", levelId: "formal-clarification" },
+    { from: "reviewer", to: "sponsor", levelId: "protection-mode" },
+  ],
+  currentLevelId: "protected-consultation",
   levels: [
     {
       id: "normal",

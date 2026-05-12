@@ -5,6 +5,8 @@ import {
   type ContextFields,
   type EscalationLevel,
   type Language,
+  defaultOrgConnections,
+  defaultOrgRoles,
   type ToolState,
   type Trigger,
 } from "./schema";
@@ -19,6 +21,7 @@ export type ToolAction =
   | { type: "loadDemo" }
   | { type: "buildOwn" }
   | { type: "reset" }
+  | { type: "setCurrentLevel"; levelId: string }
   | { type: "updateContext"; field: keyof ContextFields; value: string }
   | {
       type: "updateLevel";
@@ -44,6 +47,8 @@ export function toolStateReducer(
     case "buildOwn":
     case "reset":
       return createDefaultToolState(state.language);
+    case "setCurrentLevel":
+      return { ...state, currentLevelId: action.levelId };
     case "updateContext":
       return {
         ...state,
@@ -113,6 +118,18 @@ export function migrateStoredState(raw: unknown): ToolState | null {
         ? candidate.levels
         : fallback.levels,
     triggers,
+    orgRoles:
+      Array.isArray(candidate.orgRoles) && candidate.orgRoles.length
+        ? candidate.orgRoles
+        : defaultOrgRoles.map((role) => ({ ...role })),
+    orgConnections:
+      Array.isArray(candidate.orgConnections) && candidate.orgConnections.length
+        ? candidate.orgConnections
+        : defaultOrgConnections.map((connection) => ({ ...connection })),
+    currentLevelId:
+      typeof candidate.currentLevelId === "string"
+        ? candidate.currentLevelId
+        : candidate.levels?.[0]?.id ?? fallback.currentLevelId,
   };
 }
 

@@ -30,11 +30,26 @@ export type EscalationLevel = {
   deEscalation: string;
 };
 
+export type OrgRole = {
+  id: string;
+  label: string;
+  kind: "team" | "independent" | "formal" | "protection";
+};
+
+export type OrgConnection = {
+  from: string;
+  to: string;
+  levelId: string;
+};
+
 export type ToolState = {
   language: Language;
   context: ContextFields;
   levels: EscalationLevel[];
   triggers: Trigger[];
+  orgRoles: OrgRole[];
+  orgConnections: OrgConnection[];
+  currentLevelId: string;
   demoMode: boolean;
 };
 
@@ -112,11 +127,31 @@ export const defaultLevels: EscalationLevel[] = [
   },
 ];
 
+export const defaultOrgRoles: OrgRole[] = [
+  { id: "team", label: "Team / committee", kind: "team" },
+  { id: "chair", label: "Chair / lead", kind: "team" },
+  { id: "observer", label: "Safety observer", kind: "independent" },
+  { id: "ombuds", label: "Ombudsperson", kind: "independent" },
+  { id: "reviewer", label: "Independent reviewer", kind: "formal" },
+  { id: "sponsor", label: "Protection sponsor", kind: "protection" },
+];
+
+export const defaultOrgConnections: OrgConnection[] = [
+  { from: "team", to: "chair", levelId: "normal" },
+  { from: "chair", to: "observer", levelId: "early-signal" },
+  { from: "observer", to: "ombuds", levelId: "protected-consultation" },
+  { from: "ombuds", to: "reviewer", levelId: "formal-clarification" },
+  { from: "reviewer", to: "sponsor", levelId: "protection-mode" },
+];
+
 export const defaultToolState: ToolState = {
   language: "en",
   context: emptyContext,
   levels: defaultLevels,
   triggers: [],
+  orgRoles: defaultOrgRoles,
+  orgConnections: defaultOrgConnections,
+  currentLevelId: "normal",
   demoMode: false,
 };
 
@@ -127,5 +162,8 @@ export function createDefaultToolState(language: Language = "en"): ToolState {
     context: { ...emptyContext },
     levels: defaultLevels.map((level) => ({ ...level })),
     triggers: [],
+    orgRoles: defaultOrgRoles.map((role) => ({ ...role })),
+    orgConnections: defaultOrgConnections.map((connection) => ({ ...connection })),
+    currentLevelId: defaultLevels[0]?.id ?? "normal",
   };
 }

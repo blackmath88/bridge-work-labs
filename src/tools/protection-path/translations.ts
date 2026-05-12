@@ -81,6 +81,21 @@ export type TranslationSet = {
     concepts: Record<ConceptKey, { title: string; text: string; question: string }>;
   };
   build: {
+    mapEyebrow: string;
+    mapTitle: string;
+    mapIntro: string;
+    selectedLevel: string;
+    safeRouteTitle: string;
+    safeRouteIntro: string;
+    recommendedActions: string;
+    editDetails: string;
+    contextAndTriggers: string;
+    orgKinds: {
+      team: string;
+      independent: string;
+      formal: string;
+      protection: string;
+    };
     contextTitle: string;
     contextIntro: string;
     contextFields: {
@@ -299,6 +314,22 @@ export const translations: Record<Language, TranslationSet> = {
       },
     },
     build: {
+      mapEyebrow: "Escalation risk map",
+      mapTitle: "Choose the current escalation level",
+      mapIntro:
+        "Scan the route, select the live level, then act from the panel. Details stay editable below.",
+      selectedLevel: "Current selected level",
+      safeRouteTitle: "Safe route",
+      safeRouteIntro: "A lightweight route from the regular team path to independent protection.",
+      recommendedActions: "Recommended actions",
+      editDetails: "Edit level details",
+      contextAndTriggers: "Context and triggers",
+      orgKinds: {
+        team: "Team route",
+        independent: "Independent",
+        formal: "Formal",
+        protection: "Protection",
+      },
       contextTitle: "Context capture",
       contextIntro:
         "Capture the basic operating context for this protection path. These fields feed the prompts and one-page output.",
@@ -537,6 +568,23 @@ export const translations: Record<Language, TranslationSet> = {
       },
     },
     build: {
+      mapEyebrow: "Eskalations-Risikokarte",
+      mapTitle: "Aktuelle Eskalationsstufe wählen",
+      mapIntro:
+        "Weg überblicken, aktuelle Stufe auswählen und aus dem Panel handeln. Details bleiben unten bearbeitbar.",
+      selectedLevel: "Aktuell ausgewählte Stufe",
+      safeRouteTitle: "Sicherer Weg",
+      safeRouteIntro:
+        "Ein einfacher Weg vom regulären Teamkanal zu unabhängigen Schutzrollen.",
+      recommendedActions: "Empfohlene Schritte",
+      editDetails: "Stufendetails bearbeiten",
+      contextAndTriggers: "Kontext und Auslöser",
+      orgKinds: {
+        team: "Teamweg",
+        independent: "Unabhängig",
+        formal: "Formal",
+        protection: "Schutz",
+      },
       contextTitle: "Kontext erfassen",
       contextIntro:
         "Erfassen Sie den grundlegenden Arbeitskontext für diesen Schutzweg. Diese Felder speisen Prompts und Einseiter.",
