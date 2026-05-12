@@ -152,7 +152,7 @@ export function ProtectionPathTool() {
       />
 
       <main className="min-h-screen px-5 pb-16 pt-8 lg:ml-64 lg:px-10 lg:pt-20">
-        <section className="mx-auto max-w-5xl animate-fade-in">
+        <section className="mx-auto max-w-7xl animate-fade-in">
           <Screen
             activeStep={activeStep}
             dispatch={dispatch}

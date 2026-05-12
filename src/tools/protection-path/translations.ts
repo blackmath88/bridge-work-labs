@@ -90,6 +90,22 @@ export type TranslationSet = {
     recommendedActions: string;
     editDetails: string;
     contextAndTriggers: string;
+    underlyingModelEditor: string;
+    laneModeSimple: string;
+    laneModeDetailed: string;
+    routeTypes: {
+      safe: string;
+      normal: string;
+      caution: string;
+    };
+    routeNodeLabels: {
+      affectedPerson: string;
+      teamLead: string;
+      decisionOwner: string;
+      independentSupport: string;
+      hrLegal: string;
+      executiveSponsor: string;
+    };
     orgKinds: {
       team: string;
       independent: string;
@@ -324,6 +340,22 @@ export const translations: Record<Language, TranslationSet> = {
       recommendedActions: "Recommended actions",
       editDetails: "Edit level details",
       contextAndTriggers: "Context and triggers",
+      underlyingModelEditor: "Edit underlying model",
+      laneModeSimple: "Simple",
+      laneModeDetailed: "Detailed",
+      routeTypes: {
+        safe: "Safe route",
+        normal: "Normal route",
+        caution: "Caution / conflicted route",
+      },
+      routeNodeLabels: {
+        affectedPerson: "Affected person",
+        teamLead: "Team lead",
+        decisionOwner: "Decision owner",
+        independentSupport: "Ombudsperson / independent support",
+        hrLegal: "HR / legal",
+        executiveSponsor: "Executive sponsor",
+      },
       orgKinds: {
         team: "Team route",
         independent: "Independent",
@@ -579,6 +611,22 @@ export const translations: Record<Language, TranslationSet> = {
       recommendedActions: "Empfohlene Schritte",
       editDetails: "Stufendetails bearbeiten",
       contextAndTriggers: "Kontext und Auslöser",
+      underlyingModelEditor: "Zugrunde liegendes Modell bearbeiten",
+      laneModeSimple: "Einfach",
+      laneModeDetailed: "Detailliert",
+      routeTypes: {
+        safe: "Sicherer Weg",
+        normal: "Normaler Weg",
+        caution: "Vorsicht / befangener Weg",
+      },
+      routeNodeLabels: {
+        affectedPerson: "Betroffene Person",
+        teamLead: "Teamleitung",
+        decisionOwner: "Entscheidungsträger",
+        independentSupport: "Ombudsperson / unabhängige Unterstützung",
+        hrLegal: "HR / Recht",
+        executiveSponsor: "GL-Patenschaft",
+      },
       orgKinds: {
         team: "Teamweg",
         independent: "Unabhängig",
